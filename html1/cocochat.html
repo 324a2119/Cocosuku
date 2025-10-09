@@ -1,4 +1,3 @@
-<!-- chat.html -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -6,22 +5,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DM — ココスク</title>
 <style>
-  :root{--bg:#fff7f9;--card:#fff;--accent:#ffd1dc;--accent2:#ffeeba;--text:#444;--muted:#888;--radius:16px;font-family:"Noto Sans JP","Rounded Mplus 1c",sans-serif;}
-  *{box-sizing:border-box;}
-  body{margin:0;padding:0;background:var(--bg);color:var(--text);}
-  .app{display:flex;flex-direction:column;max-width:600px;margin:0 auto;padding:16px;height:100vh;}
-  .brand{display:flex;align-items:center;gap:8px;margin-bottom:16px;cursor:pointer;}
-  .logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-  .app-name{font-size:20px;font-weight:bold;color:#444;}
-  .chat-container{flex:1;overflow-y:auto;margin-bottom:12px;}
-  .message{background:var(--card);padding:10px;border-radius:12px;margin:6px 0;max-width:70%;}
-  .message.you{align-self:flex-end;background:var(--accent2);}
-  .composer{display:flex;gap:10px;}
-  .composer input{flex:1;padding:10px;border-radius:12px;border:1px solid #ddd;}
-  .composer button{padding:10px;border:none;border-radius:12px;background:linear-gradient(180deg,var(--accent),var(--accent2));cursor:pointer;}
-  .nav{position:fixed;bottom:0;left:0;width:100%;background:var(--card);border-top:1px solid #f0f0f0;display:flex;justify-content:space-around;padding:8px 0;box-shadow:0 -2px 8px rgba(0,0,0,0.05);}
-  .nav button{background:transparent;border:none;font-size:22px;color:#888;cursor:pointer;}
-  .nav button.active{color:#ff7fa3;}
+:root{
+  --bg:#fff7f9;
+  --card:#fff;
+  --accent:#ffd1dc;
+  --accent2:#ffeeba;
+  --text:#444;
+  --radius:16px;
+  font-family:"Noto Sans JP","Rounded Mplus 1c",sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.app{display:flex;flex-direction:column;max-width:600px;margin:0 auto;height:100vh;}
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:0 8px;cursor:pointer;}
+.logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+.app-name{font-size:20px;font-weight:bold;color:#444;}
+.chat-header{display:flex;align-items:center;gap:4px;margin-bottom:8px;padding:0 8px;position:relative;}
+.chat-header img{width:36px;height:36px;border-radius:50%;background:var(--accent);}
+.chat-header input{flex:1;padding:8px;border-radius:12px;border:1px solid #ddd;}
+.chat-header select{flex:1;padding:8px;border-radius:12px;border:1px solid #ddd;}
+.chat-header input:focus, .chat-header select:focus{outline:none;border-color:#ff7fa3;}
+.suggestion-box{
+  position:absolute;
+  top:48px;
+  left:48px;
+  right:8px;
+  background:white;
+  border:1px solid #ddd;
+  border-radius:12px;
+  max-height:150px;
+  overflow-y:auto;
+  z-index:10;
+}
+.suggestion-box div{
+  padding:8px;
+  cursor:pointer;
+}
+.suggestion-box div:hover{
+  background:#ffeeba;
+}
+.chat-container{flex:1;overflow-y:auto;padding:0 8px;margin-bottom:144px; display:flex; flex-direction:column;word-break: break-word;}
+.message-wrapper{display:flex;align-items:flex-start;margin:6px 0;max-width:100%;}
+.message-wrapper.you{justify-content:flex-end;}
+.message-wrapper.them img{width:28px;height:28px;border-radius:50%;margin-right:6px;background:var(--accent);}
+.message{background:var(--card);padding:10px;border-radius:12px;max-width:80%;word-break: break-word;}
+.message.you{background:var(--accent2);}
+.composer-container{position:fixed;bottom:56px; left:0;width:100%;background:var(--bg);padding:8px 16px;box-shadow:0 -2px 8px rgba(0,0,0,0.1);display:flex;gap:8px;z-index:10;}
+.composer-container input{flex:1;padding:10px;border-radius:12px;border:1px solid #ddd;}
+.composer-container input:focus{outline:none;border-color:#ff7fa3;}
+.composer-container button{padding:10px;border:none;border-radius:12px;background:linear-gradient(180deg,var(--accent),var(--accent2));cursor:pointer;}
+.composer-container button:active{opacity:0.8;}
+.nav{position:fixed;bottom:0;left:0;width:100%;height:56px;background:var(--card);border-top:1px solid #f0f0f0;display:flex;justify-content:space-around;align-items:center;box-shadow:0 -2px 8px rgba(0,0,0,0.05);}
+.nav button{background:transparent;border:none;font-size:22px;color:#888;cursor:pointer;}
+.nav button.active{color:#ff7fa3;}
 </style>
 </head>
 <body>
@@ -31,16 +67,25 @@
     <div class="app-name">ココスク</div>
   </div>
 
-  <div class="chat-container" id="chatContainer">
-    <!-- 既存メッセージサンプル -->
-    <div class="message">こんにちは〜！</div>
-    <div class="message you">やっほー！</div>
+  <!-- チャット相手選択 -->
+  <div class="chat-header">
+    <img id="userAvatar" src="" alt="avatar">
+    <input type="text" id="chatUserInput" placeholder="名前を入力" oninput="showSuggestions()">
+    <select id="chatUserSelect" onchange="selectFromDropdown()">
+      <option value="">プルダウンから選択</option>
+      <option value="天池渚">天池渚</option>
+      <option value="黒崎">黒崎</option>
+    </select>
+    <button onclick="switchUser()">切り替え</button>
+    <div id="suggestionBox" class="suggestion-box" style="display:none;"></div>
   </div>
 
-  <div class="composer">
-    <input type="text" id="chatInput" placeholder="メッセージを入力">
-    <button onclick="sendMessage()">送信</button>
-  </div>
+  <div class="chat-container" id="chatContainer"></div>
+</div>
+
+<div class="composer-container">
+  <input type="text" id="chatInput" placeholder="メッセージを入力" onkeydown="if(event.key==='Enter'){sendMessage();}">
+  <button onclick="sendMessage()">送信</button>
 </div>
 
 <nav class="nav">
@@ -51,24 +96,111 @@
 </nav>
 
 <script>
-  const chatInput = document.getElementById("chatInput");
-  const chatContainer = document.getElementById("chatContainer");
+let chatContainer = document.getElementById("chatContainer");
+let chatInput = document.getElementById("chatInput");
+let chatUserInput = document.getElementById("chatUserInput");
+let chatUserSelect = document.getElementById("chatUserSelect");
+let userAvatar = document.getElementById("userAvatar");
+let suggestionBox = document.getElementById("suggestionBox");
 
-  function sendMessage(){
-    const text = chatInput.value.trim();
-    if(!text) return;
-    const div = document.createElement("div");
-    div.className="message you";
-    div.textContent=text;
-    chatContainer.appendChild(div);
-    chatInput.value="";
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+let currentUser = "";
+let chatHistory = JSON.parse(localStorage.getItem("chatHistory") || "{}");
+
+// 初期データ
+if(!chatHistory["天池渚"]) chatHistory["天池渚"]=[{from:"them", text:"やっほー！今日も頑張ろうね🌸"}];
+if(!chatHistory["黒崎"]) chatHistory["黒崎"]=[{from:"them", text:"こんにちは、テストメッセージです！"}];
+localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+
+// プルダウン選択時に入力欄も更新
+function selectFromDropdown(){
+  chatUserInput.value = chatUserSelect.value;
+  suggestionBox.style.display="none";
+}
+
+// 入力時の予測
+function showSuggestions(){
+  const val = chatUserInput.value.trim();
+  if(!val){
+    suggestionBox.style.display="none";
+    return;
   }
+  const names = Object.keys(chatHistory);
+  const matches = names.filter(n=>n.startsWith(val));
+  if(matches.length===0){
+    suggestionBox.style.display="none";
+    return;
+  }
+  suggestionBox.innerHTML="";
+  matches.forEach(n=>{
+    const div = document.createElement("div");
+    div.textContent = n;
+    div.onclick = ()=>{
+      chatUserInput.value=n;
+      suggestionBox.style.display="none";
+    };
+    suggestionBox.appendChild(div);
+  });
+  suggestionBox.style.display="block";
+}
 
-  // 画面遷移
-  function goTimeline(){ window.location.href="timeline.html"; }
-  function goCalendar(){ window.location.href="calendar.html"; }
-  function goProfile(){ window.location.href="profile.html"; }
+// 切替
+function switchUser(){
+  currentUser = chatUserInput.value.trim();
+  if(!currentUser) return alert("相手の名前を入力してください！");
+  userAvatar.style.backgroundColor = currentUser==="天池渚"?"#ffd1dc":currentUser==="黒崎"?"#a0d1ff":"#ccc";
+  if(!chatHistory[currentUser]) chatHistory[currentUser]=[];
+  renderChat();
+  suggestionBox.style.display="none";
+}
+
+// チャット描画
+function renderChat(){
+  chatContainer.innerHTML="";
+  if(!currentUser) return;
+  chatHistory[currentUser].forEach(msg=>{
+    const wrapper = document.createElement("div");
+    wrapper.className = msg.from==="you"?"message-wrapper you":"message-wrapper them";
+    const messageDiv = document.createElement("div");
+    messageDiv.className = msg.from==="you"?"message you":"message";
+    messageDiv.textContent = msg.text;
+    if(msg.from==="them"){
+      const img = document.createElement("img");
+      img.style.backgroundColor=currentUser==="天池渚"?"#ffd1dc":currentUser==="黒崎"?"#a0d1ff":"#ccc";
+      wrapper.appendChild(img);
+      wrapper.appendChild(messageDiv);
+    }else{
+      wrapper.appendChild(messageDiv);
+    }
+    chatContainer.appendChild(wrapper);
+  });
+  setTimeout(()=>{ chatContainer.scrollTop = chatContainer.scrollHeight; },10);
+}
+
+// メッセージ送信
+function sendMessage(){
+  const text = chatInput.value.trim();
+  if(!text) return;
+  if(!currentUser) return alert("まずチャット相手を選んでください！");
+  const msg = {from:"you", text};
+  chatHistory[currentUser].push(msg);
+  localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+  chatInput.value="";
+  chatInput.focus();
+  renderChat();
+
+  setTimeout(()=>{
+    const reply = {from:"them", text:"自動返信: "+text.split("").reverse().join("")};
+    chatHistory[currentUser].push(reply);
+    localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+    renderChat();
+  },1000);
+}
+
+function goTimeline(){ window.location.href="timeline.html"; }
+function goCalendar(){ window.location.href="calendar.html"; }
+function goProfile(){ window.location.href="profile.html"; }
+
+window.addEventListener('resize', ()=> { chatContainer.scrollTop = chatContainer.scrollHeight; });
 </script>
 </body>
 </html>
