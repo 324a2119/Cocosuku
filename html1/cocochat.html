@@ -1,0 +1,74 @@
+<!-- chat.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DM — ココスク</title>
+<style>
+  :root{--bg:#fff7f9;--card:#fff;--accent:#ffd1dc;--accent2:#ffeeba;--text:#444;--muted:#888;--radius:16px;font-family:"Noto Sans JP","Rounded Mplus 1c",sans-serif;}
+  *{box-sizing:border-box;}
+  body{margin:0;padding:0;background:var(--bg);color:var(--text);}
+  .app{display:flex;flex-direction:column;max-width:600px;margin:0 auto;padding:16px;height:100vh;}
+  .brand{display:flex;align-items:center;gap:8px;margin-bottom:16px;cursor:pointer;}
+  .logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+  .app-name{font-size:20px;font-weight:bold;color:#444;}
+  .chat-container{flex:1;overflow-y:auto;margin-bottom:12px;}
+  .message{background:var(--card);padding:10px;border-radius:12px;margin:6px 0;max-width:70%;}
+  .message.you{align-self:flex-end;background:var(--accent2);}
+  .composer{display:flex;gap:10px;}
+  .composer input{flex:1;padding:10px;border-radius:12px;border:1px solid #ddd;}
+  .composer button{padding:10px;border:none;border-radius:12px;background:linear-gradient(180deg,var(--accent),var(--accent2));cursor:pointer;}
+  .nav{position:fixed;bottom:0;left:0;width:100%;background:var(--card);border-top:1px solid #f0f0f0;display:flex;justify-content:space-around;padding:8px 0;box-shadow:0 -2px 8px rgba(0,0,0,0.05);}
+  .nav button{background:transparent;border:none;font-size:22px;color:#888;cursor:pointer;}
+  .nav button.active{color:#ff7fa3;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand" onclick="goTimeline()">
+    <div class="logo">Co</div>
+    <div class="app-name">ココスク</div>
+  </div>
+
+  <div class="chat-container" id="chatContainer">
+    <!-- 既存メッセージサンプル -->
+    <div class="message">こんにちは〜！</div>
+    <div class="message you">やっほー！</div>
+  </div>
+
+  <div class="composer">
+    <input type="text" id="chatInput" placeholder="メッセージを入力">
+    <button onclick="sendMessage()">送信</button>
+  </div>
+</div>
+
+<nav class="nav">
+  <button onclick="goTimeline()">🏠</button>
+  <button onclick="goCalendar()">📅</button>
+  <button class="active">💌</button>
+  <button onclick="goProfile()">👤</button>
+</nav>
+
+<script>
+  const chatInput = document.getElementById("chatInput");
+  const chatContainer = document.getElementById("chatContainer");
+
+  function sendMessage(){
+    const text = chatInput.value.trim();
+    if(!text) return;
+    const div = document.createElement("div");
+    div.className="message you";
+    div.textContent=text;
+    chatContainer.appendChild(div);
+    chatInput.value="";
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+
+  // 画面遷移
+  function goTimeline(){ window.location.href="timeline.html"; }
+  function goCalendar(){ window.location.href="calendar.html"; }
+  function goProfile(){ window.location.href="profile.html"; }
+</script>
+</body>
+</html>

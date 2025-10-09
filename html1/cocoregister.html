@@ -1,0 +1,45 @@
+<!-- register.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新規登録 — ココスク</title>
+  <style>
+    body { margin:0; font-family:"Noto Sans JP", sans-serif; background:#fff7f9; display:flex; justify-content:center; align-items:center; height:100vh; }
+    .card { background:#fff; padding:20px; border-radius:16px; box-shadow:0 3px 8px rgba(0,0,0,0.1); width:90%; max-width:400px; }
+    input { width:100%; padding:10px; margin:8px 0; border-radius:12px; border:1px solid #ddd; }
+    .btn { width:100%; padding:10px; border:none; border-radius:12px; background:linear-gradient(180deg,#ffd1dc,#ffeeba); font-weight:bold; cursor:pointer; }
+    .link { text-align:center; margin-top:12px; font-size:14px; color:#888; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 style="text-align:center;">ココスク 新規登録</h2>
+    <!-- 名前入力 -->
+    <input type="text" id="name" placeholder="名前">
+    <!-- メール入力 -->
+    <input type="email" id="email" placeholder="メールアドレス">
+    <!-- パスワード入力 -->
+    <input type="password" id="password" placeholder="パスワード">
+    <!-- 登録ボタン -->
+    <button class="btn" onclick="register()">登録</button>
+    <div class="link">
+      <a href="login.html">ログインはこちら</a>
+    </div>
+  </div>
+
+  <script>
+    // 登録処理（サンプル）
+    function register() {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      if(!name || !email || !password) return alert("全ての項目を入力してください");
+      // 登録成功したらログイン画面へ
+      alert("登録成功！ログインしてください");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>
