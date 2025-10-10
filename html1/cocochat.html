@@ -73,8 +73,9 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
     <input type="text" id="chatUserInput" placeholder="名前を入力" oninput="showSuggestions()">
     <select id="chatUserSelect" onchange="selectFromDropdown()">
       <option value="">プルダウンから選択</option>
-      <option value="天池渚">天池渚</option>
-      <option value="黒崎">黒崎</option>
+      <option value="たけっちょ">たけっちょ</option>
+      <option value="そら">そら</option>
+      <option value="まっちゃん">まっちゃん</option>
     </select>
     <button onclick="switchUser()">切り替え</button>
     <div id="suggestionBox" class="suggestion-box" style="display:none;"></div>
@@ -107,8 +108,8 @@ let currentUser = "";
 let chatHistory = JSON.parse(localStorage.getItem("chatHistory") || "{}");
 
 // 初期データ
-if(!chatHistory["天池渚"]) chatHistory["天池渚"]=[{from:"them", text:"やっほー！今日も頑張ろうね🌸"}];
-if(!chatHistory["黒崎"]) chatHistory["黒崎"]=[{from:"them", text:"こんにちは、テストメッセージです！"}];
+if(!chatHistory["たけっちょ"]) chatHistory["たけっちょ"]=[{from:"them", text:"やっほー！今日も頑張ろうね🌸"}];
+if(!chatHistory["そら"]) chatHistory["そら"]=[{from:"them", text:"こんにちは、テストメッセージです！"}];
 localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
 
 // プルダウン選択時に入力欄も更新
@@ -147,7 +148,7 @@ function showSuggestions(){
 function switchUser(){
   currentUser = chatUserInput.value.trim();
   if(!currentUser) return alert("相手の名前を入力してください！");
-  userAvatar.style.backgroundColor = currentUser==="天池渚"?"#ffd1dc":currentUser==="黒崎"?"#a0d1ff":"#ccc";
+  userAvatar.style.backgroundColor = currentUser==="たけっちょ"?"#ffd1dc":currentUser==="そら"?"#a0d1ff":"#ccc";
   if(!chatHistory[currentUser]) chatHistory[currentUser]=[];
   renderChat();
   suggestionBox.style.display="none";
@@ -165,7 +166,7 @@ function renderChat(){
     messageDiv.textContent = msg.text;
     if(msg.from==="them"){
       const img = document.createElement("img");
-      img.style.backgroundColor=currentUser==="天池渚"?"#ffd1dc":currentUser==="黒崎"?"#a0d1ff":"#ccc";
+      img.style.backgroundColor=currentUser==="たけっちょ"?"#ffd1dc":currentUser==="そら"?"#a0d1ff":"#ccc";
       wrapper.appendChild(img);
       wrapper.appendChild(messageDiv);
     }else{
@@ -204,3 +205,4 @@ window.addEventListener('resize', ()=> { chatContainer.scrollTop = chatContainer
 </script>
 </body>
 </html>
+
