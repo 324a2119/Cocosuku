@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>通知 — ココスク</title>
+<style>
+:root{
+  --bg:#fff7f9;
+  --card:#fff;
+  --accent:#ffd1dc;
+  --accent2:#ffeeba;
+  --text:#444;
+  --muted:#888;
+  --radius:16px;
+  font-family:"Noto Sans JP","Rounded Mplus 1c",sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.app{display:flex;flex-direction:column;max-width:600px;margin:0 auto;min-height:100vh;padding:8px;padding-bottom:80px;}
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;}
+.logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+
+/* 通知リスト */
+.notification-card{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:var(--card);
+  padding:12px;
+  margin-bottom:8px;
+  border-radius:var(--radius);
+  box-shadow:0 1px 3px rgba(0,0,0,0.05);
+  transition:background 0.2s;
+  cursor:pointer;
+}
+.notification-card:hover{
+  background:#fcfcfc;
+}
+.notification-icon{
+  width:48px;
+  height:48px;
+  background:var(--accent);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  color:#fff;
+  font-size:20px;
+  flex-shrink:0;
+}
+.notification-content{
+  flex-grow:1;
+  font-size:15px;
+}
+.notification-time{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+/* ナビゲーションバー (既存ファイルから流用) */
+.nav-bar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:60px;
+  max-width:600px;
+  margin:0 auto;
+  background:var(--card);
+  box-shadow:0 -2px 6px rgba(0,0,0,0.1);
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  border-radius:var(--radius) var(--radius) 0 0;
+}
+.nav-item{
+  flex:1;
+  text-align:center;
+  text-decoration:none;
+  color:var(--muted);
+  font-size:12px;
+  cursor:pointer;
+  padding:8px 0;
+}
+.nav-item:hover{
+  background:rgba(0,0,0,0.05);
+  border-radius:10px;
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand" onclick="goTimeline()">
+    <div class="logo">コ</div>
+    <div class="app-name" style="font-size:20px; font-weight:bold;">通知</div>
+  </div>
+
+  <div id="notificationsList">
+    <div class="notification-card" onclick="goProfile('そら')">
+      <div class="notification-icon" style="background:linear-gradient(45deg, #a0d1ff, #c3e2ff);">そ</div>
+      <div class="notification-content">
+        <strong>そら</strong>さんがあなたをフォローしました。
+        <div class="notification-time">5分前</div>
+      </div>
+    </div>
+    <div class="notification-card" onclick="goPost(123)">
+      <div class="notification-icon" style="background:linear-gradient(45deg, #ffd1dc, #ffeeba);">た</div>
+      <div class="notification-content">
+        <strong>たけっちょ</strong>さんがあなたの投稿に「いいね！」しました。
+        <div class="notification-time">1時間前</div>
+      </div>
+    </div>
+    <div class="notification-card" onclick="goPost(456)">
+      <div class="notification-icon" style="background:linear-gradient(45deg, #ffaa7f, #ffc9a8);">み</div>
+      <div class="notification-content">
+        <strong>みかん</strong>さんがあなたの投稿にコメントしました。「これ素敵ですね！」
+        <div class="notification-time">3時間前</div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <div style="text-align:center; color:var(--muted); margin-top:30px;">
+    これ以上通知はありません。
+  </div>
+
+  <div class="nav-bar">
+    <a href="cocotimeline.html" class="nav-item">🏠 TL</a>
+    <a href="cocosearch.html" class="nav-item">🔍 検索</a>
+    <a href="cocochat.html" class="nav-item">💬 DM</a>
+    <a href="cocoprofile.html" class="nav-item">👤 プロフ</a>
+    <a href="cococalendar.html" class="nav-item">📅 予定</a>
+  </div>
+</div>
+
+<script>
+function goTimeline(){ window.location.href="cocotimeline.html"; }
+function goProfile(userName){ window.location.href="cocootherprofile.html?user=" + encodeURIComponent(userName); }
+function goPost(postId){
+    // 投稿詳細ページへの遷移をシミュレーション
+    alert("投稿ID " + postId + " の詳細へ遷移");
+}
+</script>
+</body>
+</html>
