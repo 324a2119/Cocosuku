@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>タイムライン — ココスク</title>
+<style>
+:root{
+  --bg:#fff7f9;
+  --card:#fff;
+  --accent:#ffd1dc;
+  --accent2:#ffeeba;
+  --text:#444;
+  --muted:#888;
+  --radius:16px;
+  font-family:"Noto Sans JP","Rounded Mplus 1c",sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;padding:0;background:var(--bg);color:var(--text);}
+.app{display:flex;flex-direction:column;max-width:600px;margin:0 auto;padding:8px;min-height:100vh;}
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;}
+.logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+.app-name{font-size:20px;font-weight:bold;}
+.feed{display:flex;flex-direction:column;gap:10px;margin-bottom:70px;}
+.post-card{background:var(--card);border-radius:var(--radius);padding:12px;box-shadow:0 2px 6px rgba(0,0,0,0.1);position:relative;}
+.post-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;font-size:16px;cursor:pointer;}
+.user-name{font-weight:bold;font-size:15px;}
+.time{font-size:12px;color:var(--muted);}
+.post-content{font-size:14px;margin:6px 0;white-space:pre-wrap;}
+.post-image{width:100%;border-radius:12px;margin-top:8px;}
+.post-footer{display:flex;align-items:center;gap:16px;color:var(--muted);font-size:14px;}
+.like-btn{cursor:pointer;border:none;background:none;font-size:16px;}
+.like-btn.liked{color:#ff7fa3;}
+.delete-btn{cursor:pointer;border:none;background:none;font-size:14px;color:#ff5555;position:absolute;top:8px;right:8px;}
+.delete-btn:hover{text-decoration:underline;}
+.add-post-btn{position:fixed;bottom:72px;right:20px;background:linear-gradient(180deg,var(--accent),var(--accent2));border:none;border-radius:50%;width:60px;height:60px;font-size:32px;box-shadow:0 3px 8px rgba(0,0,0,0.2);cursor:pointer;color:#444;transition:0.2s;}
+.add-post-btn:hover{transform:scale(1.1);}
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:10;}
+.modal{background:var(--card);border-radius:var(--radius);padding:16px;max-width:400px;width:90%;max-height:90%;overflow-y:auto;box-shadow:0 5px 15px rgba(0,0,0,0.3);position:relative;}
+.close-btn{position:absolute;top:10px;right:10px;background:var(--accent);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-weight:bold;color:#fff;}
+textarea{width:100%;padding:8px;border-radius:12px;border:1px solid #ddd;font-size:14px;resize:vertical;margin-bottom:8px;}
+.add-btn{background:linear-gradient(180deg,var(--accent),var(--accent2));border:none;border-radius:12px;padding:8px 14px;color:#444;font-weight:bold;cursor:pointer;transition:0.2s;box-shadow:0 3px 6px rgba(0,0,0,0.1);}
+.add-btn:hover{transform:scale(1.05);}
+.nav{position:fixed;bottom:0;left:0;width:100%;background:var(--card);border-top:1px solid #f0f0f0;display:flex;justify-content:space-around;padding:8px 0;box-shadow:0 -2px 8px rgba(0,0,0,0.05);}
+.nav button{background:linear-gradient(180deg,var(--accent),var(--accent2));border:none;border-radius:50%;width:44px;height:44px;font-size:22px;color:#444;cursor:pointer;transition:0.2s;box-shadow:0 2px 4px rgba(0,0,0,0.2);}
+.nav button:hover{transform:scale(1.1);}
+.nav button.active{color:#ff7fa3;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand" onclick="goTimeline()">
+    <div class="logo">Co</div>
+    <div class="app-name">ココスク</div>
+  </div>
+
+  <div class="feed" id="feed"></div>
+
+  <button class="add-post-btn" onclick="openModal()">＋</button>
+</div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal()">×</button>
+    <h3>新しい投稿</h3>
+    <textarea id="postText" rows="4" placeholder="いま何してる？"></textarea>
+    <input type="file" id="postImage" accept="image/*" style="margin-bottom:8px;">
+    <button class="add-btn" onclick="addPost()">投稿</button>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="active">🏠</button>
+  <button onclick="goCalendar()">📅</button>
+  <button onclick="goChat()">💌</button>
+  <button onclick="goProfile()">👤</button>
+</nav>
+
+<script>
+function goTimeline(){ window.location.href="cocotimeline.html"; }
+function goCalendar(){ window.location.href="cococalendar.html"; }
+function goChat(){ window.location.href="cocochat.html"; }
+function goProfile(){ window.location.href="cocoprofile.html"; }
+
+const feed = document.getElementById("feed");
+let posts = JSON.parse(localStorage.getItem("posts") || "[]");
+const profile = JSON.parse(localStorage.getItem("profile")) || {name:"学生A", avatar:"A"};
+
+function renderPosts(){
+  feed.innerHTML = "";
+  if(posts.length === 0){
+    feed.innerHTML = "<div style='text-align:center;color:var(--muted);margin-top:30px;'>まだ投稿がありません。</div>";
+    return;
+  }
+  posts.slice().reverse().forEach((p,index)=>{
+    const card = document.createElement("div");
+    card.className="post-card";
+    const time = new Date(p.time).toLocaleString("ja-JP",{hour12:false});
+    const liked = p.liked ? "liked" : "";
+    let deleteBtn = "";
+    if(p.name === profile.name){ // 自分の投稿だけ削除可能
+      deleteBtn = `<button class="delete-btn" onclick="deletePost(${index})">削除</button>`;
+    }
+    let imageTag = p.image ? `<img src="${p.image}" class="post-image">` : "";
+
+    card.innerHTML = `
+      <div class="post-header">
+        <div class="icon" onclick="goProfilePage('${p.name}')">${p.avatar}</div>
+        <div>
+          <div class="user-name">${p.name}</div>
+          <div class="time">${time}</div>
+        </div>
+      </div>
+      <div class="post-content">${p.text}</div>
+      ${imageTag}
+      <div class="post-footer">
+        <button class="like-btn ${liked}" onclick="toggleLike(${index})">❤️</button>
+        <span>${p.likes || 0}</span>
+      </div>
+      ${deleteBtn}
+    `;
+    feed.appendChild(card);
+  });
+}
+renderPosts();
+
+function toggleLike(index){
+  const revIndex = posts.length - 1 - index;
+  posts[revIndex].liked = !posts[revIndex].liked;
+  posts[revIndex].likes = (posts[revIndex].likes || 0) + (posts[revIndex].liked ? 1 : -1);
+  localStorage.setItem("posts", JSON.stringify(posts));
+  renderPosts();
+}
+
+function deletePost(index){
+  const revIndex = posts.length - 1 - index;
+  if(confirm("この投稿を削除しますか？")){
+    posts.splice(revIndex,1);
+    localStorage.setItem("posts", JSON.stringify(posts));
+    renderPosts();
+  }
+}
+
+function goProfilePage(userName){
+    if(userName === profile.name){
+        window.location.href = "cocoprofile.html";
+    } else {
+        window.location.href = "cocoprofiler.html?user=" + encodeURIComponent(userName);
+    }
+}
+
+const modalBg = document.getElementById("modalBg");
+function openModal(){ modalBg.style.display="flex"; }
+function closeModal(){ 
+  modalBg.style.display="none"; 
+  document.getElementById("postText").value=""; 
+  document.getElementById("postImage").value=""; 
+}
+
+function addPost(){
+  const text = document.getElementById("postText").value.trim();
+  const imageInput = document.getElementById("postImage");
+  if(!text && !imageInput.files[0]) return alert("投稿内容または画像を入力してください。");
+
+  if(imageInput.files[0]){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      const newPost = {
+        name: profile.name,
+        avatar: profile.avatar,
+        text: text,
+        image: e.target.result,
+        time: new Date().toISOString(),
+        likes: 0,
+        liked: false
+      };
+      posts.push(newPost);
+      localStorage.setItem("posts", JSON.stringify(posts));
+      closeModal();
+      renderPosts();
+    }
+    reader.readAsDataURL(imageInput.files[0]);
+  } else {
+    const newPost = {
+      name: profile.name,
+      avatar: profile.avatar,
+      text: text,
+      image: null,
+      time: new Date().toISOString(),
+      likes: 0,
+      liked: false
+    };
+    posts.push(newPost);
+    localStorage.setItem("posts", JSON.stringify(posts));
+    closeModal();
+    renderPosts();
+  }
+}
+</script>
+</body>
+</html>

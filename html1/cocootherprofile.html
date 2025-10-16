@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ユーザープロフィール — ココスク</title>
+<style>
+:root {
+  --bg:#fff7f9;
+  --card:#fff;
+  --accent:#ffd1dc;
+  --accent2:#ffeeba;
+  --text:#444;
+  --muted:#888;
+  --radius:16px;
+  font-family:"Noto Sans JP","Rounded Mplus 1c",sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.app{display:flex;flex-direction:column;max-width:600px;margin:0 auto;min-height:100vh;padding-bottom:80px;}
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:12px 16px;background:var(--card);border-radius:0 0 var(--radius) var(--radius);box-shadow:0 2px 8px rgba(0,0,0,0.08);cursor:pointer;}
+.logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:18px;}
+.app-name{font-size:20px;font-weight:bold;color:#444;}
+.profile-card{background:var(--card);padding:24px;margin:24px 16px;border-radius:var(--radius);box-shadow:0 4px 12px rgba(0,0,0,0.08);text-align:center;display:flex;flex-direction:column;align-items:center;}
+.avatar{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:30px;margin-bottom:12px;box-shadow:0 3px 6px rgba(0,0,0,0.1);}
+.info{margin:4px 0;color:var(--text);}
+.follow-btn{margin-top:12px;background:linear-gradient(180deg,var(--accent),var(--accent2));border:none;border-radius:12px;padding:10px 16px;color:#444;font-weight:bold;cursor:pointer;box-shadow:0 3px 6px rgba(0,0,0,0.1);}
+.follow-btn.following{background:#ffd1dc;color:#fff;}
+.posts-section{margin:16px;}
+.post-card{background:var(--card);border-radius:var(--radius);padding:12px;box-shadow:0 2px 6px rgba(0,0,0,0.1);margin-bottom:10px;}
+.post-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;font-size:16px;}
+.user-name{font-weight:bold;font-size:15px;}
+.time{font-size:12px;color:var(--muted);}
+.post-content{font-size:14px;margin:6px 0;white-space:pre-wrap;}
+.nav{position:fixed;bottom:0;left:0;width:100%;background:var(--card);border-top:1px solid #f0f0f0;display:flex;justify-content:space-around;padding:8px 0;box-shadow:0 -2px 8px rgba(0,0,0,0.05);}
+.nav button{background:linear-gradient(180deg,var(--accent),var(--accent2));border:none;border-radius:50%;width:44px;height:44px;font-size:22px;color:#444;cursor:pointer;transition:0.2s;box-shadow:0 2px 4px rgba(0,0,0,0.2);}
+.nav button:hover{transform:scale(1.1);}
+.nav button.active{color:#ff7fa3;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand" onclick="goTimeline()">
+    <div class="logo">Co</div>
+    <div class="app-name">ココスク</div>
+  </div>
+
+  <div class="profile-card">
+    <div class="avatar" id="avatarPreview">U</div>
+    <h2 id="nameDisplay"></h2>
+    <div class="info" id="bioDisplay"></div>
+    <div class="info" id="hobbyDisplay"></div>
+    <div class="info" id="circleDisplay"></div>
+    <div class="info" id="courseDisplay"></div>
+    <div class="info" id="qualificationDisplay"></div>
+    <div class="info" id="gradeDisplay"></div>
+    <div class="info" id="commentDisplay"></div>
+    <button class="follow-btn" id="followBtn" onclick="toggleFollow()">フォロー</button>
+  </div>
+
+  <div class="posts-section">
+    <h3>投稿</h3>
+    <div id="userPosts"></div>
+  </div>
+</div>
+
+<nav class="nav">
+  <button onclick="goTimeline()">🏠</button>
+  <button onclick="goCalendar()">📅</button>
+  <button onclick="goChat()">💌</button>
+  <button onclick="goProfile()">👤</button>
+</nav>
+
+<script>
+function goTimeline(){ window.location.href="cocotimeline.html"; }
+function goCalendar(){ window.location.href="cococalendar.html"; }
+function goChat(){ window.location.href="cocochat.html"; }
+function goProfile(){ window.location.href="cocoprofile.html"; }
+
+function getQueryParam(name){
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
+}
+
+const nameDisplay = document.getElementById("nameDisplay");
+const bioDisplay = document.getElementById("bioDisplay");
+const hobbyDisplay = document.getElementById("hobbyDisplay");
+const circleDisplay = document.getElementById("circleDisplay");
+const courseDisplay = document.getElementById("courseDisplay");
+const qualificationDisplay = document.getElementById("qualificationDisplay");
+const gradeDisplay = document.getElementById("gradeDisplay");
+const commentDisplay = document.getElementById("commentDisplay");
+const avatarPreview = document.getElementById("avatarPreview");
+const userPostsDiv = document.getElementById("userPosts");
+const followBtn = document.getElementById("followBtn");
+
+// 表示するユーザー名取得
+const userName = getQueryParam("name");
+const profiles = JSON.parse(localStorage.getItem("profiles") || "[]");
+const userProfile = profiles.find(p => p.name === userName);
+const myProfile = JSON.parse(localStorage.getItem("profile") || '{"name":"自分","avatar":"S"}');
+
+if(userProfile){
+  avatarPreview.textContent = userProfile.avatar || userProfile.name[0];
+  nameDisplay.textContent = userProfile.name;
+  bioDisplay.textContent = userProfile.bio;
+  hobbyDisplay.textContent = "趣味: "+userProfile.hobby;
+  circleDisplay.textContent = "サークル: "+userProfile.circle;
+  courseDisplay.textContent = "学科: "+userProfile.course;
+  qualificationDisplay.textContent = "資格: "+userProfile.qualification;
+  gradeDisplay.textContent = "学年: "+userProfile.grade;
+  commentDisplay.textContent = "一言: "+userProfile.comment;
+} else {
+  nameDisplay.textContent = "ユーザーが見つかりません";
+}
+
+// フォロー管理
+let follows = JSON.parse(localStorage.getItem("follows") || "{}");
+if(!follows[myProfile.name]) follows[myProfile.name] = [];
+
+function updateFollowBtn(){
+  if(follows[myProfile.name].includes(userProfile.name)){
+    followBtn.textContent = "フォロー中";
+    followBtn.classList.add("following");
+  } else {
+    followBtn.textContent = "フォロー";
+    followBtn.classList.remove("following");
+  }
+}
+
+function toggleFollow(){
+  const index = follows[myProfile.name].indexOf(userProfile.name);
+  if(index>=0){
+    follows[myProfile.name].splice(index,1);
+  } else {
+    follows[myProfile.name].push(userProfile.name);
+  }
+  localStorage.setItem("follows", JSON.stringify(follows));
+  updateFollowBtn();
+}
+
+updateFollowBtn();
+
+// 投稿レンダリング（そのユーザーの投稿だけ）
+function renderUserPosts(){
+  if(!userProfile) return;
+  const allPosts = JSON.parse(localStorage.getItem("posts") || "[]");
+  const userPosts = allPosts.filter(p => p.name === userProfile.name);
+  userPostsDiv.innerHTML = "";
+  if(userPosts.length === 0){
+    userPostsDiv.innerHTML = "<div style='color:var(--muted);'>まだ投稿がありません。</div>";
+    return;
+  }
+  userPosts.slice().reverse().forEach((p)=>{
+    const card = document.createElement("div");
+    card.className = "post-card";
+    const time = new Date(p.time).toLocaleString("ja-JP",{hour12:false});
+    card.innerHTML = `
+      <div class="post-header">
+        <div class="icon">${p.avatar}</div>
+        <div>
+          <div class="user-name">${p.name}</div>
+          <div class="time">${time}</div>
+        </div>
+      </div>
+      <div class="post-content">${p.text}</div>
+    `;
+    userPostsDiv.appendChild(card);
+  });
+}
+
+renderUserPosts();
+</script>
+</body>
+</html>
