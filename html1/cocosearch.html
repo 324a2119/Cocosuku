@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>検索 — ココスク</title>
+<style>
+:root{
+  --bg:#fff7f9;
+  --card:#fff;
+  --accent:#ffd1dc;
+  --accent2:#ffeeba;
+  --text:#444;
+  --muted:#888;
+  --radius:16px;
+  font-family:"Noto Sans JP","Rounded Mplus 1c",sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.app{display:flex;flex-direction:column;max-width:600px;margin:0 auto;padding:8px;min-height:100vh;padding-bottom:80px;}
+
+/* 検索バー */
+.search-bar{
+    display:flex;
+    gap:8px;
+    margin-bottom:16px;
+    padding:8px;
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:0 2px 4px rgba(0,0,0,0.05);
+}
+.search-input{
+    flex-grow:1;
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    font-size:16px;
+}
+.search-btn{
+    padding:10px 16px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(180deg,var(--accent),var(--accent2));
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* 検索結果（仮） */
+.results-header{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:12px;
+}
+.search-result-item{
+    background:var(--card);
+    padding:16px;
+    border-radius:var(--radius);
+    margin-bottom:8px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.05);
+}
+.result-name{
+    font-weight:bold;
+    color:#ff7fa3;
+    cursor:pointer;
+}
+.result-bio{
+    font-size:14px;
+    color:var(--muted);
+}
+
+/* ナビゲーションバー (既存ファイルと同じ) */
+.nav-bar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:60px;
+  max-width:600px;
+  margin:0 auto;
+  background:var(--card);
+  box-shadow:0 -2px 6px rgba(0,0,0,0.1);
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  border-radius:var(--radius) var(--radius) 0 0;
+  z-index:15;
+}
+.nav-item{
+  flex:1;
+  text-align:center;
+  text-decoration:none;
+  color:var(--muted);
+  font-size:11px;
+  cursor:pointer;
+  padding:8px 0;
+}
+.nav-item.active{
+  color:#ff7fa3;
+  font-weight:bold;
+}
+</style>
+</head>
+<body>
+<div class="app">
+    <div class="search-bar">
+        <input type="text" id="searchInput" class="search-input" placeholder="ユーザー、投稿、話題を検索...">
+        <button class="search-btn" onclick="search()">検索</button>
+    </div>
+
+    <div class="results-header">おすすめユーザー</div>
+    <div id="searchResults">
+        <div class="search-result-item" onclick="window.location.href='cocootherprofile.html?user=そら'">
+            <div class="result-name">そら</div>
+            <div class="result-bio">趣味は写真、サークルはテニスです。</div>
+        </div>
+        <div class="search-result-item" onclick="window.location.href='cocootherprofile.html?user=たけっちょ'">
+            <div class="result-name">たけっちょ</div>
+            <div class="result-bio">勉強頑張ってます！</div>
+        </div>
+        <div class="search-result-item" onclick="window.location.href='cocootherprofile.html?user=みかん'">
+            <div class="result-name">みかん</div>
+            <div class="result-bio">文学部所属。読書が趣味。</div>
+        </div>
+        <div style="text-align:center; color:var(--muted); margin-top:20px;">
+            ※検索機能は未実装です。
+        </div>
+    </div>
+
+  <div class="nav-bar">
+    <a href="cocotimeline.html" class="nav-item">🏠 TL</a>
+    <a href="cocosearch.html" class="nav-item active">🔍 検索</a>
+    <a href="coconotifications.html" class="nav-item">🔔 通知</a>
+    <a href="cocochat.html" class="nav-item">💬 DM</a>
+    <a href="cocoprofile.html" class="nav-item">👤 プロフ</a>
+    <a href="cococalendar.html" class="nav-item">📅 予定</a>
+  </div>
+</div>
+
+<script>
+// ログインチェック
+if (!localStorage.getItem("isLoggedIn")) {
+    window.location.href = "cocologin.html";
+}
+function search() {
+    alert("検索機能は未実装です。");
+}
+</script>
+</body>
+</html>

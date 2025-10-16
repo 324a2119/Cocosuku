@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>カレンダー — ココスク</title>
+<style>
+:root{
+  --bg:#fff7f9;
+  --card:#fff;
+  --accent:#ffd1dc;
+  --accent2:#ffeeba;
+  --text:#444;
+  --muted:#888;
+  --radius:16px;
+  font-family:"Noto Sans JP","Rounded Mplus 1c",sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;padding:0;background:var(--bg);color:var(--text);}
+.app{display:flex;flex-direction:column;max-width:600px;margin:0 auto;padding:8px;min-height:100vh;padding-bottom:80px;} /* ナビバーの領域を確保 */
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;}
+.logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+.app-name{font-size:20px;font-weight:bold;color:#444;}
+.calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;flex:1;overflow-y:auto;}
+.day{background:var(--card);border-radius:var(--radius);padding:8px;text-align:center;cursor:pointer;position:relative;transition:0.2s;display:flex;flex-direction:column;align-items:center;min-height:60px;}
+.day:hover{transform:scale(1.02);}
+.day.today{border:2px solid var(--accent);}
+.day.has-event::after{content:"📌";position:absolute;top:2px;right:4px;font-size:14px;}
+.event-preview{font-size:10px;color:var(--muted);line-height:1.2;margin-top:2px;word-break:break-word;}
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:10;}
+.modal{background:var(--card);border-radius:var(--radius);padding:16px;max-width:400px;width:90%;max-height:90%;overflow-y:auto;box-shadow:0 5px 15px rgba(0,0,0,0.3);position:relative;}
+.modal h3{margin-top:0;}
+.close-btn{position:absolute;top:10px;right:10px;background:var(--accent);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-weight:bold;color:#fff;}
+input, textarea{width:100%;margin-bottom:8px;padding:6px;border-radius:12px;border:1px solid #ddd;font-size:14px;}
+textarea{resize:vertical;}
+.add-btn{background:linear-gradient(180deg,var(--accent),var(--accent2));border:none;border-radius:12px;padding:8px 14px;color:#444;font-weight:bold;cursor:pointer;transition:0.2s;box-shadow:0 3px 6px rgba(0,0,0,0.1);}
+.add-btn:hover{transform:scale(1.05);}
+.event-card{background:var(--accent2);border-radius:12px;padding:8px;margin-bottom:6px;position:relative;}
+.delete-btn{position:absolute;top:6px;right:6px;background:#ff7fa3;border:none;border-radius:50%;width:20px;height:20px;color:#fff;font-weight:bold;cursor:pointer;font-size:12px;}
+.event-time{font-size:12px;color:var(--muted);}
+
+/* --- ナビゲーションバー (DMファイルから引用/修正) --- */
+.nav-bar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:60px;
+  max-width:600px;
+  margin:0 auto;
+  background:var(--card);
+  box-shadow:0 -2px 6px rgba(0,0,0,0.1);
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  border-radius:var(--radius) var(--radius) 0 0;
+  z-index:15;
+}
+.nav-item{
+  flex:1;
+  text-align:center;
+  text-decoration:none;
+  color:var(--muted);
+  font-size:11px;
+  cursor:pointer;
+  padding:8px 0;
+}
+.nav-item.active{
+  color:#ff7fa3; /* DMファイルから引用 */
+  font-weight:bold;
+}
+/* 元のnavのスタイルは削除 */
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand" onclick="goTimeline()">
+    <div class="logo">Co</div>
+    <div class="app-name">ココスク</div>
+  </div>
+
+  <div class="calendar-header">
+    <button onclick="prevMonth()">◀</button>
+    <h3 id="monthLabel"></h3>
+    <button onclick="nextMonth()">▶</button>
+  </div>
+
+  <div class="calendar-grid" id="calendarGrid"></div>
+</div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal()">×</button>
+    <h3 id="modalDate"></h3>
+    <div id="eventList"></div>
+    <hr>
+    <h4>予定を追加</h4>
+    <input type="time" id="eventTime" placeholder="時間（任意）">
+    <input type="text" id="eventTitle" placeholder="予定">
+    <textarea id="eventMemo" rows="3" placeholder="メモ（任意）"></textarea>
+    <button class="add-btn" onclick="addEvent()">追加</button>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <a href="cocotimeline.html" class="nav-item">🏠 TL</a>
+  <a href="cocosearch.html" class="nav-item">🔍 検索</a>
+  <a href="coconotifications.html" class="nav-item">🔔 通知</a>
+  <a href="cocochat.html" class="nav-item">💬 DM</a>
+  <a href="cocoprofile.html" class="nav-item">👤 プロフ</a>
+  <a href="cococalender.html" class="nav-item active">📅 予定</a>
+</div>
+
+
+<script>
+// ナビゲーション用の関数は不要になるが、残しておく
+function goTimeline(){ window.location.href="cocotimeline.html"; }
+function goChat(){ window.location.href="cocochat.html"; }
+function goProfile(){ window.location.href="cocoprofile.html"; }
+// goSearch, goNotifications, goCalendarを追加（ファイル名に合わせて）
+function goSearch(){ window.location.href="cocosearch.html"; }
+function goNotifications(){ window.location.href="coconotifications.html"; }
+
+
+let today = new Date();
+let currentMonth = today.getMonth();
+let currentYear = today.getFullYear();
+let events = JSON.parse(localStorage.getItem("events") || "[]");
+
+const calendarGrid = document.getElementById("calendarGrid");
+const monthLabel = document.getElementById("monthLabel");
+const modalBg = document.getElementById("modalBg");
+const modalDate = document.getElementById("modalDate");
+const eventList = document.getElementById("eventList");
+const eventTime = document.getElementById("eventTime");
+const eventTitle = document.getElementById("eventTitle");
+const eventMemo = document.getElementById("eventMemo");
+
+function renderCalendar(month, year){
+  calendarGrid.innerHTML = "";
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  monthLabel.textContent = `${year}年 ${month + 1}月`;
+
+  // 曜日の表示 (DMファイルに合わせて、簡略化のためここに追加はしない)
+  // もし曜日を表示したい場合は、別途HTML/CSSを追加する必要があります。
+
+  for(let i=0;i<firstDay;i++){ calendarGrid.appendChild(document.createElement("div")); }
+
+  for(let d=1; d<=daysInMonth; d++){
+    const dayDiv = document.createElement("div");
+    dayDiv.className="day";
+    // 月と日のフォーマットを調整 (DMファイルのJavaScriptに合わせて)
+    const formattedMonth = String(month + 1);
+    const formattedDay = String(d);
+    const dateStr = `${year}-${formattedMonth}-${formattedDay}`;
+    dayDiv.textContent = d;
+    if(d===today.getDate() && month===today.getMonth() && year===today.getFullYear()) dayDiv.classList.add("today");
+
+    const dayEvents = events.filter(e=>e.date===dateStr);
+    if(dayEvents.length>0){
+      dayDiv.classList.add("has-event");
+      dayEvents.slice(0,2).forEach(e=>{
+        const preview = document.createElement("div");
+        preview.className="event-preview";
+        preview.textContent = (e.time?e.time+" ":"") + e.title;
+        dayDiv.appendChild(preview);
+      });
+      if(dayEvents.length>2){
+        const more = document.createElement("div");
+        more.className="event-preview";
+        more.textContent = "…その他";
+        dayDiv.appendChild(more);
+      }
+    }
+
+    dayDiv.addEventListener("click", ()=> openModal(dateStr));
+    calendarGrid.appendChild(dayDiv);
+  }
+}
+renderCalendar(currentMonth,currentYear);
+
+function prevMonth(){ currentMonth--; if(currentMonth<0){currentMonth=11; currentYear--;} renderCalendar(currentMonth,currentYear);}
+function nextMonth(){ currentMonth++; if(currentMonth>11){currentMonth=0; currentYear++;} renderCalendar(currentMonth,currentYear);}
+
+function openModal(date){
+  modalDate.textContent = date;
+  modalBg.style.display="flex";
+  showEvents(date);
+}
+function closeModal(){
+  modalBg.style.display="none";
+  eventTime.value=""; eventTitle.value=""; eventMemo.value="";
+}
+
+function showEvents(date){
+  eventList.innerHTML="";
+  const dayEvents = events.filter(e=>e.date===date);
+  if(dayEvents.length===0){
+    eventList.innerHTML="<div>予定なし</div>";
+  } else {
+    dayEvents.forEach((e,index)=>{
+      const div = document.createElement("div");
+      div.className="event-card";
+      div.innerHTML = `<div class="event-time">${e.time || "時間指定なし"}</div>
+                       <div class="event-title">${e.title}</div>
+                       ${e.memo?`<div class="event-memo">${e.memo}</div>`:""}
+                       <button class="delete-btn" onclick="deleteEvent('${date}',${index})">×</button>`;
+      eventList.appendChild(div);
+    });
+  }
+}
+
+function addEvent(){
+  const date = modalDate.textContent;
+  const time = eventTime.value;
+  const title = eventTitle.value.trim();
+  const memo = eventMemo.value.trim();
+  if(!title) return alert("予定を入力してください！");
+  
+  // 念のため、日付のフォーマットをLocalStorage保存前にDMファイルと互換性のある形式に揃える
+  const dateParts = date.split('-');
+  const formattedDate = `${dateParts[0]}-${parseInt(dateParts[1])}-${parseInt(dateParts[2])}`;
+  
+  events.push({date: formattedDate, time, title, memo});
+  localStorage.setItem("events",JSON.stringify(events));
+  showEvents(date);
+  renderCalendar(currentMonth,currentYear);
+  eventTime.value=""; eventTitle.value=""; eventMemo.value="";
+}
+
+function deleteEvent(date,index){
+  events = events.filter((e,i)=>!(e.date===date && i===index));
+  localStorage.setItem("events",JSON.stringify(events));
+  showEvents(date);
+  renderCalendar(currentMonth,currentYear);
+}
+</script>
+</body>
+</html>

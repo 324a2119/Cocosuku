@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DM — ココスク</title>
+<style>
+:root{
+  --bg:#fff7f9;
+  --card:#fff;
+  --accent:#ffd1dc;
+  --accent2:#ffeeba;
+  --text:#444;
+  --muted:#888;
+  --radius:16px;
+  font-family:"Noto Sans JP","Rounded Mplus 1c",sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.app{display:flex;flex-direction:column;max-width:600px;margin:0 auto;min-height:100vh;padding:8px;padding-bottom:80px;} /* padding-bottomでナビバーの領域を確保 */
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;}
+.logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+.app-name{font-size:20px;font-weight:bold;color:#444;}
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:16px;
+  padding:8px 0;
+  border-bottom:1px solid #eee;
+}
+.header-title{font-size:24px;font-weight:bold;}
+
+/* --- DMリスト（修正部分） --- */
+.dm-list-container{
+  flex:1;
+}
+.dm-item{
+  display:flex;
+  align-items:center;
+  padding:12px;
+  background:var(--card);
+  border-radius:var(--radius);
+  margin-bottom:8px;
+  cursor:pointer;
+  transition:background-color 0.2s;
+  box-shadow:0 1px 4px rgba(0,0,0,0.05);
+}
+.dm-item:hover{
+  background:var(--bg);
+}
+.dm-avatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background-color:#ccc;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  color:#fff;
+  font-size:18px;
+  margin-right:12px;
+  flex-shrink:0;
+}
+.dm-info{
+  flex:1;
+  min-width:0;
+}
+.dm-name{
+  font-weight:bold;
+  font-size:16px;
+  color:var(--text);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.dm-preview{
+  font-size:13px;
+  color:var(--muted);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.dm-time{
+  font-size:12px;
+  color:var(--muted);
+  flex-shrink:0;
+}
+
+
+/* --- チャット画面 --- */
+#chatScreen{
+  display:none;
+  flex-direction:column;
+  flex:1;
+  position:relative;
+}
+.chat-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid #eee;
+}
+.back-btn{
+  background:none;
+  border:none;
+  font-size:24px;
+  cursor:pointer;
+  color:var(--muted);
+}
+.chat-title{
+  font-size:20px;
+  font-weight:bold;
+}
+.chat-container{
+  flex:1;
+  overflow-y:auto;
+  padding:10px 0;
+  display:flex;
+  flex-direction:column;
+}
+.message-wrapper{
+  display:flex;
+  margin-bottom:8px;
+  align-items:flex-end;
+}
+.message{
+  max-width:70%;
+  padding:10px 14px;
+  border-radius:var(--radius);
+  line-height:1.4;
+  word-wrap:break-word;
+}
+.message.you{
+  background:var(--accent);
+  margin-left:auto;
+  border-bottom-right-radius:4px;
+}
+.message.them{
+  background:var(--card);
+  border:1px solid #eee;
+  border-bottom-left-radius:4px;
+}
+.message-wrapper.them{
+  margin-right:auto;
+}
+.chat-avatar{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  margin-right:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  color:#fff;
+  font-size:16px;
+  flex-shrink:0;
+}
+
+.chat-input-area{
+  display:flex;
+  gap:8px;
+  padding-top:8px;
+  border-top:1px solid #eee;
+  margin-top:auto;
+  position:relative;
+}
+.chat-input{
+  flex:1;
+  padding:10px;
+  border-radius:20px;
+  border:1px solid #ddd;
+  font-size:16px;
+}
+.send-btn{
+  background:linear-gradient(180deg,var(--accent),var(--accent2));
+  border:none;
+  border-radius:20px;
+  padding:0 16px;
+  font-weight:bold;
+  color:#444;
+  cursor:pointer;
+  transition:0.2s;
+  box-shadow:0 2px 4px rgba(0,0,0,0.1);
+}
+.send-btn:hover{
+  opacity:0.9;
+}
+
+
+/* ナビゲーションバー (既存ファイルと同じ) */
+.nav-bar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:60px;
+  max-width:600px;
+  margin:0 auto;
+  background:var(--card);
+  box-shadow:0 -2px 6px rgba(0,0,0,0.1);
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  border-radius:var(--radius) var(--radius) 0 0;
+  z-index:15;
+}
+.nav-item{
+  flex:1;
+  text-align:center;
+  text-decoration:none;
+  color:var(--muted);
+  font-size:11px;
+  cursor:pointer;
+  padding:8px 0;
+}
+.nav-item.active{
+  color:#ff7fa3;
+  font-weight:bold;
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand" onclick="window.location.href='cocotimeline.html'">
+    <div class="logo">Co</div>
+    <div class="app-name">ココスク</div>
+  </div>
+
+  <div id="dmListScreen">
+    <div class="header">
+        <div class="header-title">DM</div>
+    </div>
+    
+    <div class="dm-list-container" id="dmListContainer">
+        </div>
+  </div>
+
+  <div id="chatScreen">
+    <div class="chat-header">
+      <button class="back-btn" onclick="showDmList()">◀</button>
+      <div class="chat-title" id="chatTitle"></div>
+    </div>
+    <div class="chat-container" id="chatContainer">
+      </div>
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" class="chat-input" placeholder="メッセージを入力...">
+      <button class="send-btn" onclick="sendMessage()">送信</button>
+    </div>
+  </div>
+</div>
+
+<div class="nav-bar">
+    <a href="cocotimeline.html" class="nav-item">🏠 TL</a>
+    <a href="cocosearch.html" class="nav-item">🔍 検索</a>
+    <a href="coconotifications.html" class="nav-item">🔔 通知</a>
+    <a href="cocochat.html" class="nav-item active">💬 DM</a>
+    <a href="cocoprofile.html" class="nav-item">👤 プロフ</a>
+    <a href="cococalendar.html" class="nav-item">📅 予定</a>
+</div>
+
+<script>
+// ダミーデータ（プロフィールとチャット履歴）
+const mockProfiles = {
+    "たけっちょ": { avatar: "た", color: "#ffd1dc", lastMessage: "ねえ、今度のイベントって...", time: "10:30" },
+    "そら": { avatar: "そ", color: "#a0d1ff", lastMessage: "自動返信: すうはそ...ん。", time: "昨日" },
+    "みかん": { avatar: "み", color: "#ffaa7f", lastMessage: "元気にしてる？", time: "2日前" }
+};
+let chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || {
+    "たけっちょ": [{from:"them", text:"今日の授業どうだった？"}],
+    "そら": [{from:"them", text:"課題おわった？"}, {from:"you", text:"まだだよー"}],
+    "みかん": []
+};
+let currentUser = null; // 現在チャットしている相手
+
+const dmListScreen = document.getElementById("dmListScreen");
+const dmListContainer = document.getElementById("dmListContainer");
+const chatScreen = document.getElementById("chatScreen");
+const chatTitle = document.getElementById("chatTitle");
+const chatContainer = document.getElementById("chatContainer");
+const chatInput = document.getElementById("chatInput");
+
+// チャット相手のリストを表示する
+function renderDmList() {
+    dmListContainer.innerHTML = "";
+    const users = Object.keys(mockProfiles);
+
+    users.forEach(name => {
+        const profile = mockProfiles[name];
+        const history = chatHistory[name] || [];
+        const lastMsg = history.length > 0 ? history[history.length - 1].text : "まだメッセージはありません";
+        const lastTime = profile.time; // シンプルなモック時間
+
+        const item = document.createElement("div");
+        item.className = "dm-item";
+        item.onclick = () => selectUser(name);
+        
+        item.innerHTML = `
+            <div class="dm-avatar" style="background-color:${profile.color};">${profile.avatar}</div>
+            <div class="dm-info">
+                <div class="dm-name">${name}</div>
+                <div class="dm-preview">${lastMsg}</div>
+            </div>
+            <div class="dm-time">${lastTime}</div>
+        `;
+        dmListContainer.appendChild(item);
+    });
+}
+
+// ユーザーを選択し、チャット画面に切り替える
+function selectUser(name) {
+    currentUser = name;
+    chatTitle.textContent = name;
+    dmListScreen.style.display = "none";
+    chatScreen.style.display = "flex";
+    renderChat();
+    chatInput.focus();
+}
+
+// DMリスト画面に戻る
+function showDmList() {
+    currentUser = null;
+    chatScreen.style.display = "none";
+    dmListScreen.style.display = "block";
+    renderDmList(); // 念のためリストを再レンダリング
+}
+
+// チャット画面のメッセージをレンダリングする
+function renderChat() {
+    chatContainer.innerHTML = "";
+    if (!currentUser) return;
+
+    const profile = mockProfiles[currentUser];
+    const history = chatHistory[currentUser] || [];
+
+    history.forEach((msg, index) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "message-wrapper " + msg.from;
+        
+        const messageDiv = document.createElement("div");
+        messageDiv.className = "message " + msg.from;
+        messageDiv.textContent = msg.text;
+        
+        if (msg.from === "them") {
+            // 相手のアバター
+            const img = document.createElement("div");
+            img.className = "chat-avatar";
+            img.style.backgroundColor = profile.color;
+            img.textContent = profile.avatar;
+            wrapper.appendChild(img);
+            wrapper.appendChild(messageDiv);
+        } else {
+            // 自分のメッセージは右寄せ
+            wrapper.appendChild(messageDiv);
+        }
+        chatContainer.appendChild(wrapper);
+    });
+
+    // 最下部へスクロール
+    setTimeout(() => { chatContainer.scrollTop = chatContainer.scrollHeight; }, 10);
+}
+
+// メッセージを送信する
+function sendMessage() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+    if (!currentUser) return alert("チャット相手が選択されていません。");
+
+    const msg = {from:"you", text};
+    
+    // 履歴を初期化
+    if (!chatHistory[currentUser]) chatHistory[currentUser] = [];
+
+    chatHistory[currentUser].push(msg);
+    localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+    
+    chatInput.value = "";
+    chatInput.focus();
+    renderChat();
+
+    // 自動返信シミュレーション
+    setTimeout(() => {
+        const reply = {from:"them", text: "自動返信: " + text.split("").reverse().join("")};
+        chatHistory[currentUser].push(reply);
+        localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+        renderChat();
+    }, 1000);
+}
+
+// Enterキーでの送信を可能にする
+chatInput.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault(); // 改行を防ぐ
+        sendMessage();
+    }
+});
+
+// 初期表示
+window.addEventListener('load', () => {
+    renderDmList();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>タイムライン — ココスク</title>
+<style>
+:root{
+  --bg:#fff7f9;
+  --card:#fff;
+  --accent:#ffd1dc;
+  --accent2:#ffeeba;
+  --text:#444;
+  --muted:#888;
+  --radius:16px;
+  font-family:"Noto Sans JP","Rounded Mplus 1c",sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;padding:0;background:var(--bg);color:var(--text);}
+.app{display:flex;flex-direction:column;max-width:600px;margin:0 auto;padding:8px;min-height:100vh;padding-bottom:80px;}
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;}
+.logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+.app-name{font-size:20px; font-weight:bold;}
+
+/* 投稿カード */
+.post-card{
+  background:var(--card);
+  padding:16px;
+  border-radius:var(--radius);
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom:16px;
+}
+.post-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
+}
+.icon{
+  width:40px;
+  height:40px;
+  background:#ffeeba;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  color:var(--text);
+  font-size:16px;
+  cursor:pointer;
+}
+.user-name{
+  font-weight:bold;
+  cursor:pointer;
+}
+.time{
+  font-size:12px;
+  color:var(--muted);
+}
+.post-content{
+  margin-bottom:12px;
+  line-height:1.5;
+}
+.post-image{
+  max-width:100%;
+  border-radius:10px;
+  margin-bottom:12px;
+}
+.post-footer{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.like-btn{
+  background:none;
+  border:none;
+  font-size:18px;
+  cursor:pointer;
+  padding:4px;
+}
+.like-btn.liked{
+  color:red;
+}
+.delete-btn{
+    background:#f44;
+    color:#fff;
+    border:none;
+    padding:6px 10px;
+    border-radius:8px;
+    font-size:12px;
+    cursor:pointer;
+    margin-left:auto;
+}
+
+/* フローティングアクションボタン */
+.fab{
+  position:fixed;
+  bottom:80px;
+  right:16px;
+  width:56px;
+  height:56px;
+  background:var(--accent);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  color:var(--text);
+  box-shadow:0 4px 8px rgba(0,0,0,0.2);
+  cursor:pointer;
+  z-index:10;
+}
+
+/* モーダル */
+.modal-bg{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+  display:none; /* 初期値 */
+  justify-content:center;
+  align-items:center;
+  z-index:20;
+}
+.modal-content{
+  background:var(--card);
+  padding:20px;
+  border-radius:var(--radius);
+  width:90%;
+  max-width:450px;
+}
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
+}
+.modal-close{
+    background:none;
+    border:none;
+    font-size:24px;
+    cursor:pointer;
+    color:var(--muted);
+}
+#postText{
+  width:100%;
+  height:100px;
+  padding:10px;
+  margin-bottom:12px;
+  border:1px solid #ddd;
+  border-radius:12px;
+  resize:none;
+  font-size:15px;
+}
+#postImagePreview{
+    max-width:100%;
+    max-height:150px;
+    margin-bottom:10px;
+    display:block;
+    border-radius:10px;
+}
+.post-btn{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(180deg,var(--accent),var(--accent2));
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* ナビゲーションバー */
+.nav-bar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:60px;
+  max-width:600px;
+  margin:0 auto;
+  background:var(--card);
+  box-shadow:0 -2px 6px rgba(0,0,0,0.1);
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  border-radius:var(--radius) var(--radius) 0 0;
+  z-index:15;
+}
+.nav-item{
+  flex:1;
+  text-align:center;
+  text-decoration:none;
+  color:var(--muted);
+  font-size:11px; /* 6項目に合わせて縮小 */
+  cursor:pointer;
+  padding:8px 0;
+}
+.nav-item.active{
+  color:#ff7fa3;
+  font-weight:bold;
+}
+.nav-item:hover{
+  background:rgba(0,0,0,0.05);
+  border-radius:10px;
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand" onclick="goTimeline()">
+    <div class="logo">コ</div>
+    <div class="app-name">タイムライン</div>
+  </div>
+
+  <div id="feed">
+    <div style="text-align:center; color:var(--muted); margin-top:30px;">
+        投稿がありません。最初の投稿をしてみましょう！
+    </div>
+  </div>
+
+  <div class="fab" onclick="openModal()">
+    +
+  </div>
+
+  <div class="modal-bg" id="modalBg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="margin:0;">新規投稿</h3>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <textarea id="postText" placeholder="今考えていることをシェアしよう！"></textarea>
+      <img id="postImagePreview" style="display:none;" alt="画像プレビュー">
+      <input type="file" id="postImage" accept="image/*" onchange="previewImage(event)">
+      <button class="post-btn" onclick="addPost()">投稿</button>
+    </div>
+  </div>
+
+  <div class="nav-bar">
+    <a href="cocotimeline.html" class="nav-item active">🏠 TL</a>
+    <a href="cocosearch.html" class="nav-item">🔍 検索</a>
+    <a href="coconotifications.html" class="nav-item">🔔 通知</a>
+    <a href="cocochat.html" class="nav-item">💬 DM</a>
+    <a href="cocoprofile.html" class="nav-item">👤 プロフ</a>
+    <a href="cococalendar.html" class="nav-item">📅 予定</a>
+  </div>
+</div>
+
+<script>
+let posts = JSON.parse(localStorage.getItem("posts") || "[]");
+let profile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲスト","avatar":"ゲ"}');
+
+// ログインチェック
+if (!localStorage.getItem("isLoggedIn")) {
+    window.location.href = "cocologin.html";
+}
+
+function goTimeline(){ window.location.href="cocotimeline.html"; }
+function goProfile(userName){
+    if(userName === profile.name){
+        window.location.href = "cocoprofile.html";
+    } else {
+        window.location.href = "cocootherprofile.html?user=" + encodeURIComponent(userName);
+    }
+}
+
+function renderPosts(){
+  const feed = document.getElementById("feed");
+  feed.innerHTML = "";
+  if(posts.length === 0) {
+    feed.innerHTML = '<div style="text-align:center; color:var(--muted); margin-top:30px;">投稿がありません。最初の投稿をしてみましょう！</div>';
+    return;
+  }
+  
+  posts.slice().reverse().forEach((p,index)=>{
+    const card = document.createElement("div");
+    card.className = "post-card";
+    const time = new Date(p.time).toLocaleString("ja-JP",{hour12:false});
+    const liked = p.liked ? "liked" : "";
+    
+    let deleteBtn = "";
+    // 自分の投稿なら削除ボタンを表示
+    if(p.name === profile.name){
+      // 逆順で表示しているので、indexから元のposts配列のインデックスを計算
+      const originalIndex = posts.length - 1 - index;
+      deleteBtn = `<button class="delete-btn" onclick="deletePost(${originalIndex})">削除</button>`;
+    }
+    
+    let imageTag = p.image ? `<img src="${p.image}" class="post-image">` : "";
+
+    card.innerHTML = `
+      <div class="post-header">
+        <div class="icon" onclick="goProfile('${p.name}')">${p.avatar}</div>
+        <div>
+          <div class="user-name" onclick="goProfile('${p.name}')">${p.name}</div>
+          <div class="time">${time}</div>
+        </div>
+        ${deleteBtn}
+      </div>
+      <div class="post-content">${p.text.replace(/\n/g, '<br>')}</div>
+      ${imageTag}
+      <div class="post-footer">
+        <button class="like-btn ${liked}" onclick="toggleLike(${index})">❤️</button>
+        <span>${p.likes || 0}</span>
+      </div>
+    `;
+    feed.appendChild(card);
+  });
+}
+renderPosts();
+
+// いいね機能
+function toggleLike(index){
+  // 逆順で表示しているので、indexから元のposts配列のインデックスを計算
+  const originalIndex = posts.length - 1 - index;
+  
+  posts[originalIndex].liked = !posts[originalIndex].liked;
+  posts[originalIndex].likes = (posts[originalIndex].likes || 0) + (posts[originalIndex].liked ? 1 : -1);
+  localStorage.setItem("posts", JSON.stringify(posts));
+  renderPosts();
+}
+
+// 投稿削除機能
+function deletePost(originalIndex){
+    if(confirm("本当にこの投稿を削除しますか？")){
+        posts.splice(originalIndex, 1);
+        localStorage.setItem("posts", JSON.stringify(posts));
+        renderPosts();
+    }
+}
+
+
+const modalBg = document.getElementById("modalBg");
+function openModal(){ modalBg.style.display="flex"; }
+function closeModal(){ 
+  modalBg.style.display="none"; 
+  document.getElementById("postText").value=""; 
+  document.getElementById("postImage").value=""; 
+  document.getElementById("postImagePreview").style.display = "none";
+  document.getElementById("postImagePreview").src = "";
+}
+
+function previewImage(event){
+    const preview = document.getElementById("postImagePreview");
+    const file = event.target.files[0];
+    if(file){
+        const reader = new FileReader();
+        reader.onload = function(e){
+            preview.src = e.target.result;
+            preview.style.display = "block";
+        }
+        reader.readAsDataURL(file);
+    } else {
+        preview.style.display = "none";
+        preview.src = "";
+    }
+}
+
+
+function addPost(){
+  const text = document.getElementById("postText").value.trim();
+  const imageInput = document.getElementById("postImage");
+  
+  if(!text && !imageInput.files[0]) return alert("投稿内容または画像を入力してください。");
+
+  if(imageInput.files[0]){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      const newPost = {
+        name: profile.name,
+        avatar: profile.avatar,
+        text: text,
+        image: e.target.result,
+        time: new Date().toISOString(),
+        likes: 0,
+        liked: false
+      };
+      posts.push(newPost);
+      localStorage.setItem("posts", JSON.stringify(posts));
+      closeModal();
+      renderPosts();
+    }
+    reader.readAsDataURL(imageInput.files[0]);
+  } else {
+    const newPost = {
+      name: profile.name,
+      avatar: profile.avatar,
+      text: text,
+      image: "",
+      time: new Date().toISOString(),
+      likes: 0,
+      liked: false
+    };
+    posts.push(newPost);
+    localStorage.setItem("posts", JSON.stringify(posts));
+    closeModal();
+    renderPosts();
+  }
+}
+</script>
+</body>
+</html>
