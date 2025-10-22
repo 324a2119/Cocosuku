@@ -48,6 +48,13 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);}
   color:var(--text);
   font-size:16px;
   cursor:pointer;
+  overflow:hidden;
+}
+.icon img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:50%;
 }
 .user-name{
   font-weight:bold;
@@ -62,9 +69,11 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);}
   line-height:1.5;
 }
 .post-image{
-  max-width:100%;
+  width:100%;
+  max-height:300px;
   border-radius:10px;
   margin-bottom:12px;
+  object-fit:cover;
 }
 .post-footer{
   display:flex;
@@ -119,7 +128,7 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);}
   width:100%;
   height:100%;
   background:rgba(0,0,0,0.5);
-  display:none; /* 初期値 */
+  display:none;
   justify-content:center;
   align-items:center;
   z-index:20;
@@ -193,7 +202,7 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);}
   text-align:center;
   text-decoration:none;
   color:var(--muted);
-  font-size:11px; /* 6項目に合わせて縮小 */
+  font-size:11px;
   cursor:pointer;
   padding:8px 0;
 }
@@ -222,9 +231,7 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);}
     </div>
   </div>
 
-  <div class="fab" onclick="openModal()">
-    +
-  </div>
+  <div class="fab" onclick="openModal()">+</div>
 
   <div class="modal-bg" id="modalBg">
     <div class="modal-content">
@@ -251,7 +258,7 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);}
 
 <script>
 let posts = JSON.parse(localStorage.getItem("posts") || "[]");
-let profile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲスト","avatar":"ゲ"}');
+let profile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲスト","avatar":"ゲ","avatarImage":""}');
 
 // ログインチェック
 if (!localStorage.getItem("isLoggedIn")) {
@@ -282,18 +289,26 @@ function renderPosts(){
     const liked = p.liked ? "liked" : "";
     
     let deleteBtn = "";
-    // 自分の投稿なら削除ボタンを表示
     if(p.name === profile.name){
-      // 逆順で表示しているので、indexから元のposts配列のインデックスを計算
       const originalIndex = posts.length - 1 - index;
       deleteBtn = `<button class="delete-btn" onclick="deletePost(${originalIndex})">削除</button>`;
     }
     
-    let imageTag = p.image ? `<img src="${p.image}" class="post-image">` : "";
+    let avatarTag = '';
+    if(p.avatarImage){
+      avatarTag = `<div class="icon"><img src="${p.avatarImage}" alt="icon"></div>`;
+    } else {
+      avatarTag = `<div class="icon">${p.avatar}</div>`;
+    }
+
+    let imageTag = '';
+    if(p.image){
+      imageTag = `<img src="${p.image}" class="post-image">`;
+    }
 
     card.innerHTML = `
       <div class="post-header">
-        <div class="icon" onclick="goProfile('${p.name}')">${p.avatar}</div>
+        ${avatarTag}
         <div>
           <div class="user-name" onclick="goProfile('${p.name}')">${p.name}</div>
           <div class="time">${time}</div>
@@ -312,18 +327,14 @@ function renderPosts(){
 }
 renderPosts();
 
-// いいね機能
 function toggleLike(index){
-  // 逆順で表示しているので、indexから元のposts配列のインデックスを計算
   const originalIndex = posts.length - 1 - index;
-  
   posts[originalIndex].liked = !posts[originalIndex].liked;
   posts[originalIndex].likes = (posts[originalIndex].likes || 0) + (posts[originalIndex].liked ? 1 : -1);
   localStorage.setItem("posts", JSON.stringify(posts));
   renderPosts();
 }
 
-// 投稿削除機能
 function deletePost(originalIndex){
     if(confirm("本当にこの投稿を削除しますか？")){
         posts.splice(originalIndex, 1);
@@ -331,7 +342,6 @@ function deletePost(originalIndex){
         renderPosts();
     }
 }
-
 
 const modalBg = document.getElementById("modalBg");
 function openModal(){ modalBg.style.display="flex"; }
@@ -359,7 +369,6 @@ function previewImage(event){
     }
 }
 
-
 function addPost(){
   const text = document.getElementById("postText").value.trim();
   const imageInput = document.getElementById("postImage");
@@ -372,6 +381,7 @@ function addPost(){
       const newPost = {
         name: profile.name,
         avatar: profile.avatar,
+        avatarImage: profile.avatarImage || "",
         text: text,
         image: e.target.result,
         time: new Date().toISOString(),
@@ -388,6 +398,7 @@ function addPost(){
     const newPost = {
       name: profile.name,
       avatar: profile.avatar,
+      avatarImage: profile.avatarImage || "",
       text: text,
       image: "",
       time: new Date().toISOString(),
@@ -402,9 +413,4 @@ function addPost(){
 }
 </script>
 </body>
-
 </html>
-
-
-
-
