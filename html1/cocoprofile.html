@@ -21,108 +21,111 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
 
 /* ヘッダー */
 .header-bar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:8px;
-    margin-bottom:16px;
-    padding:8px 8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin-bottom:16px;
+  padding:8px 8px;
 }
 .brand{display:flex;align-items:center;gap:8px;cursor:pointer;}
 .logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
 .app-name{font-size:20px; font-weight:bold;}
 .settings-link{
-    text-decoration:none;
-    color:var(--text);
-    font-weight:bold;
-    font-size:16px;
-    padding:8px;
-    border-radius:12px;
-    background:#eee;
+  text-decoration:none;
+  color:var(--text);
+  font-weight:bold;
+  font-size:16px;
+  padding:8px;
+  border-radius:12px;
+  background:#eee;
+  display:flex;
+  align-items:center;
 }
 
 /* プロフィール編集フォーム */
 .profile-card{
-    background:var(--card);
-    padding:20px;
-    border-radius:var(--radius);
-    box-shadow:0 2px 8px rgba(0,0,0,0.08);
-    margin-bottom:16px;
+  background:var(--card);
+  padding:20px;
+  border-radius:var(--radius);
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom:16px;
 }
 .profile-header{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    margin-bottom:20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom:20px;
 }
 .avatar-preview{
-    width:80px;
-    height:80px;
-    background:linear-gradient(45deg, var(--accent), var(--accent2));
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-    color:#fff;
-    font-size:36px;
-    margin-bottom:12px;
-    overflow:hidden;
+  width:80px;
+  height:80px;
+  background:linear-gradient(45deg, var(--accent), var(--accent2));
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  color:#fff;
+  font-size:36px;
+  margin-bottom:12px;
+  overflow:hidden;
 }
-.avatar-preview img {
+.avatar-preview img{
   width:100%;
   height:100%;
   object-fit:cover;
+  border-radius:50%;
 }
 .form-group{
-    margin-bottom:16px;
+  margin-bottom:16px;
 }
 .form-group label{
-    display:block;
-    font-size:14px;
-    font-weight:bold;
-    margin-bottom:4px;
+  display:block;
+  font-size:14px;
+  font-weight:bold;
+  margin-bottom:4px;
 }
 .form-group input, .form-group textarea{
-    width:100%;
-    padding:10px;
-    border:1px solid #ddd;
-    border-radius:12px;
-    font-size:15px;
+  width:100%;
+  padding:10px;
+  border:1px solid #ddd;
+  border-radius:12px;
+  font-size:15px;
 }
 .form-group textarea{
-    resize:vertical;
+  resize:vertical;
 }
 .save-btn{
-    width:100%;
-    padding:12px;
-    margin-top:20px;
-    border:none;
-    border-radius:12px;
-    background:linear-gradient(180deg,var(--accent),var(--accent2));
-    font-weight:bold;
-    cursor:pointer;
-    font-size:16px;
+  width:100%;
+  padding:12px;
+  margin-top:20px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(180deg,var(--accent),var(--accent2));
+  font-weight:bold;
+  cursor:pointer;
+  font-size:16px;
 }
 
 /* 統計情報 */
 .stats-bar{
-    display:flex;
-    justify-content:space-around;
-    background:var(--card);
-    padding:10px 0;
-    border-radius:var(--radius);
-    box-shadow:0 1px 4px rgba(0,0,0,0.05);
-    margin-bottom:16px;
+  display:flex;
+  justify-content:space-around;
+  background:var(--card);
+  padding:10px 0;
+  border-radius:var(--radius);
+  box-shadow:0 1px 4px rgba(0,0,0,0.05);
+  margin-bottom:16px;
 }
 .stat-item{
-    text-align:center;
-    font-size:14px;
+  text-align:center;
+  font-size:14px;
 }
 .stat-count{
-    font-weight:bold;
-    color:var(--text);
-    font-size:18px;
+  font-weight:bold;
+  color:var(--text);
+  font-size:18px;
 }
 
 /* 投稿一覧 */
@@ -196,7 +199,7 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
 
   <div class="header-bar">
     <div class="brand" onclick="goTimeline()">
-        <div class="logo">コ</div>
+        <div class="logo" id="headerLogo">コ</div>
         <div class="app-name">プロフィール</div>
     </div>
     <a href="cocosettings.html" class="settings-link">⚙️ 設定</a>
@@ -221,7 +224,7 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
     <h3 style="margin-top:0;">プロフィール編集</h3>
     <div class="profile-header">
         <div class="avatar-preview" id="avatarPreview">ゲ</div>
-        <input type="file" id="avatarInput" accept="image/*" style="margin-top:8px;">
+        <input type="file" id="avatarInput" accept="image/*" style="margin-top:8px;" onchange="previewAvatar(event)">
     </div>
     
     <div class="form-group">
@@ -260,10 +263,9 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
     </div>
     
     <button class="save-btn" onclick="saveProfile()">プロフィールを保存</button>
-    <p style="text-align:center; font-size:12px; color:var(--muted); margin-top:12px;">※プロフィール画像は名前の最初の文字またはアップロードした画像が表示されます。</p>
+    <p style="text-align:center; font-size:12px; color:var(--muted); margin-top:12px;">※プロフィール画像は自分で設定できます。</p>
   </div>
 
-  <!-- ▼ 自分の投稿一覧 -->
   <div class="my-posts" id="myPosts"></div>
 
   <div class="nav-bar">
@@ -277,7 +279,7 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
 </div>
 
 <script>
-let myProfile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲストユーザー","avatar":"ゲ"}');
+let myProfile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲストユーザー","avatar":"ゲ","avatarImage":null}');
 let follows = JSON.parse(localStorage.getItem("follows") || "{}");
 let posts = JSON.parse(localStorage.getItem("posts") || "[]");
 
@@ -290,7 +292,6 @@ const qualificationInput = document.getElementById("qualificationInput");
 const gradeInput = document.getElementById("gradeInput");
 const commentInput = document.getElementById("commentInput");
 const avatarPreview = document.getElementById("avatarPreview");
-const avatarInput = document.getElementById("avatarInput");
 const followingCount = document.getElementById("followingCount");
 const followerCount = document.getElementById("followerCount");
 const postCount = document.getElementById("postCount");
@@ -298,7 +299,7 @@ const postListContainer = document.getElementById("myPosts");
 
 // ログインチェック
 if (!localStorage.getItem("isLoggedIn")) {
-    window.location.href = "cocologin.html";
+  window.location.href = "cocologin.html";
 }
 
 function goTimeline(){ window.location.href="cocotimeline.html"; }
@@ -314,61 +315,51 @@ function loadProfile(){
     qualificationInput.value = profile.qualification || "";
     gradeInput.value = profile.grade || "";
     commentInput.value = profile.comment || "";
-
-    if(profile.avatarImage){
-      avatarPreview.innerHTML = `<img src="${profile.avatarImage}" alt="アイコン">`;
-    } else {
-      avatarPreview.textContent = profile.avatar || "N";
-    }
-
     myProfile = profile;
+    updateAvatarPreview();
     updateStats();
   }
 }
 
-// アバター画像選択時のプレビュー表示
-avatarInput.addEventListener("change", function(e){
-  const file = e.target.files[0];
+function updateAvatarPreview(){
+  if(myProfile.avatarImage){
+    avatarPreview.innerHTML = `<img src="${myProfile.avatarImage}">`;
+  } else {
+    avatarPreview.textContent = myProfile.avatar || (myProfile.name ? myProfile.name[0] : "N");
+  }
+}
+
+function previewAvatar(event){
+  const file = event.target.files[0];
   if(file){
     const reader = new FileReader();
-    reader.onload = function(event){
-      avatarPreview.innerHTML = `<img src="${event.target.result}" alt="アイコン">`;
-      myProfile.avatarImage = event.target.result; // 保存用
+    reader.onload = function(e){
+      myProfile.avatarImage = e.target.result;
+      updateAvatarPreview();
     }
     reader.readAsDataURL(file);
-  } else {
-    avatarPreview.textContent = myProfile.avatar || "N";
-    delete myProfile.avatarImage;
   }
-});
+}
 
-// 保存
 function saveProfile(){
-  const profile = {
-    name: nameInput.value.trim(),
-    bio: bioInput.value.trim(),
-    hobby: hobbyInput.value.trim(),
-    circle: circleInput.value.trim(),
-    course: courseInput.value.trim(),
-    qualification: qualificationInput.value.trim(),
-    grade: gradeInput.value.trim(),
-    comment: commentInput.value.trim(),
-    avatar: nameInput.value.trim() ? nameInput.value[0] : "N",
-    avatarImage: myProfile.avatarImage || null
-  };
-  if(profile.avatarImage){
-    avatarPreview.innerHTML = `<img src="${profile.avatarImage}" alt="アイコン">`;
-  } else {
-    avatarPreview.textContent = profile.avatar;
+  myProfile.name = nameInput.value.trim();
+  myProfile.bio = bioInput.value.trim();
+  myProfile.hobby = hobbyInput.value.trim();
+  myProfile.circle = circleInput.value.trim();
+  myProfile.course = courseInput.value.trim();
+  myProfile.qualification = qualificationInput.value.trim();
+  myProfile.grade = gradeInput.value.trim();
+  myProfile.comment = commentInput.value.trim();
+  if(!myProfile.avatarImage){
+    myProfile.avatar = myProfile.name ? myProfile.name[0] : "N";
   }
-  localStorage.setItem("profile", JSON.stringify(profile));
-  myProfile = profile;
+
+  localStorage.setItem("profile", JSON.stringify(myProfile));
   updateStats();
   renderMyPosts();
   alert("プロフィールを保存しました！");
 }
 
-// 統計情報更新
 function updateStats(){
   if(!follows[myProfile.name]) follows[myProfile.name] = [];
   followingCount.textContent = follows[myProfile.name].length;
@@ -379,20 +370,14 @@ function updateStats(){
   }
   followerCount.textContent = count;
 
-  const myPostCount = posts.filter(p => 
-    p.name === myProfile.name || p.user === myProfile.name || p.username === myProfile.name
-  ).length;
+  const myPostCount = posts.filter(p => p.name === myProfile.name).length;
   postCount.textContent = myPostCount;
 }
 
-// 投稿表示
 function renderMyPosts() {
   postListContainer.innerHTML = "<h3>自分の投稿</h3>";
-
-  const myPosts = posts.filter(p => 
-    p.name === myProfile.name || p.user === myProfile.name || p.username === myProfile.name
-  );
-  if (myPosts.length === 0) {
+  const myPosts = posts.filter(p => p.name === myProfile.name);
+  if(myPosts.length === 0){
     postListContainer.innerHTML += "<p style='color:var(--muted);'>まだ投稿がありません。</p>";
     return;
   }
@@ -400,22 +385,33 @@ function renderMyPosts() {
   myPosts.reverse().forEach((post, index) => {
     const card = document.createElement("div");
     card.className = "post-card";
+    let avatarTag = "";
+    if(post.avatarImage) {
+      avatarTag = `<img src="${post.avatarImage}" style="width:40px;height:40px;border-radius:50%;margin-right:8px;">`;
+    } else if(myProfile.avatarImage){
+      avatarTag = `<img src="${myProfile.avatarImage}" style="width:40px;height:40px;border-radius:50%;margin-right:8px;">`;
+    } else {
+      avatarTag = `<div style="width:40px;height:40px;border-radius:50%;background:#ffd1dc;color:#fff;text-align:center;line-height:40px;font-weight:bold;margin-right:8px;">${myProfile.avatar}</div>`;
+    }
+
     card.innerHTML = `
       <button class="delete-btn" onclick="deletePost(${index})">🗑️削除</button>
-      <div style="font-weight:bold; font-size:14px;">${post.name || post.user || post.username}</div>
-      <div style="font-size:13px; margin-top:4px;">${post.text || post.message || post.content || "(内容なし)"}</div>
-      <div style="text-align:right; font-size:11px; color:var(--muted); margin-top:6px;">${post.date || post.time || ""}</div>
+      <div style="display:flex;align-items:center;">
+        ${avatarTag}
+        <div>
+          <div style="font-weight:bold; font-size:14px;">${post.name}</div>
+          <div style="font-size:13px; color:var(--muted);">${post.date || post.time || ""}</div>
+        </div>
+      </div>
+      <div style="font-size:13px; margin-top:6px;">${post.text || "(内容なし)"}</div>
     `;
     postListContainer.appendChild(card);
   });
 }
 
-// 投稿削除
 function deletePost(index){
   if(confirm("この投稿を削除しますか？")){
-    const myPosts = posts.filter(p => 
-      p.name === myProfile.name || p.user === myProfile.name || p.username === myProfile.name
-    );
+    const myPosts = posts.filter(p => p.name === myProfile.name);
     const target = myPosts.reverse()[index];
     posts = posts.filter(p => p !== target);
     localStorage.setItem("posts", JSON.stringify(posts));
@@ -425,10 +421,9 @@ function deletePost(index){
   }
 }
 
-// 初期表示
-window.addEventListener('load', ()=> {
-    loadProfile();
-    renderMyPosts();
+window.addEventListener('load', ()=>{
+  loadProfile();
+  renderMyPosts();
 });
 </script>
 </body>
