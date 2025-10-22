@@ -6,14 +6,14 @@
 <title>プロフィール編集 — ココスク</title>
 <style>
 :root {
-  --bg:#fff7f9;
-  --card:#fff;
-  --accent:#ffd1dc;
-  --accent2:#ffeeba;
-  --text:#444;
-  --muted:#888;
-  --radius:16px;
-  font-family:"Noto Sans JP","Rounded Mplus 1c",sans-serif;
+  --bg:#fff7f9;
+  --card:#fff;
+  --accent:#ffd1dc;
+  --accent2:#ffeeba;
+  --text:#444;
+  --muted:#888;
+  --radius:16px;
+  font-family:"Noto Sans JP","Rounded Mplus 1c",sans-serif;
 }
 *{box-sizing:border-box;}
 body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden;}
@@ -21,256 +21,279 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
 
 /* ヘッダー */
 .header-bar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:8px;
-    margin-bottom:16px;
-    padding:8px 8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    margin-bottom:16px;
+    padding:8px 8px;
 }
 .brand{display:flex;align-items:center;gap:8px;cursor:pointer;}
 .logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
 .app-name{font-size:20px; font-weight:bold;}
 .settings-link{
-    text-decoration:none;
-    color:var(--text);
-    font-weight:bold;
-    font-size:16px;
-    padding:8px;
-    border-radius:12px;
-    background:#eee;
+    text-decoration:none;
+    color:var(--text);
+    font-weight:bold;
+    font-size:16px;
+    padding:8px;
+    border-radius:12px;
+    background:#eee;
 }
 
 /* プロフィール編集フォーム */
 .profile-card{
-    background:var(--card);
-    padding:20px;
-    border-radius:var(--radius);
-    box-shadow:0 2px 8px rgba(0,0,0,0.08);
-    margin-bottom:16px;
+    background:var(--card);
+    padding:20px;
+    border-radius:var(--radius);
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom:16px;
 }
 .profile-header{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    margin-bottom:20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-bottom:20px;
 }
 .avatar-preview{
-    width:80px;
-    height:80px;
-    background:linear-gradient(45deg, var(--accent), var(--accent2));
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-    color:#fff;
-    font-size:36px;
-    margin-bottom:12px;
+    width:80px;
+    height:80px;
+    background:linear-gradient(45deg, var(--accent), var(--accent2));
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    color:#fff;
+    font-size:36px;
+    margin-bottom:12px;
+    overflow: hidden; /* 画像がはみ出さないように */
+    position: relative; /* 子要素の配置のため */
 }
+.avatar-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 画像を中央でトリミング */
+}
+.avatar-preview input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* ファイル選択ボタンを透明にする */
+    cursor: pointer;
+}
+.avatar-preview .placeholder-text {
+    position: absolute;
+    pointer-events: none; /* クリックイベントを透過 */
+}
+
 .form-group{
-    margin-bottom:16px;
+    margin-bottom:16px;
 }
 .form-group label{
-    display:block;
-    font-size:14px;
-    font-weight:bold;
-    margin-bottom:4px;
+    display:block;
+    font-size:14px;
+    font-weight:bold;
+    margin-bottom:4px;
 }
 .form-group input, .form-group textarea{
-    width:100%;
-    padding:10px;
-    border:1px solid #ddd;
-    border-radius:12px;
-    font-size:15px;
+    width:100%;
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    font-size:15px;
 }
 .form-group textarea{
-    resize:vertical;
+    resize:vertical;
 }
 .save-btn{
-    width:100%;
-    padding:12px;
-    margin-top:20px;
-    border:none;
-    border-radius:12px;
-    background:linear-gradient(180deg,var(--accent),var(--accent2));
-    font-weight:bold;
-    cursor:pointer;
-    font-size:16px;
+    width:100%;
+    padding:12px;
+    margin-top:20px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(180deg,var(--accent),var(--accent2));
+    font-weight:bold;
+    cursor:pointer;
+    font-size:16px;
 }
 
 /* 統計情報 */
 .stats-bar{
-    display:flex;
-    justify-content:space-around;
-    background:var(--card);
-    padding:10px 0;
-    border-radius:var(--radius);
-    box-shadow:0 1px 4px rgba(0,0,0,0.05);
-    margin-bottom:16px;
+    display:flex;
+    justify-content:space-around;
+    background:var(--card);
+    padding:10px 0;
+    border-radius:var(--radius);
+    box-shadow:0 1px 4px rgba(0,0,0,0.05);
+    margin-bottom:16px;
 }
 .stat-item{
-    text-align:center;
-    font-size:14px;
+    text-align:center;
+    font-size:14px;
 }
 .stat-count{
-    font-weight:bold;
-    color:var(--text);
-    font-size:18px;
+    font-weight:bold;
+    color:var(--text);
+    font-size:18px;
 }
 
 /* 投稿一覧 */
 .my-posts {
-  margin-top: 16px;
+  margin-top: 16px;
 }
 .my-posts h3 {
-  margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 .post-card {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 12px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-  position: relative;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  position: relative;
 }
 .delete-btn {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  background: #ffb8c6;
-  border: none;
-  border-radius: 8px;
-  padding: 4px 8px;
-  cursor: pointer;
-  font-size: 12px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background: #ffb8c6;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
 }
 .delete-btn:hover {
-  background: #ff99aa;
+  background: #ff99aa;
 }
 
 /* ナビゲーションバー */
 .nav-bar{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  height:60px;
-  max-width:600px;
-  margin:0 auto;
-  background:var(--card);
-  box-shadow:0 -2px 6px rgba(0,0,0,0.1);
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-  border-radius:var(--radius) var(--radius) 0 0;
-  z-index:15;
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:60px;
+  max-width:600px;
+  margin:0 auto;
+  background:var(--card);
+  box-shadow:0 -2px 6px rgba(0,0,0,0.1);
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  border-radius:var(--radius) var(--radius) 0 0;
+  z-index:15;
 }
 .nav-item{
-  flex:1;
-  text-align:center;
-  text-decoration:none;
-  color:var(--muted);
-  font-size:11px;
-  cursor:pointer;
-  padding:8px 0;
+  flex:1;
+  text-align:center;
+  text-decoration:none;
+  color:var(--muted);
+  font-size:11px;
+  cursor:pointer;
+  padding:8px 0;
 }
 .nav-item.active{
-  color:#ff7fa3;
-  font-weight:bold;
+  color:#ff7fa3;
+  font-weight:bold;
 }
 .nav-item:hover{
-  background:rgba(0,0,0,0.05);
-  border-radius:10px;
+  background:rgba(0,0,0,0.05);
+  border-radius:10px;
 }
 </style>
 </head>
 <body>
 <div class="app">
 
-  <div class="header-bar">
-    <div class="brand" onclick="goTimeline()">
-        <div class="logo">コ</div>
-        <div class="app-name">プロフィール</div>
-    </div>
-    <a href="cocosettings.html" class="settings-link">⚙️ 設定</a>
-  </div>
+  <div class="header-bar">
+    <div class="brand" onclick="goTimeline()">
+        <div class="logo">コ</div>
+        <div class="app-name">プロフィール</div>
+    </div>
+    <a href="cocosettings.html" class="settings-link">⚙️ 設定</a>
+  </div>
 
-  <div class="stats-bar">
-    <div class="stat-item">
-        <div class="stat-count" id="followingCount">0</div>
-        <div>フォロー</div>
-    </div>
-    <div class="stat-item">
-        <div class="stat-count" id="followerCount">0</div>
-        <div>フォロワー</div>
-    </div>
-    <div class="stat-item">
-        <div class="stat-count" id="postCount">0</div>
-        <div>投稿</div>
-    </div>
-  </div>
+  <div class="stats-bar">
+    <div class="stat-item">
+        <div class="stat-count" id="followingCount">0</div>
+        <div>フォロー</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-count" id="followerCount">0</div>
+        <div>フォロワー</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-count" id="postCount">0</div>
+        <div>投稿</div>
+    </div>
+  </div>
 
-  <div class="profile-card">
-    <h3 style="margin-top:0;">プロフィール編集</h3>
-    <div class="profile-header">
-        <div class="avatar-preview" id="avatarPreview">ゲ</div>
-    </div>
-    
-    <div class="form-group">
-        <label for="nameInput">名前（必須）</label>
-        <input type="text" id="nameInput" placeholder="ニックネームや本名">
-    </div>
-    <div class="form-group">
-        <label for="bioInput">自己紹介</label>
-        <textarea id="bioInput" placeholder="短い自己紹介文"></textarea>
-    </div>
+  <div class="profile-card">
+    <h3 style="margin-top:0;">プロフィール編集</h3>
+    <div class="profile-header">
+        <div class="avatar-preview" id="avatarPreview">
+            <span class="placeholder-text" id="avatarPlaceholder">ゲ</span>
+            <input type="file" id="avatarInput" accept="image/*">
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label for="nameInput">名前（必須）</label>
+        <input type="text" id="nameInput" placeholder="ニックネームや本名">
+    </div>
+    <div class="form-group">
+        <label for="bioInput">自己紹介</label>
+        <textarea id="bioInput" placeholder="短い自己紹介文"></textarea>
+    </div>
 
-    <h4 style="margin-top:20px; border-bottom:1px solid #eee; padding-bottom:4px;">詳細情報</h4>
-    <div class="form-group">
-        <label for="hobbyInput">趣味</label>
-        <input type="text" id="hobbyInput" placeholder="例: 読書、写真">
-    </div>
-    <div class="form-group">
-        <label for="circleInput">サークル/部活</label>
-        <input type="text" id="circleInput" placeholder="例: テニスサークル">
-    </div>
-    <div class="form-group">
-        <label for="courseInput">学部/学科/専攻</label>
-        <input type="text" id="courseInput" placeholder="例: 文学部 史学科">
-    </div>
-    <div class="form-group">
-        <label for="gradeInput">学年</label>
-        <input type="text" id="gradeInput" placeholder="例: 3年">
-    </div>
-    <div class="form-group">
-        <label for="qualificationInput">資格</label>
-        <input type="text" id="qualificationInput" placeholder="例: TOEIC 800点">
-    </div>
-    <div class="form-group">
-        <label for="commentInput">一言コメント</label>
-        <input type="text" id="commentInput" placeholder="例: よろしくお願いします！">
-    </div>
-    
-    <button class="save-btn" onclick="saveProfile()">プロフィールを保存</button>
-    <p style="text-align:center; font-size:12px; color:var(--muted); margin-top:12px;">※プロフィール画像は名前の最初の文字が自動で設定されます。</p>
-  </div>
+    <h4 style="margin-top:20px; border-bottom:1px solid #eee; padding-bottom:4px;">詳細情報</h4>
+    <div class="form-group">
+        <label for="hobbyInput">趣味</label>
+        <input type="text" id="hobbyInput" placeholder="例: 読書、写真">
+    </div>
+    <div class="form-group">
+        <label for="circleInput">サークル/部活</label>
+        <input type="text" id="circleInput" placeholder="例: テニスサークル">
+    </div>
+    <div class="form-group">
+        <label for="courseInput">学部/学科/専攻</label>
+        <input type="text" id="courseInput" placeholder="例: 文学部 史学科">
+    </div>
+    <div class="form-group">
+        <label for="gradeInput">学年</label>
+        <input type="text" id="gradeInput" placeholder="例: 3年">
+    </div>
+    <div class="form-group">
+        <label for="qualificationInput">資格</label>
+        <input type="text" id="qualificationInput" placeholder="例: TOEIC 800点">
+    </div>
+    <div class="form-group">
+        <label for="commentInput">一言コメント</label>
+        <input type="text" id="commentInput" placeholder="例: よろしくお願いします！">
+    </div>
+    
+    <button class="save-btn" onclick="saveProfile()">プロフィールを保存</button>
+    <p style="text-align:center; font-size:12px; color:var(--muted); margin-top:12px;">※プロフィール画像はファイル選択で変更できます。選択しない場合は名前の最初の文字が設定されます。</p>
+  </div>
 
-  <!-- ▼ 自分の投稿一覧 -->
-  <div class="my-posts" id="myPosts"></div>
+    <div class="my-posts" id="myPosts"></div>
 
-  <div class="nav-bar">
-    <a href="cocotimeline.html" class="nav-item">🏠 TL</a>
-    <a href="cocosearch.html" class="nav-item">🔍 検索</a>
-    <a href="coconotifications.html" class="nav-item">🔔 通知</a>
-    <a href="cocochat.html" class="nav-item">💬 DM</a>
-    <a href="cocoprofile.html" class="nav-item active">👤 プロフ</a>
-    <a href="cococalendar.html" class="nav-item">📅 予定</a>
-  </div>
+  <div class="nav-bar">
+    <a href="cocotimeline.html" class="nav-item">🏠 TL</a>
+    <a href="cocosearch.html" class="nav-item">🔍 検索</a>
+    <a href="coconotifications.html" class="nav-item">🔔 通知</a>
+    <a href="cocochat.html" class="nav-item">💬 DM</a>
+    <a href="cocoprofile.html" class="nav-item active">👤 プロフ</a>
+    <a href="cococalendar.html" class="nav-item">📅 予定</a>
+  </div>
 </div>
 
 <script>
-let myProfile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲストユーザー","avatar":"ゲ"}');
+let myProfile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲストユーザー","avatar":"ゲ", "avatarImage": null}'); // avatarImageを追加
 let follows = JSON.parse(localStorage.getItem("follows") || "{}");
 let posts = JSON.parse(localStorage.getItem("posts") || "[]");
 
@@ -283,6 +306,8 @@ const qualificationInput = document.getElementById("qualificationInput");
 const gradeInput = document.getElementById("gradeInput");
 const commentInput = document.getElementById("commentInput");
 const avatarPreview = document.getElementById("avatarPreview");
+const avatarPlaceholder = document.getElementById("avatarPlaceholder"); // プレースホルダーテキストの要素
+const avatarInput = document.getElementById("avatarInput"); // ファイル入力要素
 const followingCount = document.getElementById("followingCount");
 const followerCount = document.getElementById("followerCount");
 const postCount = document.getElementById("postCount");
@@ -290,110 +315,157 @@ const postListContainer = document.getElementById("myPosts");
 
 // ログインチェック
 if (!localStorage.getItem("isLoggedIn")) {
-    window.location.href = "cocologin.html";
+    window.location.href = "cocologin.html";
 }
 
 function goTimeline(){ window.location.href="cocotimeline.html"; }
 
 function loadProfile(){
-  const profile = JSON.parse(localStorage.getItem("profile"));
-  if(profile){
-    nameInput.value = profile.name || "";
-    bioInput.value = profile.bio || "";
-    hobbyInput.value = profile.hobby || "";
-    circleInput.value = profile.circle || "";
-    courseInput.value = profile.course || "";
-    qualificationInput.value = profile.qualification || "";
-    gradeInput.value = profile.grade || "";
-    commentInput.value = profile.comment || "";
-    avatarPreview.textContent = profile.avatar;
-    myProfile = profile;
-    updateStats();
-  }
+  const profile = JSON.parse(localStorage.getItem("profile"));
+  if(profile){
+    nameInput.value = profile.name || "";
+    bioInput.value = profile.bio || "";
+    hobbyInput.value = profile.hobby || "";
+    circleInput.value = profile.circle || "";
+    courseInput.value = profile.course || "";
+    qualificationInput.value = profile.qualification || "";
+    gradeInput.value = profile.grade || "";
+    commentInput.value = profile.comment || "";
+    myProfile = profile;
+    updateAvatarDisplay(); // アバター表示を更新
+    updateStats();
+  }
 }
 
 function saveProfile(){
-  const profile = {
-    name: nameInput.value.trim(),
-    bio: bioInput.value.trim(),
-    hobby: hobbyInput.value.trim(),
-    circle: circleInput.value.trim(),
-    course: courseInput.value.trim(),
-    qualification: qualificationInput.value.trim(),
-    grade: gradeInput.value.trim(),
-    comment: commentInput.value.trim(),
-    avatar: nameInput.value.trim() ? nameInput.value[0] : "N"
-  };
-  avatarPreview.textContent = profile.avatar;
-  localStorage.setItem("profile", JSON.stringify(profile));
-  myProfile = profile;
-  updateStats();
-  renderMyPosts();
-  alert("プロフィールを保存しました！");
+  const profile = {
+    name: nameInput.value.trim(),
+    bio: bioInput.value.trim(),
+    hobby: hobbyInput.value.trim(),
+    circle: circleInput.value.trim(),
+    course: courseInput.value.trim(),
+    qualification: qualificationInput.value.trim(),
+    grade: gradeInput.value.trim(),
+    comment: commentInput.value.trim(),
+    avatar: nameInput.value.trim() ? nameInput.value[0] : "N", // 文字アバター
+    avatarImage: myProfile.avatarImage // 画像アバター
+  };
+  
+  localStorage.setItem("profile", JSON.stringify(profile));
+  myProfile = profile;
+  updateAvatarDisplay(); // アバター表示を更新
+  updateStats();
+  renderMyPosts();
+  alert("プロフィールを保存しました！");
 }
 
 function updateStats(){
-  if(!follows[myProfile.name]) follows[myProfile.name] = [];
-  followingCount.textContent = follows[myProfile.name].length;
+  if(!follows[myProfile.name]) follows[myProfile.name] = [];
+  followingCount.textContent = follows[myProfile.name].length;
 
-  // フォロワー数計算
-  let count = 0;
-  for(const key in follows){
-    if(follows[key].includes(myProfile.name)) count++;
-  }
-  followerCount.textContent = count;
-  
-  // 投稿数計算
-  const myPostCount = posts.filter(p => 
-    p.name === myProfile.name || p.user === myProfile.name || p.username === myProfile.name
-  ).length;
-  postCount.textContent = myPostCount;
+  // フォロワー数計算
+  let count = 0;
+  for(const key in follows){
+    if(follows[key].includes(myProfile.name)) count++;
+  }
+  followerCount.textContent = count;
+  
+  // 投稿数計算
+  const myPostCount = posts.filter(p => 
+    p.name === myProfile.name || p.user === myProfile.name || p.username === myProfile.name
+  ).length;
+  postCount.textContent = myPostCount;
 }
 
 // ▼ 自分の投稿を表示（削除機能付き）
 function renderMyPosts() {
-  postListContainer.innerHTML = "<h3>自分の投稿</h3>";
+  postListContainer.innerHTML = "<h3>自分の投稿</h3>";
 
-  const myPosts = posts.filter(p => 
-    p.name === myProfile.name || p.user === myProfile.name || p.username === myProfile.name
-  );
-  if (myPosts.length === 0) {
-    postListContainer.innerHTML += "<p style='color:var(--muted);'>まだ投稿がありません。</p>";
-    return;
-  }
+  const myPosts = posts.filter(p => 
+    p.name === myProfile.name || p.user === myProfile.name || p.username === myProfile.name
+  );
+  if (myPosts.length === 0) {
+    postListContainer.innerHTML += "<p style='color:var(--muted);'>まだ投稿がありません。</p>";
+    return;
+  }
 
-  myPosts.reverse().forEach((post, index) => {
-    const card = document.createElement("div");
-    card.className = "post-card";
-    card.innerHTML = `
-      <button class="delete-btn" onclick="deletePost(${index})">🗑️削除</button>
-      <div style="font-weight:bold; font-size:14px;">${post.name || post.user || post.username}</div>
-      <div style="font-size:13px; margin-top:4px;">${post.text || post.message || post.content || "(内容なし)"}</div>
-      <div style="text-align:right; font-size:11px; color:var(--muted); margin-top:6px;">${post.date || post.time || ""}</div>
-    `;
-    postListContainer.appendChild(card);
-  });
+  myPosts.reverse().forEach((post, index) => {
+    const card = document.createElement("div");
+    card.className = "post-card";
+    card.innerHTML = `
+      <button class="delete-btn" onclick="deletePost(${index})">🗑️削除</button>
+      <div style="font-weight:bold; font-size:14px;">${post.name || post.user || post.username}</div>
+      <div style="font-size:13px; margin-top:4px;">${post.text || post.message || post.content || "(内容なし)"}</div>
+      <div style="text-align:right; font-size:11px; color:var(--muted); margin-top:6px;">${post.date || post.time || ""}</div>
+    `;
+    postListContainer.appendChild(card);
+  });
 }
 
 // ▼ 投稿削除機能
 function deletePost(index){
-  if(confirm("この投稿を削除しますか？")){
-    const myPosts = posts.filter(p => 
-      p.name === myProfile.name || p.user === myProfile.name || p.username === myProfile.name
-    );
-    const target = myPosts.reverse()[index];
-    posts = posts.filter(p => p !== target);
-    localStorage.setItem("posts", JSON.stringify(posts));
-    updateStats();
-    renderMyPosts();
-    alert("投稿を削除しました。");
-  }
+  if(confirm("この投稿を削除しますか？")){
+    const myPosts = posts.filter(p => 
+      p.name === myProfile.name || p.user === myProfile.name || p.username === myProfile.name
+    );
+    const target = myPosts.reverse()[index];
+    posts = posts.filter(p => p !== target);
+    localStorage.setItem("posts", JSON.stringify(posts));
+    updateStats();
+    renderMyPosts();
+    alert("投稿を削除しました。");
+  }
+}
+
+// アバター画像表示を更新する関数
+function updateAvatarDisplay() {
+    avatarPreview.innerHTML = ""; // 一旦中身をクリア
+    if (myProfile.avatarImage) {
+        const img = document.createElement("img");
+        img.src = myProfile.avatarImage;
+        img.alt = "プロフィール画像";
+        avatarPreview.appendChild(img);
+    } else {
+        const span = document.createElement("span");
+        span.className = "placeholder-text";
+        span.id = "avatarPlaceholder";
+        span.textContent = myProfile.avatar;
+        avatarPreview.appendChild(span);
+    }
+    // ファイル選択 input は常に存在させる
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.id = "avatarInput";
+    fileInput.accept = "image/*";
+    fileInput.addEventListener('change', handleAvatarChange); // イベントリスナーを再設定
+    avatarPreview.appendChild(fileInput);
+}
+
+// アバター画像が変更されたときの処理
+function handleAvatarChange(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            myProfile.avatarImage = e.target.result; // Base64データを保存
+            updateAvatarDisplay();
+        };
+        reader.readAsDataURL(file);
+    } else {
+        myProfile.avatarImage = null; // ファイルが選択されなかった場合は画像をクリア
+        updateAvatarDisplay();
+    }
 }
 
 // 初期表示
 window.addEventListener('load', ()=> {
-    loadProfile();
-    renderMyPosts();
+    loadProfile();
+    renderMyPosts();
+    // avatarInput要素が存在するか確認し、イベントリスナーを設定
+    const currentAvatarInput = document.getElementById("avatarInput");
+    if (currentAvatarInput) {
+        currentAvatarInput.addEventListener('change', handleAvatarChange);
+    }
 });
 </script>
 </body>
