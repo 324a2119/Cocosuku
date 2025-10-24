@@ -18,180 +18,39 @@
 *{box-sizing:border-box;}
 body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden;}
 .app{display:flex;flex-direction:column;max-width:600px;margin:0 auto;min-height:100vh;padding-bottom:80px;padding:8px;}
-
-/* ヘッダー */
-.header-bar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-  margin-bottom:16px;
-  padding:8px 8px;
-}
+.header-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:16px;padding:8px 8px;}
 .brand{display:flex;align-items:center;gap:8px;cursor:pointer;}
 .logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-.app-name{font-size:20px; font-weight:bold;}
-.settings-link{
-  text-decoration:none;
-  color:var(--text);
-  font-weight:bold;
-  font-size:16px;
-  padding:8px;
-  border-radius:12px;
-  background:#eee;
-  display:flex;
-  align-items:center;
-}
-
-/* プロフィール編集フォーム */
-.profile-card{
-  background:var(--card);
-  padding:20px;
-  border-radius:var(--radius);
-  box-shadow:0 2px 8px rgba(0,0,0,0.08);
-  margin-bottom:16px;
-}
-.profile-header{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  margin-bottom:20px;
-}
-.avatar-preview{
-  width:80px;
-  height:80px;
-  background:linear-gradient(45deg, var(--accent), var(--accent2));
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:bold;
-  color:#fff;
-  font-size:36px;
-  margin-bottom:12px;
-  overflow:hidden;
-}
-.avatar-preview img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border-radius:50%;
-}
-.form-group{
-  margin-bottom:16px;
-}
-.form-group label{
-  display:block;
-  font-size:14px;
-  font-weight:bold;
-  margin-bottom:4px;
-}
-.form-group input, .form-group textarea{
-  width:100%;
-  padding:10px;
-  border:1px solid #ddd;
-  border-radius:12px;
-  font-size:15px;
-}
-.form-group textarea{
-  resize:vertical;
-}
-.save-btn{
-  width:100%;
-  padding:12px;
-  margin-top:20px;
-  border:none;
-  border-radius:12px;
-  background:linear-gradient(180deg,var(--accent),var(--accent2));
-  font-weight:bold;
-  cursor:pointer;
-  font-size:16px;
-}
-
-/* 統計情報 */
-.stats-bar{
-  display:flex;
-  justify-content:space-around;
-  background:var(--card);
-  padding:10px 0;
-  border-radius:var(--radius);
-  box-shadow:0 1px 4px rgba(0,0,0,0.05);
-  margin-bottom:16px;
-}
-.stat-item{
-  text-align:center;
-  font-size:14px;
-}
-.stat-count{
-  font-weight:bold;
-  color:var(--text);
-  font-size:18px;
-}
-
-/* 投稿一覧 */
-.my-posts {
-  margin-top: 16px;
-}
-.my-posts h3 {
-  margin-bottom: 10px;
-}
-.post-card {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 12px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-  position: relative;
-}
-.delete-btn {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  background: #ffb8c6;
-  border: none;
-  border-radius: 8px;
-  padding: 4px 8px;
-  cursor: pointer;
-  font-size: 12px;
-}
-.delete-btn:hover {
-  background: #ff99aa;
-}
-
-/* ナビゲーションバー */
-.nav-bar{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  height:60px;
-  max-width:600px;
-  margin:0 auto;
-  background:var(--card);
-  box-shadow:0 -2px 6px rgba(0,0,0,0.1);
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-  border-radius:var(--radius) var(--radius) 0 0;
-  z-index:15;
-}
-.nav-item{
-  flex:1;
-  text-align:center;
-  text-decoration:none;
-  color:var(--muted);
-  font-size:11px;
-  cursor:pointer;
-  padding:8px 0;
-}
-.nav-item.active{
-  color:#ff7fa3;
-  font-weight:bold;
-}
-.nav-item:hover{
-  background:rgba(0,0,0,0.05);
-  border-radius:10px;
-}
+.app-name{font-size:20px;font-weight:bold;}
+.settings-link{text-decoration:none;color:var(--text);font-weight:bold;font-size:16px;padding:8px;border-radius:12px;background:#eee;}
+.profile-card{background:var(--card);padding:20px;border-radius:var(--radius);box-shadow:0 2px 8px rgba(0,0,0,0.08);margin-bottom:16px;}
+.profile-header{display:flex;flex-direction:column;align-items:center;margin-bottom:20px;}
+.avatar-preview{width:80px;height:80px;background:linear-gradient(45deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:36px;margin-bottom:12px;}
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;font-size:14px;font-weight:bold;margin-bottom:4px;}
+.form-group input,.form-group textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:12px;font-size:15px;}
+.form-group textarea{resize:vertical;}
+.save-btn{width:100%;padding:12px;margin-top:20px;border:none;border-radius:12px;background:linear-gradient(180deg,var(--accent),var(--accent2));font-weight:bold;cursor:pointer;font-size:16px;}
+.stats-bar{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;border-radius:var(--radius);box-shadow:0 1px 4px rgba(0,0,0,0.05);margin-bottom:16px;}
+.stat-item{text-align:center;font-size:14px;}
+.stat-count{font-weight:bold;color:var(--text);font-size:18px;cursor:pointer;}
+.my-posts{margin-top:16px;}
+.my-posts h3{margin-bottom:10px;}
+.post-card{background:var(--card);border-radius:var(--radius);padding:12px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.05);position:relative;}
+.delete-btn{position:absolute;right:10px;top:10px;background:#ffb8c6;border:none;border-radius:8px;padding:4px 8px;cursor:pointer;font-size:12px;}
+.delete-btn:hover{background:#ff99aa;}
+.nav-bar{position:fixed;bottom:0;left:0;right:0;height:60px;max-width:600px;margin:0 auto;background:var(--card);box-shadow:0 -2px 6px rgba(0,0,0,0.1);display:flex;justify-content:space-around;align-items:center;border-radius:var(--radius) var(--radius) 0 0;z-index:15;}
+.nav-item{flex:1;text-align:center;text-decoration:none;color:var(--muted);font-size:11px;cursor:pointer;padding:8px 0;}
+.nav-item.active{color:#ff7fa3;font-weight:bold;}
+.nav-item:hover{background:rgba(0,0,0,0.05);border-radius:10px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:50;}
+.modal{background:var(--card);border-radius:var(--radius);padding:20px;width:90%;max-width:400px;box-shadow:0 4px 12px rgba(0,0,0,0.2);}
+.modal h3{margin-top:0;font-size:18px;text-align:center;}
+.modal-list{max-height:240px;overflow-y:auto;margin-top:12px;border-top:1px solid #eee;padding-top:8px;}
+.modal-user{padding:6px 8px;border-bottom:1px solid #f2f2f2;display:flex;align-items:center;gap:10px;cursor:pointer;}
+.modal-user:hover{background:#fff2f4;}
+.modal-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;}
+.close-btn{background:var(--accent);color:white;border:none;padding:8px 14px;border-radius:10px;font-weight:bold;cursor:pointer;display:block;margin:16px auto 0 auto;}
 </style>
 </head>
 <body>
@@ -199,7 +58,7 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
 
   <div class="header-bar">
     <div class="brand" onclick="goTimeline()">
-        <div class="logo" id="headerLogo">コ</div>
+        <div class="logo">コ</div>
         <div class="app-name">プロフィール</div>
     </div>
     <a href="cocosettings.html" class="settings-link">⚙️ 設定</a>
@@ -224,49 +83,30 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
     <h3 style="margin-top:0;">プロフィール編集</h3>
     <div class="profile-header">
         <div class="avatar-preview" id="avatarPreview">ゲ</div>
-        <input type="file" id="avatarInput" accept="image/*" style="margin-top:8px;" onchange="previewAvatar(event)">
     </div>
     
-    <div class="form-group">
-        <label for="nameInput">名前（必須）</label>
-        <input type="text" id="nameInput" placeholder="ニックネームや本名">
-    </div>
-    <div class="form-group">
-        <label for="bioInput">自己紹介</label>
-        <textarea id="bioInput" placeholder="短い自己紹介文"></textarea>
-    </div>
-
-    <h4 style="margin-top:20px; border-bottom:1px solid #eee; padding-bottom:4px;">詳細情報</h4>
-    <div class="form-group">
-        <label for="hobbyInput">趣味</label>
-        <input type="text" id="hobbyInput" placeholder="例: 読書、写真">
-    </div>
-    <div class="form-group">
-        <label for="circleInput">サークル/部活</label>
-        <input type="text" id="circleInput" placeholder="例: テニスサークル">
-    </div>
-    <div class="form-group">
-        <label for="courseInput">学部/学科/専攻</label>
-        <input type="text" id="courseInput" placeholder="例: 文学部 史学科">
-    </div>
-    <div class="form-group">
-        <label for="gradeInput">学年</label>
-        <input type="text" id="gradeInput" placeholder="例: 3年">
-    </div>
-    <div class="form-group">
-        <label for="qualificationInput">資格</label>
-        <input type="text" id="qualificationInput" placeholder="例: TOEIC 800点">
-    </div>
-    <div class="form-group">
-        <label for="commentInput">一言コメント</label>
-        <input type="text" id="commentInput" placeholder="例: よろしくお願いします！">
-    </div>
-    
+    <div class="form-group"><label for="nameInput">名前（必須）</label><input type="text" id="nameInput" placeholder="ニックネームや本名"></div>
+    <div class="form-group"><label for="bioInput">自己紹介</label><textarea id="bioInput" placeholder="短い自己紹介文"></textarea></div>
+    <h4 style="margin-top:20px;border-bottom:1px solid #eee;padding-bottom:4px;">詳細情報</h4>
+    <div class="form-group"><label for="hobbyInput">趣味</label><input type="text" id="hobbyInput" placeholder="例: 読書、写真"></div>
+    <div class="form-group"><label for="circleInput">サークル/部活</label><input type="text" id="circleInput" placeholder="例: テニスサークル"></div>
+    <div class="form-group"><label for="courseInput">学部/学科/専攻</label><input type="text" id="courseInput" placeholder="例: 情報システム学科"></div>
+    <div class="form-group"><label for="gradeInput">学年</label><input type="text" id="gradeInput" placeholder="例: 1年"></div>
+    <div class="form-group"><label for="qualificationInput">資格</label><input type="text" id="qualificationInput" placeholder="例: 基本情報技術者試験 合格"></div>
+    <div class="form-group"><label for="commentInput">一言コメント</label><input type="text" id="commentInput" placeholder="例: よろしくお願いします！"></div>
     <button class="save-btn" onclick="saveProfile()">プロフィールを保存</button>
-    <p style="text-align:center; font-size:12px; color:var(--muted); margin-top:12px;">※プロフィール画像は自分で設定できます。</p>
   </div>
 
   <div class="my-posts" id="myPosts"></div>
+
+  <!-- ▼ モーダル -->
+  <div id="followModal" class="modal-overlay">
+    <div class="modal">
+      <h3 id="modalTitle">フォロー中のユーザー</h3>
+      <div id="followList" class="modal-list"></div>
+      <button class="close-btn" onclick="closeFollowModal()">閉じる</button>
+    </div>
+  </div>
 
   <div class="nav-bar">
     <a href="cocotimeline.html" class="nav-item">🏠 TL</a>
@@ -279,152 +119,23 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
 </div>
 
 <script>
-let myProfile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲストユーザー","avatar":"ゲ","avatarImage":null}');
+let myProfile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲストユーザー","avatar":"ゲ"}');
 let follows = JSON.parse(localStorage.getItem("follows") || "{}");
 let posts = JSON.parse(localStorage.getItem("posts") || "[]");
 
-const nameInput = document.getElementById("nameInput");
-const bioInput = document.getElementById("bioInput");
-const hobbyInput = document.getElementById("hobbyInput");
-const circleInput = document.getElementById("circleInput");
-const courseInput = document.getElementById("courseInput");
-const qualificationInput = document.getElementById("qualificationInput");
-const gradeInput = document.getElementById("gradeInput");
-const commentInput = document.getElementById("commentInput");
-const avatarPreview = document.getElementById("avatarPreview");
-const followingCount = document.getElementById("followingCount");
-const followerCount = document.getElementById("followerCount");
-const postCount = document.getElementById("postCount");
-const postListContainer = document.getElementById("myPosts");
-
-// ログインチェック
-if (!localStorage.getItem("isLoggedIn")) {
-  window.location.href = "cocologin.html";
-}
-
-function goTimeline(){ window.location.href="cocotimeline.html"; }
-
-function loadProfile(){
-  const profile = JSON.parse(localStorage.getItem("profile"));
-  if(profile){
-    nameInput.value = profile.name || "";
-    bioInput.value = profile.bio || "";
-    hobbyInput.value = profile.hobby || "";
-    circleInput.value = profile.circle || "";
-    courseInput.value = profile.course || "";
-    qualificationInput.value = profile.qualification || "";
-    gradeInput.value = profile.grade || "";
-    commentInput.value = profile.comment || "";
-    myProfile = profile;
-    updateAvatarPreview();
-    updateStats();
-  }
-}
-
-function updateAvatarPreview(){
-  if(myProfile.avatarImage){
-    avatarPreview.innerHTML = `<img src="${myProfile.avatarImage}">`;
-  } else {
-    avatarPreview.textContent = myProfile.avatar || (myProfile.name ? myProfile.name[0] : "N");
-  }
-}
-
-function previewAvatar(event){
-  const file = event.target.files[0];
-  if(file){
-    const reader = new FileReader();
-    reader.onload = function(e){
-      myProfile.avatarImage = e.target.result;
-      updateAvatarPreview();
-    }
-    reader.readAsDataURL(file);
-  }
-}
-
-function saveProfile(){
-  myProfile.name = nameInput.value.trim();
-  myProfile.bio = bioInput.value.trim();
-  myProfile.hobby = hobbyInput.value.trim();
-  myProfile.circle = circleInput.value.trim();
-  myProfile.course = courseInput.value.trim();
-  myProfile.qualification = qualificationInput.value.trim();
-  myProfile.grade = gradeInput.value.trim();
-  myProfile.comment = commentInput.value.trim();
-  if(!myProfile.avatarImage){
-    myProfile.avatar = myProfile.name ? myProfile.name[0] : "N";
-  }
-
-  localStorage.setItem("profile", JSON.stringify(myProfile));
-  updateStats();
-  renderMyPosts();
-  alert("プロフィールを保存しました！");
-}
-
-function updateStats(){
-  if(!follows[myProfile.name]) follows[myProfile.name] = [];
-  followingCount.textContent = follows[myProfile.name].length;
-
-  let count = 0;
-  for(const key in follows){
-    if(follows[key].includes(myProfile.name)) count++;
-  }
-  followerCount.textContent = count;
-
-  const myPostCount = posts.filter(p => p.name === myProfile.name).length;
-  postCount.textContent = myPostCount;
-}
-
-function renderMyPosts() {
-  postListContainer.innerHTML = "<h3>自分の投稿</h3>";
-  const myPosts = posts.filter(p => p.name === myProfile.name);
-  if(myPosts.length === 0){
-    postListContainer.innerHTML += "<p style='color:var(--muted);'>まだ投稿がありません。</p>";
-    return;
-  }
-
-  myPosts.reverse().forEach((post, index) => {
-    const card = document.createElement("div");
-    card.className = "post-card";
-    let avatarTag = "";
-    if(post.avatarImage) {
-      avatarTag = `<img src="${post.avatarImage}" style="width:40px;height:40px;border-radius:50%;margin-right:8px;">`;
-    } else if(myProfile.avatarImage){
-      avatarTag = `<img src="${myProfile.avatarImage}" style="width:40px;height:40px;border-radius:50%;margin-right:8px;">`;
-    } else {
-      avatarTag = `<div style="width:40px;height:40px;border-radius:50%;background:#ffd1dc;color:#fff;text-align:center;line-height:40px;font-weight:bold;margin-right:8px;">${myProfile.avatar}</div>`;
-    }
-
-    card.innerHTML = `
-      <button class="delete-btn" onclick="deletePost(${index})">🗑️削除</button>
-      <div style="display:flex;align-items:center;">
-        ${avatarTag}
-        <div>
-          <div style="font-weight:bold; font-size:14px;">${post.name}</div>
-          <div style="font-size:13px; color:var(--muted);">${post.date || post.time || ""}</div>
-        </div>
-      </div>
-      <div style="font-size:13px; margin-top:6px;">${post.text || "(内容なし)"}</div>
-    `;
-    postListContainer.appendChild(card);
-  });
-}
-
-function deletePost(index){
-  if(confirm("この投稿を削除しますか？")){
-    const myPosts = posts.filter(p => p.name === myProfile.name);
-    const target = myPosts.reverse()[index];
-    posts = posts.filter(p => p !== target);
-    localStorage.setItem("posts", JSON.stringify(posts));
-    updateStats();
-    renderMyPosts();
-    alert("投稿を削除しました。");
-  }
-}
-
-window.addEventListener('load', ()=>{
-  loadProfile();
-  renderMyPosts();
-});
+const nameInput=document.getElementById("nameInput"),bioInput=document.getElementById("bioInput"),hobbyInput=document.getElementById("hobbyInput"),circleInput=document.getElementById("circleInput"),courseInput=document.getElementById("courseInput"),qualificationInput=document.getElementById("qualificationInput"),gradeInput=document.getElementById("gradeInput"),commentInput=document.getElementById("commentInput"),avatarPreview=document.getElementById("avatarPreview"),followingCount=document.getElementById("followingCount"),followerCount=document.getElementById("followerCount"),postCount=document.getElementById("postCount"),postListContainer=document.getElementById("myPosts");
+if(!localStorage.getItem("isLoggedIn"))window.location.href="cocologin.html";
+function goTimeline(){window.location.href="cocotimeline.html";}
+function loadProfile(){const p=JSON.parse(localStorage.getItem("profile"));if(p){nameInput.value=p.name||"";bioInput.value=p.bio||"";hobbyInput.value=p.hobby||"";circleInput.value=p.circle||"";courseInput.value=p.course||"";qualificationInput.value=p.qualification||"";gradeInput.value=p.grade||"";commentInput.value=p.comment||"";avatarPreview.textContent=p.avatar;myProfile=p;updateStats();}}
+function saveProfile(){const p={name:nameInput.value.trim(),bio:bioInput.value.trim(),hobby:hobbyInput.value.trim(),circle:circleInput.value.trim(),course:courseInput.value.trim(),qualification:qualificationInput.value.trim(),grade:gradeInput.value.trim(),comment:commentInput.value.trim(),avatar:nameInput.value.trim()?nameInput.value[0]:"N"};avatarPreview.textContent=p.avatar;localStorage.setItem("profile",JSON.stringify(p));myProfile=p;updateStats();renderMyPosts();alert("プロフィールを保存しました！");}
+function updateStats(){if(!follows[myProfile.name])follows[myProfile.name]=[];followingCount.textContent=follows[myProfile.name].length;let c=0;for(const k in follows){if(follows[k].includes(myProfile.name))c++;}followerCount.textContent=c;const m=posts.filter(p=>p.name===myProfile.name||p.user===myProfile.name||p.username===myProfile.name).length;postCount.textContent=m;}
+function renderMyPosts(){postListContainer.innerHTML="<h3>自分の投稿</h3>";const m=posts.filter(p=>p.name===myProfile.name||p.user===myProfile.name||p.username===myProfile.name);if(m.length===0){postListContainer.innerHTML+="<p style='color:var(--muted);'>まだ投稿がありません。</p>";return;}m.reverse().forEach((p,i)=>{const d=document.createElement("div");d.className="post-card";d.innerHTML=`<button class="delete-btn" onclick="deletePost(${i})">🗑️削除</button><div style='font-weight:bold;font-size:14px;'>${p.name||p.user||p.username}</div><div style='font-size:13px;margin-top:4px;'>${p.text||p.message||p.content||"(内容なし)"}</div><div style='text-align:right;font-size:11px;color:var(--muted);margin-top:6px;'>${p.date||p.time||""}</div>`;postListContainer.appendChild(d);});}
+function deletePost(i){if(confirm("この投稿を削除しますか？")){const m=posts.filter(p=>p.name===myProfile.name||p.user===myProfile.name||p.username===myProfile.name);const t=m.reverse()[i];posts=posts.filter(p=>p!==t);localStorage.setItem("posts",JSON.stringify(posts));updateStats();renderMyPosts();alert("投稿を削除しました。");}}
+followingCount.addEventListener("click",()=>openFollowModal("following"));
+followerCount.addEventListener("click",()=>openFollowModal("followers"));
+function openFollowModal(type){const modal=document.getElementById("followModal"),list=document.getElementById("followList"),title=document.getElementById("modalTitle");list.innerHTML="";let users=[];if(type==="following"){title.textContent="フォロー中のユーザー";users=follows[myProfile.name]||[];}else{title.textContent="フォロワー";for(const k in follows){if(follows[k].includes(myProfile.name))users.push(k);}}if(users.length===0){list.innerHTML=`<p style='text-align:center;color:var(--muted);margin:8px 0;'>${type==="following"?"フォローしているユーザーはいません。":"フォロワーはいません。"}<\/p>`;}else{users.forEach(u=>{const div=document.createElement("div");div.className="modal-user";div.innerHTML=`<div class='modal-avatar'>${u[0]}</div><div>${u}</div>`;div.onclick=()=>{window.location.href='cocoprofile.html?user='+encodeURIComponent(u);};list.appendChild(div);});}modal.style.display="flex";}
+function closeFollowModal(){document.getElementById("followModal").style.display="none";}
+window.addEventListener('load',()=>{loadProfile();renderMyPosts();});
 </script>
 </body>
 </html>
