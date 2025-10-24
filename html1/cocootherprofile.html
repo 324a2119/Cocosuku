@@ -58,7 +58,11 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
 }
 .profile-name{font-size:24px;font-weight:bold;margin-bottom:4px;}
 .profile-bio{color:var(--muted);font-size:15px;margin-bottom:16px;}
-.stats-bar{display:flex;gap:20px;}
+.stats-bar{
+  display:flex;
+  gap:20px;
+  margin-bottom:16px;
+}
 .stat-item{text-align:center;font-size:14px;}
 .stat-count{font-weight:bold;color:var(--text);font-size:18px;cursor:pointer;}
 .action-btn-group{display:flex;gap:10px;margin-top:16px;}
@@ -149,7 +153,7 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
   background:var(--card);
   box-shadow:0 -2px 6px rgba(0,0,0,0.1);
   display:flex;justify-content:space-around;align-items:center;
-  border-radius:var(--radius) var(--radius) 0 0;z-index:15;
+  border-radius:var(--radius) var(--radius 0 0 0;z-index:15;
 }
 .nav-item{flex:1;text-align:center;text-decoration:none;color:var(--muted);font-size:11px;cursor:pointer;padding:8px 0;}
 .nav-item.active{color:#ff7fa3;font-weight:bold;}
@@ -170,8 +174,8 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
     <div class="profile-icon" id="profileIcon">?</div>
     <div class="profile-name" id="profileName">Loading...</div>
     <div class="profile-bio" id="profileBio"></div>
-    
-    <div class="stats-bar">
+
+    <div class="stats-bar" id="statsBar">
       <div class="stat-item">
         <div class="stat-count" id="followingCount" onclick="openFollowModal('following')">0</div>
         <div>フォロー</div>
@@ -185,8 +189,8 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
         <div>投稿</div>
       </div>
     </div>
-    
-    <div class="action-btn-group">
+
+    <div class="action-btn-group" id="actionBtns">
       <button class="follow-btn" id="followBtn" onclick="toggleFollow()">フォロー</button>
       <button class="dm-btn" onclick="startChat()">💬 DMを送る</button>
     </div>
@@ -223,30 +227,50 @@ let myProfile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲス�
 
 if(!localStorage.getItem("isLoggedIn")) window.location.href="cocologin.html";
 
-// URLからユーザー名を取得
 const urlParams = new URLSearchParams(window.location.search);
 const userName = urlParams.get("user");
 
-// プロフィール情報
 const mockProfiles = {
   "そら": { name:"そら", bio:"趣味は写真、サークルはテニスです。", avatar:"そ" },
   "たけっちょ": { name:"たけっちょ", bio:"勉強頑張ってます！", avatar:"た" },
   "みかん": { name:"みかん", bio:"文学部所属。読書が趣味。", avatar:"み" },
   [myProfile.name]: myProfile
 };
-const userProfile = mockProfiles[userName] || { name:userName, bio:"このユーザーの情報は登録されていません。", avatar:userName?userName[0]:"?" };
+
+const userProfile = mockProfiles[userName] || { name:userName };
 
 // 自分自身なら cocoprofile.html へ
 if(userName === myProfile.name){
   window.location.href = "cocoprofile.html";
 }
 
-document.getElementById("profileIcon").textContent = userProfile.avatar;
-document.getElementById("profileName").textContent = userProfile.name;
-document.getElementById("profileBio").textContent = userProfile.bio;
-document.getElementById("userNameHeader").textContent = userProfile.name;
+// アイコン
+if(userProfile.avatar){
+  const icon=document.getElementById("profileIcon");
+  icon.textContent=userProfile.avatar;
+  icon.style.display="flex";
+}
 
-function goTimeline(){ window.location.href="cocotimeline.html"; }
+// 名前
+if(userProfile.name){
+  const nameEl=document.getElementById("profileName");
+  nameEl.textContent=userProfile.name;
+  nameEl.style.display="block";
+  document.getElementById("userNameHeader").textContent=userProfile.name;
+}
+
+// 自己紹介
+if(userProfile.bio){
+  const bioEl=document.getElementById("profileBio");
+  bioEl.textContent=userProfile.bio;
+  bioEl.style.display="block";
+}
+
+// 統計・アクションボタン表示
+if(userProfile.name){
+  document.getElementById("statsBar").style.display="flex";
+  document.getElementById("actionBtns").style.display="flex";
+}
 
 function updateFollowBtn(){
   const isFollowing = follows[myProfile.name] && follows[myProfile.name].includes(userProfile.name);
@@ -287,7 +311,7 @@ function renderUserPosts(){
   const userPosts=posts.filter(p=>p.name===userProfile.name);
   div.innerHTML="";
   if(userPosts.length===0){
-    div.innerHTML="<div style='color:var(--muted);text-align:center;'>まだ投稿がありません。</div>";
+    div.innerHTML="<div style='color:var(--muted);text-align:center;margin-top:20px;'>まだ投稿がありません。</div>";
     return;
   }
   userPosts.slice().reverse().forEach((p,i)=>{
@@ -354,20 +378,15 @@ function openFollowModal(type){
   modal.style.display="flex";
 }
 
-function closeFollowModal(){
-  document.getElementById("followModal").style.display="none";
-}
+function closeFollowModal(){ document.getElementById("followModal").style.display="none"; }
+function goOtherProfile(u){ closeFollowModal(); if(u!==userProfile.name) window.location.href=`cocootherprofile.html?user=${encodeURIComponent(u)}`; }
 
-function goOtherProfile(u){
-  closeFollowModal();
-  if(u!==userProfile.name){
-    window.location.href=`cocootherprofile.html?user=${encodeURIComponent(u)}`;
-  }
-}
+function goTimeline(){ window.location.href="cocotimeline.html"; }
 
 updateFollowBtn();
 updateStats();
 renderUserPosts();
 </script>
+
 </body>
 </html>
