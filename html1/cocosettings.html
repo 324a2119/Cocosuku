@@ -64,10 +64,13 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
 
   <div class="settings-group">
     <div class="group-title">その他</div>
-    <div class="setting-item" onclick="handleNavigation('利用規約')">
+
+    <!-- ✅ 利用規約クリック時に cocokiyaku.html へ遷移 -->
+    <div class="setting-item" onclick="window.location.href='cocokiyaku.html'">
       <div class="setting-label">利用規約</div>
       <div class="setting-action">＞</div>
     </div>
+
     <div class="setting-item" onclick="handleNavigation('プライバシーポリシー')">
       <div class="setting-label">プライバシーポリシー</div>
       <div class="setting-action">＞</div>
@@ -165,4 +168,3 @@ window.performLogout = performLogout;
 </script>
 </body>
 </html>
-
