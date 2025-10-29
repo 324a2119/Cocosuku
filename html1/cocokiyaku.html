@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>利用規約 — ココスク</title>
+<style>
+:root{
+  --bg:#fff7f9;
+  --card:#fff;
+  --accent:#ffd1dc;
+  --accent2:#ffeeba;
+  --text:#444;
+  --muted:#888;
+  --radius:16px;
+  font-family:"Noto Sans JP","Rounded Mplus 1c",sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.app{display:flex;flex-direction:column;max-width:600px;margin:0 auto;min-height:100vh;padding:8px; padding-bottom: 80px;}
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;}
+.logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:0 2px 8px rgba(0,0,0,0.08);margin-bottom:16px;padding:16px;}
+.card-title{font-size:18px;font-weight:bold;margin-bottom:8px;border-bottom:2px solid var(--accent);padding-bottom:4px;}
+.card-text{font-size:14px;line-height:1.6;color:var(--text);}
+.nav-bar{position:fixed;bottom:0;left:0;right:0;height:60px;max-width:600px;margin:0 auto;background:var(--card);box-shadow:0 -2px 6px rgba(0,0,0,0.1);display:flex;justify-content:space-around;align-items:center;border-radius:var(--radius) var(--radius) 0 0;z-index:15;}
+.nav-item{flex:1;text-align:center;text-decoration:none;color:var(--muted);font-size:11px;cursor:pointer;padding:8px 0;transition: color 0.2s, background 0.2s;}
+.nav-item.active{ color:#ff7fa3; font-weight:bold; }
+.nav-item:hover{ background:rgba(0,0,0,0.05); border-radius:10px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand" onclick="window.location.href='cocotimeline.html'">
+    <div class="logo">コ</div>
+    <div class="app-name" style="font-size:20px; font-weight:bold;">利用規約</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">第1条（適用）</div>
+    <div class="card-text">
+      本規約は、ユーザーが本サービスを利用する際の一切の行為に適用されます。本サービスの利用に際しては、本規約に同意したものとみなします。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">第2条（利用登録）</div>
+    <div class="card-text">
+      本サービスの利用には、所定の方法による登録が必要です。登録は、真実かつ正確な情報を提供する必要があります。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">第3条（禁止事項）</div>
+    <div class="card-text">
+      ユーザーは、以下の行為を行ってはなりません：
+      <ul>
+        <li>法令または公序良俗に違反する行為</li>
+        <li>他のユーザーや第三者の権利を侵害する行為</li>
+        <li>本サービスの運営を妨害する行為</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">第4条（サービスの変更・中止）</div>
+    <div class="card-text">
+      本サービスは、予告なく内容の変更、中断、または終了することがあります。運営者はこれによって生じた損害について一切の責任を負いません。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">第5条（免責事項）</div>
+    <div class="card-text">
+      本サービスの利用により発生したいかなる損害についても、運営者は一切責任を負いません。ただし、法令で認められる場合を除きます。
+    </div>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <a href="cocotimeline.html" class="nav-item">🏠 TL</a>
+  <a href="cocosearch.html" class="nav-item">🔍 検索</a>
+  <a href="coconotifications.html" class="nav-item">🔔 通知</a>
+  <a href="cocochat.html" class="nav-item">💬 DM</a>
+  <a href="cocoprofile.html" class="nav-item">👤 プロフ</a>
+  <a href="cococalendar.html" class="nav-item">📅 予定</a>
+</div>
+</body>
+</html>
