@@ -5,12 +5,11 @@ if (!localStorage.getItem("isLoggedIn")) {
 
 // モックデータ（仮ユーザー）
 const users = [
-  { name: "そら", bio: "趣味は写真、サークルはテニスです。" },
-  { name: "たけっちょ", bio: "勉強頑張ってます！" },
-  { name: "みかん", bio: "文学部所属。読書が趣味。" },
+  { name: "そら", bio: "趣味はヴァロです。" },
+  { name: "たけっちょ", bio: "授業頑張ってます！" },
+  { name: "ひょうま", bio: "献血と野球応援が趣味。" },
   { name: "なぎさ", bio: "映画が好きで、よく観ます。" },
-  { name: "ゆう", bio: "音楽制作が趣味です。" },
-  { name: "さくら", bio: "美術部所属。絵を描くのが好き。" }
+  { name: "まっちゃん", bio: "モンストが趣味です。" },
 ];
 
 const searchResults = document.getElementById("searchResults");
