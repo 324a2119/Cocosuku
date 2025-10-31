@@ -1,2 +1,2 @@
 # Cocosuku
-https://324a2119.github.io/Cocosuku/html1/cocologin.html
+[ココスクサイトはこちらから](https://324a2119.github.io/Cocosuku/html1/cocologin.html)
