@@ -28,6 +28,13 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden
   box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
 
+.logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .app-name{font-size:20px;font-weight:bold;}
 .settings-link{text-decoration:none;color:var(--text);font-weight:bold;font-size:16px;padding:8px;border-radius:12px;background:#eee;}
 
