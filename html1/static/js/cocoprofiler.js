@@ -1,21 +1,39 @@
+// URLの ?user=〜 から名前を取得
+const params = new URLSearchParams(window.location.search);
+const userNameParam = params.get("user") || "ゲストユーザー";
+
+// posts と follows は既存
 let posts = JSON.parse(localStorage.getItem("posts") || "[]");
-let userProfile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲストユーザー","avatar":"ゲ","bio":"初めまして！"}');
 let follows = JSON.parse(localStorage.getItem("follows") || "{}");
 
-// ログインチェック
-if (!localStorage.getItem("isLoggedIn")) {
-    window.location.href = "cocologin.html";
+// 他人プロフィール表示用
+let userProfile = JSON.parse(localStorage.getItem("profile") || '{}');
+
+// 他のユーザーの場合は、profileをpostsから推測するか、仮データを用意
+const userPosts = posts.filter(p => p.name === userNameParam);
+if (userNameParam === userProfile.name) {
+    // 自分のプロフィール
+    userProfile = JSON.parse(localStorage.getItem("profile"));
+} else if (userPosts.length > 0) {
+    // 投稿から取得
+    userProfile = {
+        name: userNameParam,
+        avatar: userPosts[0].avatar || userNameParam[0],
+        bio: "このユーザーの自己紹介はありません。"
+    };
+} else {
+    // 投稿もプロフィールもない場合
+    userProfile = {
+        name: userNameParam,
+        avatar: userNameParam[0] || "ゲ",
+        bio: "このユーザーの自己紹介はありません。"
+    };
 }
 
 // プロフィール反映
 document.getElementById("profileIcon").textContent = userProfile.avatar;
 document.getElementById("profileName").textContent = userProfile.name;
 document.getElementById("profileBio").textContent = userProfile.bio;
-
-// TLに戻る関数
-function goTimeline() {
-    window.location.href = "cocotimeline.html";
-}
 
 // フォロー・フォロワー数更新
 function updateStats() {
@@ -30,7 +48,7 @@ function updateStats() {
 }
 updateStats();
 
-// 投稿一覧の描画
+// 投稿描画関数はそのまま使える
 function renderPosts() {
     const feed = document.getElementById("feed");
     feed.innerHTML = "";
@@ -52,7 +70,7 @@ function renderPosts() {
             post.name === p.name && post.text === p.text && post.time === p.time
         );
 
-        const deleteBtn = `<button class="delete-btn" onclick="deletePost(${originalIndex})">削除</button>`;
+        const deleteBtn = `<button class="delete-btn" style="display:none;">削除</button>`; // 他人の投稿は削除不可
         const imageTag = p.image ? `<img src="${p.image}" class="post-image">` : "";
 
         card.innerHTML = `
@@ -75,26 +93,3 @@ function renderPosts() {
     });
 }
 renderPosts();
-
-// いいね機能
-function toggleLike(index) {
-    const myPosts = posts.filter(p => p.name === userProfile.name);
-    const targetPost = myPosts[myPosts.length - 1 - index];
-    const originalIndex = posts.findIndex(p => p === targetPost);
-
-    if (originalIndex !== -1) {
-        posts[originalIndex].liked = !posts[originalIndex].liked;
-        posts[originalIndex].likes = (posts[originalIndex].likes || 0) + (posts[originalIndex].liked ? 1 : -1);
-        localStorage.setItem("posts", JSON.stringify(posts));
-        renderPosts();
-    }
-}
-
-// 投稿削除機能
-function deletePost(originalIndex) {
-    if (confirm("本当にこの投稿を削除しますか？")) {
-        posts.splice(originalIndex, 1);
-        localStorage.setItem("posts", JSON.stringify(posts));
-        renderPosts();
-    }
-}
