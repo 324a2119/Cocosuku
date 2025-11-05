@@ -1,158 +1,100 @@
-let posts = JSON.parse(localStorage.getItem("posts") || "[]");
-let follows = JSON.parse(localStorage.getItem("follows") || "{}");
-let myProfile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲスト","avatar":"ゲ"}');
+document.addEventListener("DOMContentLoaded", () => {
+  // URLパラメータからユーザー名取得
+  const params = new URLSearchParams(window.location.search);
+  const userNameParam = decodeURIComponent(params.get("user") || "ゲストユーザー");
 
-if (!localStorage.getItem("isLoggedIn")) window.location.href = "cocologin.html";
+  console.log("URLパラメータ:", userNameParam); // デバッグ確認用
 
-const urlParams = new URLSearchParams(window.location.search);
-const userName = urlParams.get("user");
+  // ローカルデータ取得
+  const posts = JSON.parse(localStorage.getItem("posts") || "[]");
+  const follows = JSON.parse(localStorage.getItem("follows") || "{}");
+  const currentProfile = JSON.parse(localStorage.getItem("profile") || "{}");
 
-const mockProfiles = {
-  "そら": { name:"そら", bio:"趣味は写真、サークルはテニスです。", avatar:"そ", hobby:"写真", circle:"テニスサークル", major:"情報システム学科", grade:"1年", cert:"基本情報技術者試験 合格", comment:"よろしくお願いします！" },
-  "たけっちょ": { name:"たけっちょ", bio:"勉強頑張ってます！", avatar:"た" },
-  "みかん": { name:"みかん", bio:"文学部所属。読書が趣味。", avatar:"み", hobby:"読書", major:"文学部", grade:"2年" },
-  [myProfile.name]: myProfile
-};
+  let userProfile;
 
-const userProfile = mockProfiles[userName] || { name:userName, bio:"このユーザーの情報は登録されていません。", avatar:userName?userName[0]:"?" };
-
-if (userName === myProfile.name) {
-  window.location.href = "cocoprofile.html";
-}
-
-document.getElementById("profileIcon").textContent = userProfile.avatar;
-document.getElementById("profileName").textContent = userProfile.name;
-document.getElementById("profileBio").textContent = userProfile.bio;
-document.getElementById("userNameHeader").textContent = userProfile.name;
-
-function renderDetails() {
-  const details = [
-    {id:"hobby", value:userProfile.hobby},
-    {id:"circle", value:userProfile.circle},
-    {id:"major", value:userProfile.major},
-    {id:"grade", value:userProfile.grade},
-    {id:"cert", value:userProfile.cert},
-    {id:"comment", value:userProfile.comment}
-  ];
-  details.forEach(d=>{
-    const item = document.getElementById(d.id+"Item");
-    const val = document.getElementById(d.id+"Value");
-    if (d.value) {
-      val.textContent = d.value;
-      item.style.display = "block";
-    } else {
-      item.style.display = "none";
-    }
-  });
-}
-
-function updateFollowBtn() {
-  const isFollowing = follows[myProfile.name] && follows[myProfile.name].includes(userProfile.name);
-  const btn = document.getElementById("followBtn");
-  if (isFollowing) {
-    btn.textContent = "フォロー中";
-    btn.classList.add("following");
+  // 表示対象を判定
+  if (userNameParam === currentProfile.name) {
+    userProfile = currentProfile;
   } else {
-    btn.textContent = "フォロー";
-    btn.classList.remove("following");
+    const userPosts = posts.filter(p => p.name === userNameParam);
+    if (userPosts.length > 0) {
+      userProfile = {
+        name: userNameParam,
+        avatar: userPosts[0].avatar || userNameParam[0],
+        bio: "このユーザーの自己紹介はありません。"
+      };
+    } else {
+      userProfile = {
+        name: userNameParam,
+        avatar: userNameParam[0] || "？",
+        bio: "このユーザーの自己紹介はありません。"
+      };
+    }
   }
-}
 
-function toggleFollow() {
-  if (!follows[myProfile.name]) follows[myProfile.name] = [];
-  const idx = follows[myProfile.name].indexOf(userProfile.name);
-  if (idx >= 0) follows[myProfile.name].splice(idx, 1);
-  else follows[myProfile.name].push(userProfile.name);
-  localStorage.setItem("follows", JSON.stringify(follows));
-  updateFollowBtn(); updateStats();
-}
+  // DOM反映
+  const nameEl = document.getElementById("profileName");
+  const iconEl = document.getElementById("profileIcon");
+  const bioEl = document.getElementById("profileBio");
 
-function startChat() {
-  window.location.href = `cocochat.html?target=${encodeURIComponent(userProfile.name)}`;
-}
-
-function updateStats() {
-  if (!follows[userProfile.name]) follows[userProfile.name] = [];
-  document.getElementById("followingCount").textContent = follows[userProfile.name].length;
-  let c = 0;
-  for (const k in follows) if (follows[k].includes(userProfile.name)) c++;
-  document.getElementById("followerCount").textContent = c;
-  document.getElementById("postCount").textContent = posts.filter(p=>p.name===userProfile.name).length;
-}
-
-function renderUserPosts() {
-  const div = document.getElementById("userPostsDiv");
-  const userPosts = posts.filter(p=>p.name===userProfile.name);
-  div.innerHTML = "";
-  if (userPosts.length === 0) {
-    div.innerHTML = "<div style='color:var(--muted);text-align:center;'>まだ投稿がありません。</div>";
+  if (nameEl && iconEl && bioEl) {
+    nameEl.textContent = userProfile.name;
+    iconEl.textContent = userProfile.avatar;
+    bioEl.textContent = userProfile.bio;
+  } else {
+    console.error("⚠️ profile要素が見つかりません");
     return;
   }
-  userPosts.slice().reverse().forEach((p, i) => {
-    const card = document.createElement("div");
-    card.className = "post-card";
-    const time = new Date(p.time).toLocaleString("ja-JP", {hour12:false});
-    const liked = p.liked ? "liked" : "";
-    const img = p.image ? `<img src='${p.image}' class='post-image'>` : "";
-    card.innerHTML = `
-      <div class='post-header'>
-        <div class='icon'>${p.avatar||"?"}</div>
-        <div><div class='user-name'>${p.name}</div><div class='time'>${time}</div></div>
-      </div>
-      <div class='post-content'>${p.text.replace(/\n/g,"<br>")}</div>
-      ${img}
-      <div class='post-footer'>
-        <button class='like-btn ${liked}' onclick='toggleLike(${i})'>❤️</button>
-        <span>${p.likes||0}</span>
-      </div>`;
-    div.appendChild(card);
-  });
-}
 
-function toggleLike(i) {
-  const userPosts = posts.filter(p=>p.name===userProfile.name);
-  const target = userPosts[userPosts.length-1-i];
-  const original = posts.findIndex(p=>p===target);
-  if (original !== -1) {
-    posts[original].liked = !posts[original].liked;
-    posts[original].likes = (posts[original].likes || 0) + (posts[original].liked ? 1 : -1);
-    localStorage.setItem("posts", JSON.stringify(posts));
-    renderUserPosts();
-  }
-}
+  // フォロー／フォロワー更新
+  function updateStats() {
+    if (!follows[userProfile.name]) follows[userProfile.name] = [];
+    document.getElementById("followingCount").textContent = follows[userProfile.name].length;
 
-function openFollowModal(type) {
-  const modal = document.getElementById("followModal");
-  const list = document.getElementById("followList");
-  const title = document.getElementById("modalTitle");
-  list.innerHTML = "";
-  let users = [];
-  if (type === "following") {
-    title.textContent = "フォロー中のユーザー";
-    users = follows[userProfile.name] || [];
-  } else {
-    title.textContent = "フォロワー";
-    for (const k in follows) if (follows[k].includes(userProfile.name)) users.push(k);
+    let followerCount = 0;
+    for (const key in follows) {
+      if (follows[key].includes(userProfile.name)) followerCount++;
+    }
+    document.getElementById("followerCount").textContent = followerCount;
   }
-  if (users.length === 0) {
-    list.innerHTML = "<p style='text-align:center;color:var(--muted);margin:8px 0;'>ユーザーはいません。</p>";
-  } else {
-    users.forEach(u=>{
-      const div = document.createElement("div");
-      div.className = "modal-user";
-      div.innerHTML = `
-        <div class='modal-avatar' onclick="goOtherProfile('${u}')">${u[0]}</div>
-        <div style='flex:1;cursor:pointer;' onclick="goOtherProfile('${u}')">${u}</div>`;
-      list.appendChild(div);
+  updateStats();
+
+  // 投稿一覧
+  function renderPosts() {
+    const feed = document.getElementById("feed");
+    feed.innerHTML = "";
+
+    const myPosts = posts.filter(p => p.name === userProfile.name);
+
+    if (myPosts.length === 0) {
+      feed.innerHTML = `<div style="text-align:center; color:var(--muted); margin-top:20px;">まだ投稿がありません。</div>`;
+      return;
+    }
+
+    myPosts.slice().reverse().forEach(p => {
+      const card = document.createElement("div");
+      card.className = "post-card";
+      const time = new Date(p.time).toLocaleString("ja-JP", { hour12: false });
+      const imageTag = p.image ? `<img src="${p.image}" class="post-image">` : "";
+
+      card.innerHTML = `
+        <div class="post-header">
+          <div class="icon">${p.avatar}</div>
+          <div>
+            <div class="user-name">${p.name}</div>
+            <div class="time">${time}</div>
+          </div>
+        </div>
+        <div class="post-content">${p.text.replace(/\n/g, '<br>')}</div>
+        ${imageTag}
+      `;
+      feed.appendChild(card);
     });
   }
-  modal.style.display = "flex";
-}
+  renderPosts();
 
-function closeFollowModal() {
-  document.getElementById("followModal").style.display = "none";
-}
-
-function goOtherProfile(u) {
-  closeFollowModal();
-  if (u !== userProfile.name) window.location.href = `cocootherprofile.html
+  // TLへ戻る関数（HTMLのonclickで参照）
+  window.goTimeline = function() {
+    window.location.href = "cocotimeline.html";
+  };
+});
