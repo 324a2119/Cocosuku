@@ -1,21 +1,22 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // URLパラメータからユーザー名取得
+  // URLパラメータから user を取得
   const params = new URLSearchParams(window.location.search);
-  const userNameParam = decodeURIComponent(params.get("user") || "ゲストユーザー");
+  const rawUser = params.get("user");
+  const userNameParam = rawUser ? decodeURIComponent(rawUser) : "ゲストユーザー";
+  console.log("取得した user 名:", userNameParam);
 
-  console.log("URLパラメータ:", userNameParam); // デバッグ確認用
-
-  // ローカルデータ取得
+  // ローカルストレージからデータ取得
   const posts = JSON.parse(localStorage.getItem("posts") || "[]");
   const follows = JSON.parse(localStorage.getItem("follows") || "{}");
   const currentProfile = JSON.parse(localStorage.getItem("profile") || "{}");
 
   let userProfile;
 
-  // 表示対象を判定
+  // 自分自身のプロフィールかどうか
   if (userNameParam === currentProfile.name) {
     userProfile = currentProfile;
   } else {
+    // 他人プロフィール
     const userPosts = posts.filter(p => p.name === userNameParam);
     if (userPosts.length > 0) {
       userProfile = {
@@ -27,47 +28,48 @@ document.addEventListener("DOMContentLoaded", () => {
       userProfile = {
         name: userNameParam,
         avatar: userNameParam[0] || "？",
-        bio: "このユーザーの自己紹介はありません。"
+        bio: "このユーザーの情報はまだありません。"
       };
     }
   }
 
   // DOM反映
-  const nameEl = document.getElementById("profileName");
   const iconEl = document.getElementById("profileIcon");
+  const nameEl = document.getElementById("profileName");
   const bioEl = document.getElementById("profileBio");
 
-  if (nameEl && iconEl && bioEl) {
-    nameEl.textContent = userProfile.name;
-    iconEl.textContent = userProfile.avatar;
-    bioEl.textContent = userProfile.bio;
-  } else {
-    console.error("⚠️ profile要素が見つかりません");
-    return;
-  }
+  if (iconEl) iconEl.textContent = userProfile.avatar;
+  if (nameEl) nameEl.textContent = userProfile.name;
+  if (bioEl) bioEl.textContent = userProfile.bio;
 
-  // フォロー／フォロワー更新
+  // フォロー／フォロワー数を更新
   function updateStats() {
     if (!follows[userProfile.name]) follows[userProfile.name] = [];
-    document.getElementById("followingCount").textContent = follows[userProfile.name].length;
+    const followingCountEl = document.getElementById("followingCount");
+    if (followingCountEl) followingCountEl.textContent = follows[userProfile.name].length;
 
     let followerCount = 0;
     for (const key in follows) {
-      if (follows[key].includes(userProfile.name)) followerCount++;
+      if (follows[key].includes(userProfile.name)) {
+        followerCount++;
+      }
     }
-    document.getElementById("followerCount").textContent = followerCount;
+    const followerCountEl = document.getElementById("followerCount");
+    if (followerCountEl) followerCountEl.textContent = followerCount;
   }
   updateStats();
 
-  // 投稿一覧
+  // 投稿一覧を描画
   function renderPosts() {
     const feed = document.getElementById("feed");
+    if (!feed) return;
     feed.innerHTML = "";
 
     const myPosts = posts.filter(p => p.name === userProfile.name);
-
     if (myPosts.length === 0) {
-      feed.innerHTML = `<div style="text-align:center; color:var(--muted); margin-top:20px;">まだ投稿がありません。</div>`;
+      feed.innerHTML = `<div style="text-align:center; color:var(--muted); margin-top:20px;">
+        まだ投稿がありません。
+      </div>`;
       return;
     }
 
@@ -79,13 +81,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       card.innerHTML = `
         <div class="post-header">
-          <div class="icon">${p.avatar}</div>
+          <div class="icon">${p.avatar || ""}</div>
           <div>
             <div class="user-name">${p.name}</div>
             <div class="time">${time}</div>
           </div>
         </div>
-        <div class="post-content">${p.text.replace(/\n/g, '<br>')}</div>
+        <div class="post-content">${(p.text || "").replace(/\n/g, "<br>")}</div>
         ${imageTag}
       `;
       feed.appendChild(card);
@@ -93,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   renderPosts();
 
-  // TLへ戻る関数（HTMLのonclickで参照）
+  // TLへ戻る関数
   window.goTimeline = function() {
     window.location.href = "cocotimeline.html";
   };
