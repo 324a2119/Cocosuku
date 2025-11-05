@@ -33,8 +33,12 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 90%;
   max-width: 360px;
-  text-align: center;
+  text-align: center; /* ← これを追加 */
+  display: flex;
+  flex-direction: column; /* 縦並び */
+  align-items: center;    /* ← これで子要素（ロゴ含む）を中央 */
 }
+
 
 /* 見出し */
 h1 {
@@ -114,4 +118,5 @@ button:hover {
   object-fit: cover;
   display: block;
 }
+
 
