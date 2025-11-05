@@ -96,15 +96,11 @@ button:hover {
   text-decoration: underline;
 }
 
+
 .logo {
-  width: 80px;              /* 統一サイズ */
-  height: 80px;             /* 統一サイズ */
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  width: 80px;   /* ロゴサイズ調整 */
+  height: 80px;
+  object-fit: contain; /* ロゴの比率を保つ */
 }
 
 .logo img {
@@ -120,3 +116,4 @@ button:hover {
   align-items: center;     /* 縦方向中央（必要に応じて） */
   margin-bottom: 16px;
 }
+
