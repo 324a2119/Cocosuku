@@ -114,3 +114,9 @@ button:hover {
   display: block;
 }
 
+.logo-container {
+  display: flex;
+  justify-content: center; /* 横方向中央 */
+  align-items: center;     /* 縦方向中央（必要に応じて） */
+  margin-bottom: 16px;
+}
