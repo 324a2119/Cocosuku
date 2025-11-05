@@ -40,15 +40,23 @@ body {
 }
 
 .logo {
-  width: 44px;
-  height: 44px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  width: 80px;              /* 統一サイズ */
+  height: 80px;             /* 統一サイズ */
   border-radius: 50%;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
+
+.logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 
 .app-name {
   font-size: 20px;
