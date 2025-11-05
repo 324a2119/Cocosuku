@@ -5,57 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ログイン — ココスク</title>
 <link rel="stylesheet" href="static/css/cocologin.css?v=2">
-
-
+<script defer src="static/js/cocologin.js"></script>
 </head>
 <body>
-  <div class="card">
-    <div style="text-align:center; margin-bottom:16px;">
-      <div class="logo">
-        <img src="./static/image/Cocosku_logo2.png" alt="ココスク">
-      </div> 
-    </div>
-    <h1>ココスクにログイン</h1>
-    <input type="email" id="email" placeholder="メールアドレス">
-    <input type="password" id="password" placeholder="パスワード">
-    <button onclick="login()">ログイン</button>
-    <div class="link">
-      <a href="cocoregister.html">新規登録はこちら</a>
-    </div>
-  </div>
-
-<script>
-function login(){
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  if(email && password){
-    localStorage.setItem("isLoggedIn", "true");
-    if (!localStorage.getItem("profile")) {
-        const initialProfile = {
-            name: "ゲストユーザー",
-            bio: "初めまして！",
-            hobby: "",
-            circle: "",
-            course: "",
-            qualification: "",
-            grade: "",
-            comment: "",
-            avatar: "ゲ"
-        };
-        localStorage.setItem("profile", JSON.stringify(initialProfile));
-    }
-    alert("ログインに成功しました！");
-    window.location.href="cocotimeline.html";
-  } else {
-    alert("メールアドレスとパスワードを入力してください。");
-  }
-}
-</script>
+  <div class="card">
+    <div style="text-align:center; margin-bottom:16px;">
+      <div class="logo">
+        <img src="./static/image/Cocosku_logo2.png" alt="ココスク">
+      </div>
+    </div>
+    <h1>ココスクにログイン</h1>
+    <input type="email" id="email" placeholder="メールアドレス">
+    <input type="password" id="password" placeholder="パスワード">
+    <button id="login-btn">ログイン</button>
+    <div class="link">
+      <a href="cocoregister.html">新規登録はこちら</a>
+    </div>
+  </div>
 </body>
 </html>
-
-
-
-
-
