@@ -1,22 +1,22 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // URLパラメータから user を取得
   const params = new URLSearchParams(window.location.search);
   const rawUser = params.get("user");
   const userNameParam = rawUser ? decodeURIComponent(rawUser) : "ゲストユーザー";
-  console.log("取得した user 名:", userNameParam);
 
-  // ローカルストレージからデータ取得
   const posts = JSON.parse(localStorage.getItem("posts") || "[]");
   const follows = JSON.parse(localStorage.getItem("follows") || "{}");
   const currentProfile = JSON.parse(localStorage.getItem("profile") || "{}");
 
+  // 詳細プロフィールデータ
+  const profiles = JSON.parse(localStorage.getItem("profiles") || "{}");
+  const userExtra = profiles[userNameParam] || {};
+
+  const isMyProfile = userNameParam === currentProfile.name;
   let userProfile;
 
-  // 自分自身のプロフィールかどうか
-  if (userNameParam === currentProfile.name) {
+  if (isMyProfile) {
     userProfile = currentProfile;
   } else {
-    // 他人プロフィール
     const userPosts = posts.filter(p => p.name === userNameParam);
     if (userPosts.length > 0) {
       userProfile = {
@@ -33,43 +33,50 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // DOM反映
-  const iconEl = document.getElementById("profileIcon");
-  const nameEl = document.getElementById("profileName");
-  const bioEl = document.getElementById("profileBio");
+  // 基本情報を反映
+  document.getElementById("profileIcon").textContent = userProfile.avatar;
+  document.getElementById("profileName").textContent = userProfile.name;
+  document.getElementById("profileBio").textContent = userProfile.bio;
 
-  if (iconEl) iconEl.textContent = userProfile.avatar;
-  if (nameEl) nameEl.textContent = userProfile.name;
-  if (bioEl) bioEl.textContent = userProfile.bio;
+  // 編集ボタン制御
+  const editBtn = document.getElementById("editProfileBtn");
+  if (!isMyProfile) {
+    editBtn.style.display = "none";
+  } else {
+    editBtn.addEventListener("click", () => {
+      window.location.href = "cocoprofileedit.html";
+    });
+  }
 
-  // フォロー／フォロワー数を更新
+  // 詳細情報を反映
+  document.getElementById("detailHobby").textContent = userExtra.hobby || "未設定";
+  document.getElementById("detailClub").textContent = userExtra.club || "未設定";
+  document.getElementById("detailDept").textContent = userExtra.department || "未設定";
+  document.getElementById("detailGrade").textContent = userExtra.grade || "未設定";
+  document.getElementById("detailCert").textContent = userExtra.cert || "未設定";
+  document.getElementById("detailComment").textContent = userExtra.comment || "未設定";
+
+  // フォロー・フォロワー数
   function updateStats() {
     if (!follows[userProfile.name]) follows[userProfile.name] = [];
-    const followingCountEl = document.getElementById("followingCount");
-    if (followingCountEl) followingCountEl.textContent = follows[userProfile.name].length;
+    document.getElementById("followingCount").textContent = follows[userProfile.name].length;
 
     let followerCount = 0;
     for (const key in follows) {
-      if (follows[key].includes(userProfile.name)) {
-        followerCount++;
-      }
+      if (follows[key].includes(userProfile.name)) followerCount++;
     }
-    const followerCountEl = document.getElementById("followerCount");
-    if (followerCountEl) followerCountEl.textContent = followerCount;
+    document.getElementById("followerCount").textContent = followerCount;
   }
   updateStats();
 
-  // 投稿一覧を描画
+  // 投稿一覧
   function renderPosts() {
     const feed = document.getElementById("feed");
-    if (!feed) return;
     feed.innerHTML = "";
-
     const myPosts = posts.filter(p => p.name === userProfile.name);
+
     if (myPosts.length === 0) {
-      feed.innerHTML = `<div style="text-align:center; color:var(--muted); margin-top:20px;">
-        まだ投稿がありません。
-      </div>`;
+      feed.innerHTML = `<div style="text-align:center; color:var(--muted); margin-top:20px;">まだ投稿がありません。</div>`;
       return;
     }
 
@@ -81,13 +88,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       card.innerHTML = `
         <div class="post-header">
-          <div class="icon">${p.avatar || ""}</div>
+          <div class="icon">${p.avatar}</div>
           <div>
             <div class="user-name">${p.name}</div>
             <div class="time">${time}</div>
           </div>
         </div>
-        <div class="post-content">${(p.text || "").replace(/\n/g, "<br>")}</div>
+        <div class="post-content">${p.text.replace(/\n/g, "<br>")}</div>
         ${imageTag}
       `;
       feed.appendChild(card);
@@ -95,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   renderPosts();
 
-  // TLへ戻る関数
+  // TLへ戻る
   window.goTimeline = function() {
     window.location.href = "cocotimeline.html";
   };
