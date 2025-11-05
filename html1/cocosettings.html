@@ -1,175 +1,75 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>設定 — ココスク</title>
-<style>
-:root{
-  --bg:#fff7f9;
-  --card:#fff;
-  --accent:#ffd1dc;
-  --accent2:#ffeeba;
-  --text:#444;
-  --muted:#888;
-  --radius:16px;
-  font-family:"Noto Sans JP","Rounded Mplus 1c",sans-serif;
-}
-*{box-sizing:border-box;}
-body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden;}
-.app{display:flex;flex-direction:column;max-width:600px;margin:0 auto;min-height:100vh;padding:8px; padding-bottom: 80px;}
-.brand{display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;}
-.logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-.settings-group{background:var(--card);border-radius:var(--radius);box-shadow:0 2px 8px rgba(0,0,0,0.08);margin-bottom:16px;padding:16px;}
-.group-title{font-size:18px;font-weight:bold;margin-bottom:12px;border-bottom:2px solid var(--accent);padding-bottom:4px;}
-.setting-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #eee;cursor:pointer;}
-.setting-item:last-child{border-bottom:none;}
-.setting-label{font-size:16px;}
-.setting-value, .setting-action{color:var(--muted);font-size:15px;font-weight:bold;}
-.setting-action:hover{ text-decoration:underline; color:#ff7fa3; }
-.setting-input{width:60%;padding:6px 8px;border-radius:8px;border:1px solid #ddd;font-size:15px;}
-.logout-btn{width:100%;padding:12px;border:none;border-radius:var(--radius);background:#f44;color:#fff;font-weight:bold;font-size:16px;cursor:pointer;margin-top:20px;transition: background 0.2s;}
-.logout-btn:hover{ background:#e33; }
-.nav-bar{position:fixed;bottom:0;left:0;right:0;height:60px;max-width:600px;margin:0 auto;background:var(--card);box-shadow:0 -2px 6px rgba(0,0,0,0.1);display:flex;justify-content:space-around;align-items:center;border-radius:var(--radius) var(--radius) 0 0;z-index:15;}
-.nav-item{flex:1;text-align:center;text-decoration:none;color:var(--muted);font-size:11px;cursor:pointer;padding:8px 0;transition: color 0.2s, background 0.2s;}
-.nav-item.active{ color:#ff7fa3; font-weight:bold; }
-.nav-item:hover{ background:rgba(0,0,0,0.05); border-radius:10px; }
-.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;justify-content:center;align-items:center;z-index:20;}
-.modal-content{background:var(--card);padding:20px;border-radius:var(--radius);width:90%;max-width:450px;box-shadow:0 5px 15px rgba(0,0,0,0.3);}
-.modal-actions button {padding: 10px 15px;border-radius: 8px;font-weight: bold;cursor: pointer;transition: background 0.2s;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>設定 — ココスク</title>
+  <link rel="stylesheet" href="cocosettings.css">
 </head>
 <body>
-<div class="app">
-  <div class="brand" onclick="goTimeline()">
-    <div class="logo">
-      <img src="Cocoimage/Cocosku_logo2.png" alt="ココスク" style="width:100%; height:100%; border-radius:50%;">
+  <div class="app">
+    <div class="brand" onclick="goTimeline()">
+      <div class="logo">
+        <img src="Cocoimage/Cocosku_logo2.png" alt="ココスク" style="width:100%; height:100%; border-radius:50%;">
+      </div>
+      <div class="app-name">設定</div>
     </div>
-    <div class="app-name" style="font-size:20px; font-weight:bold;">設定</div>
+
+    <div class="settings-group">
+      <div class="group-title">アカウント設定</div>
+      <div class="setting-item" onclick="window.location.href='cocoprofile.html'">
+        <div class="setting-label">プロフィールを編集</div>
+        <div class="setting-action">＞</div>
+      </div>
+      <div class="setting-item" onclick="handleNavigation('パスワード変更画面')">
+        <div class="setting-label">パスワード変更</div>
+        <div class="setting-action">＞</div>
+      </div>
+      <div class="setting-item">
+        <div class="setting-label">メールアドレス</div>
+        <input type="email" class="setting-input" id="emailInput" value="user@example.com">
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="group-title">その他</div>
+      <div class="setting-item" onclick="window.location.href='cocokiyaku.html'">
+        <div class="setting-label">利用規約</div>
+        <div class="setting-action">＞</div>
+      </div>
+      <div class="setting-item" onclick="window.location.href='cocoprivate.html'">
+        <div class="setting-label">プライバシーポリシー</div>
+        <div class="setting-action">＞</div>
+      </div>
+      <div class="setting-item" onclick="window.location.href='cocohelp.html'">
+        <div class="setting-label">ヘルプとサポート</div>
+        <div class="setting-action">＞</div>
+      </div>
+    </div>
+
+    <button class="logout-btn" onclick="openLogoutModal()">ログアウト</button>
   </div>
 
-  <div class="settings-group">
-    <div class="group-title">アカウント設定</div>
-    <div class="setting-item" onclick="window.location.href='cocoprofile.html'">
-      <div class="setting-label">プロフィールを編集</div>
-      <div class="setting-action">＞</div>
-    </div>
-    <div class="setting-item" onclick="handleNavigation('パスワード変更画面')">
-      <div class="setting-label">パスワード変更</div>
-      <div class="setting-action">＞</div>
-    </div>
-    <div class="setting-item">
-      <div class="setting-label">メールアドレス</div>
-      <input type="email" class="setting-input" id="emailInput" value="user@example.com">
+  <div class="modal-bg" id="logoutModal">
+    <div class="modal-content">
+      <h3>ログアウト確認</h3>
+      <p>本当にログアウトしますか？</p>
+      <div class="modal-actions">
+        <button onclick="closeLogoutModal()" class="cancel-btn">キャンセル</button>
+        <button onclick="performLogout()" class="confirm-btn">ログアウト</button>
+      </div>
     </div>
   </div>
 
-  <div class="settings-group">
-    <div class="group-title">その他</div>
-
-    <!-- ✅ 利用規約クリック時に cocokiyaku.html へ遷移 -->
-    <div class="setting-item" onclick="window.location.href='cocokiyaku.html'">
-      <div class="setting-label">利用規約</div>
-      <div class="setting-action">＞</div>
-    </div>
-
-    <div class="setting-item" onclick="window.location.href='cocoprivate.html'">
-      <div class="setting-label">プライバシーポリシー</div>
-      <div class="setting-action">＞</div>
-    </div>
-    <div class="setting-item" onclick="window.location.href='cocohelp.html'">
-      <div class="setting-label">ヘルプとサポート</div>
-      <div class="setting-action">＞</div>
-    </div>
+  <div class="nav-bar">
+    <a href="cocotimeline.html" class="nav-item">🏠 TL</a>
+    <a href="cocosearch.html" class="nav-item">🔍 検索</a>
+    <a href="coconotifications.html" class="nav-item">🔔 通知</a>
+    <a href="cocochat.html" class="nav-item">💬 DM</a>
+    <a href="cocoprofile.html" class="nav-item">👤 プロフ</a>
+    <a href="cococalendar.html" class="nav-item active">📅 予定</a>
   </div>
 
-  <button class="logout-btn" onclick="openLogoutModal()">ログアウト</button>
-</div>
-
-<div class="modal-bg" id="logoutModal">
-  <div class="modal-content">
-    <h3 style="margin-top:0; color:var(--text);">ログアウト確認</h3>
-    <p style="margin-bottom:20px;">本当にログアウトしますか？</p>
-    <div class="modal-actions" style="display:flex; justify-content:flex-end; gap:10px;">
-      <button onclick="closeLogoutModal()" style="background:#eee; border:1px solid #ddd; color:var(--text);">キャンセル</button>
-      <button onclick="performLogout()" style="background:#f44; border:none; color:#fff;">ログアウト</button>
-    </div>
-  </div>
-</div>
-
-<div class="nav-bar">
-  <a href="cocotimeline.html" class="nav-item">🏠 TL</a>
-  <a href="cocosearch.html" class="nav-item">🔍 検索</a>
-  <a href="coconotifications.html" class="nav-item">🔔 通知</a>
-  <a href="cocochat.html" class="nav-item">💬 DM</a>
-  <a href="cocoprofile.html" class="nav-item">👤 プロフ</a>
-  <a href="cococalendar.html" class="nav-item active">📅 予定</a>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-setLogLevel('Debug');
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-
-let app, db, auth;
-
-(async () => {
-    try {
-        if (Object.keys(firebaseConfig).length > 0) {
-            app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-
-            if (typeof __initial_auth_token !== 'undefined') {
-                await signInWithCustomToken(auth, __initial_auth_token);
-            } else {
-                await signInAnonymously(auth);
-            }
-            console.log("Firebase/Auth setup complete. User ID:", auth.currentUser?.uid || 'N/A');
-        } else {
-            console.warn("Firebase config not available. Running in simulation mode.");
-        }
-    } catch (e) {
-        console.error("Firebase setup failed:", e);
-    }
-})();
-
-// --- ページ操作関数 ---
-function goTimeline(){
-    console.log("タイムラインへ遷移...");
-    window.location.href="cocotimeline.html";
-}
-window.goTimeline = goTimeline;
-
-function handleNavigation(destination){
-    console.log(`${destination} への遷移をシミュレートします。`);
-}
-window.handleNavigation = handleNavigation;
-
-// --- ログアウトモーダル ---
-function openLogoutModal() {
-    document.getElementById('logoutModal').style.display = 'flex';
-}
-window.openLogoutModal = openLogoutModal;
-
-function closeLogoutModal() {
-    document.getElementById('logoutModal').style.display = 'none';
-}
-window.closeLogoutModal = closeLogoutModal;
-
-function performLogout() {
-    console.log("ログアウト処理を実行しました。");
-    window.location.href="cocologin.html";
-    closeLogoutModal();
-}
-window.performLogout = performLogout;
-</script>
+  <script type="module" src="cocosettings.js"></script>
 </body>
 </html>
-
-
-
