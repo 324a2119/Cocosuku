@@ -12,39 +12,12 @@
     <input type="text" id="name" placeholder="名前">
     <input type="email" id="email" placeholder="メールアドレス">
     <input type="password" id="password" placeholder="パスワード">
-    <button class="btn" onclick="register()">登録</button>
+    <button class="btn" id="registerBtn">登録</button>
     <div class="link">
       <a href="cocologin.html">ログインはこちら</a>
     </div>
   </div>
 
-  <script>
-  function register(){
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    if(name && email && password){
-      localStorage.setItem("isLoggedIn", "true");
-      const initialProfile = {
-          name: name,
-          bio: "新規登録しました！",
-          hobby: "",
-          circle: "",
-          course: "",
-          qualification: "",
-          grade: "",
-          comment: "",
-          avatar: name[0] || "名"
-      };
-      localStorage.setItem("profile", JSON.stringify(initialProfile));
-      
-      alert("登録が完了しました！");
-      window.location.href="cocotimeline.html";
-    } else {
-      alert("全ての項目を入力してください。");
-    }
-  }
-  </script>
+  <script src="static/js/cocoregister.js"></script>
 </body>
 </html>
