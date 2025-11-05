@@ -1,21 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // URLパラメータからユーザー名取得
   const params = new URLSearchParams(window.location.search);
   const userNameParam = decodeURIComponent(params.get("user") || "ゲストユーザー");
 
-  console.log("URLパラメータから取得:", userNameParam); // デバッグ確認用
+  console.log("URLパラメータ:", userNameParam); // デバッグ確認用
 
+  // ローカルデータ取得
   const posts = JSON.parse(localStorage.getItem("posts") || "[]");
   const follows = JSON.parse(localStorage.getItem("follows") || "{}");
   const currentProfile = JSON.parse(localStorage.getItem("profile") || "{}");
 
-  // 表示対象のプロフィール
   let userProfile;
 
+  // 表示対象を判定
   if (userNameParam === currentProfile.name) {
-    // 自分のプロフィール
     userProfile = currentProfile;
   } else {
-    // 他人のプロフィール（投稿がある場合とない場合で分岐）
     const userPosts = posts.filter(p => p.name === userNameParam);
     if (userPosts.length > 0) {
       userProfile = {
@@ -32,12 +32,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // DOMに反映
-  document.getElementById("profileIcon").textContent = userProfile.avatar;
-  document.getElementById("profileName").textContent = userProfile.name;
-  document.getElementById("profileBio").textContent = userProfile.bio;
+  // DOM反映
+  const nameEl = document.getElementById("profileName");
+  const iconEl = document.getElementById("profileIcon");
+  const bioEl = document.getElementById("profileBio");
 
-  // フォロー・フォロワー数を更新
+  if (nameEl && iconEl && bioEl) {
+    nameEl.textContent = userProfile.name;
+    iconEl.textContent = userProfile.avatar;
+    bioEl.textContent = userProfile.bio;
+  } else {
+    console.error("⚠️ profile要素が見つかりません");
+    return;
+  }
+
+  // フォロー／フォロワー更新
   function updateStats() {
     if (!follows[userProfile.name]) follows[userProfile.name] = [];
     document.getElementById("followingCount").textContent = follows[userProfile.name].length;
@@ -50,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   updateStats();
 
-  // 投稿表示
+  // 投稿一覧
   function renderPosts() {
     const feed = document.getElementById("feed");
     feed.innerHTML = "";
@@ -84,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   renderPosts();
 
-  // TLへ戻る関数（HTMLでonclick参照されてる）
+  // TLへ戻る関数（HTMLのonclickで参照）
   window.goTimeline = function() {
     window.location.href = "cocotimeline.html";
   };
