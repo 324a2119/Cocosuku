@@ -41,14 +41,14 @@ body {
 }
 　
 .logo {
-  width: 80px;              /* 統一サイズ */
-  height: 80px;             /* 統一サイズ */
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   overflow: hidden;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
 
 .logo img {
