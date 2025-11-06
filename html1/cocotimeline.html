@@ -1,51 +1,36 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>タイムライン — ココスク</title>
-<link rel="stylesheet" href="static/css/cocotimeline.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>タイムライン - ココスク</title>
+<link rel="stylesheet" href="cocotimeline.css" />
 </head>
 <body>
-<div class="app">
-  <div class="brand" onclick="goTimeline()">
-    <div class="logo">
-      <img src="static/image/Cocosku_logo2.png" alt="ココスク ロゴ">
+
+<header>
+  <h1>ココスク</h1>
+  <button class="post-open-btn" id="openPostBtn">＋ 投稿</button>
+</header>
+
+<main>
+  <div id="feed" class="feed"></div>
+</main>
+
+<!-- モーダル -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal-content">
+    <h2>新しい投稿</h2>
+    <textarea id="postText" placeholder="今の気持ちをつぶやこう..."></textarea>
+    <input type="file" id="postImage" accept="image/*" onchange="previewImage(event)">
+    <img id="postImagePreview" style="display:none; max-width:100%; margin-top:10px;">
+    <div class="modal-buttons">
+      <button id="cancelPostBtn">キャンセル</button>
+      <button id="submitPostBtn" class="post-btn">投稿</button>
     </div>
-    <div class="app-name">タイムライン</div>
-  </div>
-
-  <div id="feed">
-    <div class="no-posts">投稿がありません。最初の投稿をしてみましょう！</div>
-  </div>
-
-  <div class="fab" onclick="openModal()">+</div>
-
-  <div class="modal-bg" id="modalBg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>新規投稿</h3>
-        <button class="modal-close" onclick="closeModal()">×</button>
-      </div>
-      <textarea id="postText" placeholder="今考えていることをシェアしよう！"></textarea>
-      <img id="postImagePreview" alt="画像プレビュー">
-      <input type="file" id="postImage" accept="image/*" onchange="previewImage(event)">
-      <button class="post-btn" onclick="addPost()">投稿</button>
-    </div>
-  </div>
-
-  <div class="nav-bar">
-    <a href="cocotimeline.html" class="nav-item active">🏠 TL</a>
-    <a href="cocosearch.html" class="nav-item">🔍 検索</a>
-    <a href="coconotifications.html" class="nav-item">🔔 通知</a>
-    <a href="cocochat.html" class="nav-item">💬 DM</a>
-    <a href="cocoprofile.html" class="nav-item">👤 プロフ</a>
-    <a href="cococalendar.html" class="nav-item">📅 予定</a>
   </div>
 </div>
 
-<script src="static/js/cocotimeline.js"></script>
+<script src="cocotimeline.js" defer></script>
 </body>
 </html>
-
-
