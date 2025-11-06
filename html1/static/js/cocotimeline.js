@@ -136,5 +136,4 @@ function renderPosts(){
   feed.scrollTop = feed.scrollHeight;
 }
 
-// 初期レンダリング
 renderPosts();
