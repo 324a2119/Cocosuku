@@ -1,74 +1,33 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ユーザープロフィール — ココスク</title>
-  <link rel="stylesheet" href="static/css/cocootherprofile.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ココスク - 他の人のプロフィール</title>
+  <link rel="stylesheet" href="cocootherprofile.css">
 </head>
 <body>
-  <div class="app">
-    <div class="header-bar">
-      <div class="brand" onclick="goTimeline()">
-        <div class="logo">コ</div>
-        <div class="app-name" id="userNameHeader">...</div>
-      </div>
+  <div class="profile-card">
+    <img id="userIcon" class="icon" src="" alt="ユーザーアイコン">
+    <h2 id="userName">Loading...</h2>
+    <button class="follow-btn">フォロー</button>
+    <button class="dm-btn">DMを送る</button>
+
+    <div class="details">
+      <h3>詳細情報</h3>
+      <p><strong>趣味:</strong> <span id="hobby"></span></p>
+      <p><strong>サークル/部活:</strong> <span id="club"></span></p>
+      <p><strong>学部/学科/専攻:</strong> <span id="department"></span></p>
+      <p><strong>学年:</strong> <span id="grade"></span></p>
+      <p><strong>資格:</strong> <span id="qualification"></span></p>
     </div>
 
-    <div class="profile-area">
-      <div class="profile-icon" id="profileIcon">?</div>
-      <div class="profile-name" id="profileName">Loading...</div>
-      <div class="profile-bio" id="profileBio"></div>
-
-      <div class="stats-bar" id="statsBar">
-        <div class="stat-item">
-          <div class="stat-count" id="followingCount" onclick="openFollowModal('following')">0</div>
-          <div>フォロー</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-count" id="followerCount" onclick="openFollowModal('followers')">0</div>
-          <div>フォロワー</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-count" id="postCount">0</div>
-          <div>投稿</div>
-        </div>
-      </div>
-
-      <div class="action-btn-group" id="actionBtns">
-        <button class="follow-btn" id="followBtn" onclick="toggleFollow()">フォロー</button>
-        <button class="dm-btn" id="dmBtn" onclick="startChat()">💬 DMを送る</button>
-      </div>
-
-      <!-- ✅ 詳細情報をここに常に表示 -->
-      <div class="details-area" id="detailsArea"></div>
-    </div>
-
-    <h3 style="margin-top:0;">投稿一覧</h3>
-    <div id="userPostsDiv">
-      <div style="text-align:center; color:var(--muted); margin-top:20px;">投稿を読み込み中...</div>
-    </div>
-
-    <!-- モーダル -->
-    <div id="followModal" class="modal" onclick="closeFollowModal()">
-      <div class="modal-content" onclick="event.stopPropagation()">
-        <div class="modal-close" onclick="closeFollowModal()">×</div>
-        <h3 id="modalTitle">ユーザー一覧</h3>
-        <div id="followList"></div>
-      </div>
-    </div>
-
-    <div class="nav-bar">
-      <a href="cocotimeline.html" class="nav-item">🏠 TL</a>
-      <a href="cocosearch.html" class="nav-item">🔍 検索</a>
-      <a href="coconotifications.html" class="nav-item">🔔 通知</a>
-      <a href="cocochat.html" class="nav-item">💬 DM</a>
-      <a href="cocoprofile.html" class="nav-item">👤 プロフ</a>
-      <a href="cococalendar.html" class="nav-item">📅 予定</a>
+    <div class="posts">
+      <h3>投稿一覧</h3>
+      <div id="postList"></div>
     </div>
   </div>
 
   <script src="cocootherprofile.js"></script>
 </body>
 </html>
-
