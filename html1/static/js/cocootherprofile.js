@@ -10,14 +10,14 @@ const userName = urlParams.get("user");
 const mockProfiles = {
   "そら": {
     name:"そら",
-    bio:"趣味は写真、サークルはテニスです。",
+    bio:"趣味はヴァロです。",
     avatar:"そ",
     details:{
-      hobby: "読書、写真",
+      hobby: "VALORANT",
       circle: "テニスサークル",
       dept: "情報システム学科",
-      year: "1年",
-      license: "基本情報技術者試験 合格",
+      year: "2年",
+      license: "",
       comment: "よろしくお願いします！"
     }
   },
@@ -29,7 +29,7 @@ const mockProfiles = {
       hobby: "プログラミング、ゲーム",
       circle: "勉強サークル",
       dept: "情報デザイン学科",
-      year: "2年",
+      year: "教師",
       license: "未取得",
       comment: "日々成長中！"
     }
