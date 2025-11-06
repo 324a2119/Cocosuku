@@ -22,7 +22,7 @@ function renderPosts(){
     feed.innerHTML = '<div class="no-posts">投稿がありません。最初の投稿をしてみましょう！</div>';
     return;
   }
-  
+
   posts.slice().reverse().forEach((p,index)=>{
     const card = document.createElement("div");
     card.className = "post-card";
@@ -74,9 +74,15 @@ function deletePost(originalIndex){
     }
 }
 
-// モーダル
+// モーダル処理
 const modalBg = document.getElementById("modalBg");
-function openModal(){ modalBg.style.display="flex"; }
+const postBtn = document.querySelector(".post-btn");
+
+function openModal(){ 
+  modalBg.style.display="flex"; 
+  modalBg.style.pointerEvents = "auto";
+}
+
 function closeModal(){ 
   modalBg.style.display="none"; 
   document.getElementById("postText").value=""; 
@@ -107,30 +113,12 @@ function addPost(){
   
   if(!text && !imageInput.files[0]) return alert("投稿内容または画像を入力してください。");
 
-  if(imageInput.files[0]){
-    const reader = new FileReader();
-    reader.onload = function(e){
-      const newPost = {
-        name: profile.name,
-        avatar: profile.avatar,
-        text: text,
-        image: e.target.result,
-        time: new Date().toISOString(),
-        likes: 0,
-        liked: false
-      };
-      posts.push(newPost);
-      localStorage.setItem("posts", JSON.stringify(posts));
-      closeModal();
-      renderPosts();
-    }
-    reader.readAsDataURL(imageInput.files[0]);
-  } else {
+  const createPost = (imageData) => {
     const newPost = {
       name: profile.name,
       avatar: profile.avatar,
       text: text,
-      image: "",
+      image: imageData || "",
       time: new Date().toISOString(),
       likes: 0,
       liked: false
@@ -139,5 +127,21 @@ function addPost(){
     localStorage.setItem("posts", JSON.stringify(posts));
     closeModal();
     renderPosts();
+  };
+
+  if(imageInput.files[0]){
+    const reader = new FileReader();
+    reader.onload = (e) => createPost(e.target.result);
+    reader.readAsDataURL(imageInput.files[0]);
+  } else {
+    createPost("");
   }
 }
+
+// スマホでクリックが効かない場合に備えて
+["click", "touchstart"].forEach(evt => {
+  postBtn.addEventListener(evt, (e) => {
+    e.preventDefault();
+    addPost();
+  });
+});
