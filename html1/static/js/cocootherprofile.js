@@ -137,7 +137,7 @@ function renderDetails(details){
     short.className = "detail-value";
     // 短い表示は1行に切って入れる（長い場合は省略）
     short.textContent = it.val.length > 40 ? it.val.slice(0,40) + "…" : it.val;
-
+ 
     const chev = document.createElement("span");
     chev.className = "chev";
     chev.textContent = "›";
