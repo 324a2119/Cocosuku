@@ -35,7 +35,7 @@ body {
 .brand {
   display: flex;
   align-items: center;
-  gap: 8px;       /* 検索ページと同じ */
+  gap: 8px;
   margin-bottom: 8px;
   cursor: pointer;
 }
