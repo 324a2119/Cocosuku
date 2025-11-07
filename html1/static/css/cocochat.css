@@ -35,14 +35,14 @@ body {
 .brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 8px;       /* 検索ページと同じ */
   margin-bottom: 8px;
   cursor: pointer;
 }
-　
+
 .logo {
-  width: 80px;              /* 統一サイズ */
-  height: 80px;             /* 統一サイズ */
+  width: 50px;    /* 検索ページと同じくらい */
+  height: 50px;
   border-radius: 50%;
   overflow: hidden;
   display: flex;
@@ -58,11 +58,12 @@ body {
   display: block;
 }
 
-
 .app-name {
-  font-size: 20px;
+  font-size: 20px;  /* 検索ページと同じ */
   font-weight: bold;
 }
+
+
 
 /* ヘッダー */
 .header {
