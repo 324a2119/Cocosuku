@@ -11,6 +11,12 @@ let chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || {
     "みかん": []
 };
 
+// ロゴクリックでタイムラインに遷移
+function goTimeline() {
+  window.location.href = "cocotimeline.html";
+}
+
+
 let currentUser = null;
 
 const dmListScreen = document.getElementById("dmListScreen");
