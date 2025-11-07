@@ -38,6 +38,7 @@
 *{box-sizing:border-box;}
 body{margin:0;padding:0;background:var(--bg);color:var(--text);overflow-x:hidden;}
 .app{display:flex;flex-direction:column;max-width:600px;margin:0 auto;padding:8px;min-height:100vh;padding-bottom:80px;}
+.app-name{font-size:20px; font-weight:bold;}
 .header-title{
     font-size:24px;
     font-weight:bold;
