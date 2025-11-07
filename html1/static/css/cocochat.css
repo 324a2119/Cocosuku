@@ -41,8 +41,8 @@ body {
 }
 
 .logo {
-  width: 50px;    /* 検索ページと同じくらい */
-  height: 50px;
+  width: 80px;              /* 統一サイズ */
+  height: 80px;             /* 統一サイズ */
   border-radius: 50%;
   overflow: hidden;
   display: flex;
