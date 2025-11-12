@@ -1,65 +1,62 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>タイムライン — ココスク</title>
-<link rel="stylesheet" href="static/css/cocotimeline.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>タイムライン — ココスク</title>
+  <link rel="stylesheet" href="static/css/cocotimeline.css">
 </head>
 <body>
-<div class="app">
-  <div class="brand" onclick="goTimeline()">
-    <div class="logo">
-      <img src="static/image/Cocosku_logo2.png" alt="ココスク ロゴ">
+  <div class="app">
+    <!-- ブランド -->
+    <div class="brand" onclick="goTimeline()">
+      <div class="logo"><img src="static/image/Cocosku_logo2.png" alt="ココスク ロゴ"></div>
+      <div class="app-name">タイムライン</div>
     </div>
-    <div class="app-name">タイムライン</div>
-  </div>
 
-  <div id="feed">
-    <div style="text-align:center; color:var(--muted); margin-top:30px;">
+    <!-- フィード -->
+    <div id="feed">
+      <div style="text-align:center; color:var(--muted); margin-top:30px;">
         投稿がありません。最初の投稿をしてみましょう！
+      </div>
     </div>
-  </div>
 
-  <div class="fab" onclick="openModal()">+</div>
+    <!-- 投稿ボタン -->
+    <div class="fab" onclick="openModal()">+</div>
 
-  <!-- 投稿モーダル -->
-  <div class="modal-bg" id="modalBg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 style="margin:0;">新規投稿</h3>
+    <!-- 投稿モーダル -->
+    <div class="modal-bg" id="modalBg">
+      <div class="modal-content">
         <button class="modal-close" onclick="closeModal()">×</button>
+        <h3>新規投稿</h3>
+        <textarea id="postText" placeholder="今考えていることをシェアしよう！"></textarea>
+        <img id="postImagePreview" alt="画像プレビュー">
+        <input type="file" id="postImage" accept="image/*" onchange="previewImage(event)">
+        <button class="post-btn" onclick="addPost()">投稿</button>
       </div>
-      <textarea id="postText" placeholder="今考えていることをシェアしよう！"></textarea>
-      <img id="postImagePreview" style="display:none;" alt="画像プレビュー">
-      <input type="file" id="postImage" accept="image/*" capture onchange="previewImage(event)">
-      <button class="post-btn" onclick="addPost()">投稿</button>
     </div>
-  </div>
 
-  <!-- リプライモーダル -->
-  <div class="modal-bg" id="replyModal">
-    <div class="modal-content reply-modal-content">
-      <div class="modal-header">
-        <h3 style="margin:0;">リプライ</h3>
+    <!-- リプライモーダル -->
+    <div class="modal-bg" id="replyModal">
+      <div class="modal-content reply-modal-content">
         <button class="modal-close" onclick="closeReplyModal()">×</button>
+        <h4>リプライ</h4>
+        <textarea id="replyText" placeholder="リプライを入力"></textarea>
+        <button class="post-btn" onclick="addReply()">送信</button>
       </div>
-      <textarea id="replyText" placeholder="リプライを入力"></textarea>
-      <button class="post-btn" onclick="addReply()">送信</button>
+    </div>
+
+    <!-- ナビバー -->
+    <div class="nav-bar">
+      <a href="cocotimeline.html" class="nav-item active">🏠 TL</a>
+      <a href="cocosearch.html" class="nav-item">🔍 検索</a>
+      <a href="coconotifications.html" class="nav-item">🔔 通知</a>
+      <a href="cocochat.html" class="nav-item">💬 DM</a>
+      <a href="cocoprofile.html" class="nav-item">👤 プロフ</a>
+      <a href="cococalendar.html" class="nav-item">📅 予定</a>
     </div>
   </div>
 
-  <!-- ナビバー -->
-  <div class="nav-bar">
-    <a href="cocotimeline.html" class="nav-item active">🏠 TL</a>
-    <a href="cocosearch.html" class="nav-item">🔍 検索</a>
-    <a href="coconotifications.html" class="nav-item">🔔 通知</a>
-    <a href="cocochat.html" class="nav-item">💬 DM</a>
-    <a href="cocoprofile.html" class="nav-item">👤 プロフ</a>
-    <a href="cococalendar.html" class="nav-item">📅 予定</a>
-  </div>
-</div>
-
-<script src="static/js/cocotimeline.js"></script>
+  <script src="static/js/cocotimeline.js"></script>
 </body>
 </html>
