@@ -4,13 +4,14 @@ let currentReplyIndex = null;
 
 if(!localStorage.getItem("isLoggedIn")) window.location.href="cocologin.html";
 
+// ページ遷移
 function goTimeline(){ window.location.href="cocotimeline.html"; }
 function goProfile(userName){
   if(userName===profile.name) window.location.href="cocoprofile.html";
   else window.location.href="cocootherprofile.html?user="+encodeURIComponent(userName);
 }
 
-// -------------------- 投稿レンダリング --------------------
+// 投稿レンダリング
 function renderPosts(){
   const feed = document.getElementById("feed");
   feed.innerHTML="";
@@ -50,12 +51,13 @@ function renderPosts(){
       </div>
       <div class="reply-section" id="reply-section-${index}"></div>
     `;
+
     feed.appendChild(card);
     renderReplies(index);
   });
 }
 
-// -------------------- いいね --------------------
+// いいね
 function toggleLike(index){
   const originalIndex=posts.length-1-index;
   posts[originalIndex].liked = !posts[originalIndex].liked;
@@ -66,13 +68,12 @@ function toggleLike(index){
   localStorage.setItem("posts", JSON.stringify(posts));
   renderPosts();
 }
-
 function getLikeNames(index){
   const p=posts[index];
   return p.likedNames?p.likedNames.join(", "):"";
 }
 
-// -------------------- 投稿削除 --------------------
+// 投稿削除
 function deletePost(originalIndex){
   if(confirm("本当にこの投稿を削除しますか？")){
     posts.splice(originalIndex,1);
@@ -81,7 +82,7 @@ function deletePost(originalIndex){
   }
 }
 
-// -------------------- モーダル --------------------
+// モーダル
 const modalBg=document.getElementById("modalBg");
 function openModal(){ modalBg.style.display="flex"; }
 function closeModal(){
@@ -91,8 +92,10 @@ function closeModal(){
   document.getElementById("postImagePreview").style.display="none";
   document.getElementById("postImagePreview").src="";
 }
+// スマホ・モーダル外クリックで閉じる
+modalBg.addEventListener("click", e=>{ if(e.target===modalBg) closeModal(); });
 
-// -------------------- 画像プレビュー --------------------
+// 画像プレビュー
 function previewImage(event){
   const preview=document.getElementById("postImagePreview");
   const file=event.target.files[0];
@@ -109,33 +112,22 @@ function previewImage(event){
   }
 }
 
-// -------------------- 投稿追加 --------------------
+// 投稿追加
 function addPost(){
   const text=document.getElementById("postText").value.trim();
   const imageInput=document.getElementById("postImage");
   if(!text && !imageInput.files[0]) return alert("投稿内容または画像を入力してください。");
   if(imageInput.files[0]){
     const reader=new FileReader();
-    reader.onload=e=>{
-      pushPost(text,e.target.result);
-    };
+    reader.onload=e=>{ pushPost(text,e.target.result); };
     reader.readAsDataURL(imageInput.files[0]);
-  } else {
-    pushPost(text,"");
-  }
+  } else { pushPost(text,""); }
 }
-
 function pushPost(text,imageData){
   const newPost={
-    name:profile.name,
-    avatar:profile.avatar,
-    text:text,
-    image:imageData,
-    time:new Date().toISOString(),
-    likes:0,
-    liked:false,
-    likedNames:[],
-    replies:[]
+    name:profile.name, avatar:profile.avatar,
+    text:text, image:imageData, time:new Date().toISOString(),
+    likes:0, liked:false, likedNames:[], replies:[]
   };
   posts.push(newPost);
   localStorage.setItem("posts",JSON.stringify(posts));
@@ -145,15 +137,8 @@ function pushPost(text,imageData){
 
 // -------------------- リプライ --------------------
 const replyModal=document.getElementById("replyModal");
-function openReplyModal(index){
-  currentReplyIndex=index;
-  replyModal.style.display="flex";
-}
-function closeReplyModal(){
-  replyModal.style.display="none";
-  document.getElementById("replyText").value="";
-}
-
+function openReplyModal(index){ currentReplyIndex=index; replyModal.style.display="flex"; }
+function closeReplyModal(){ replyModal.style.display="none"; document.getElementById("replyText").value=""; }
 function addReply(){
   const text=document.getElementById("replyText").value.trim();
   if(!text) return alert("リプライを入力してください。");
@@ -165,6 +150,7 @@ function addReply(){
   renderPosts();
 }
 
+// リプライレンダリング
 function renderReplies(index){
   const section=document.getElementById(`reply-section-${index}`);
   section.innerHTML="";
@@ -174,12 +160,11 @@ function renderReplies(index){
       const div=document.createElement("div");
       div.className="reply-item";
       div.innerHTML=`<strong>${r.name}</strong>: ${r.text.replace(/\n/g,"<br>")}`;
-      // 自分のリプライなら削除ボタン追加
       if(r.name===profile.name){
         const delBtn=document.createElement("button");
         delBtn.className="delete-reply-btn";
         delBtn.innerText="削除";
-        delBtn.onclick=()=> deleteReply(index, ri, div);
+        delBtn.onclick=()=> deleteReply(index,ri,div);
         div.appendChild(delBtn);
       }
       section.appendChild(div);
@@ -188,6 +173,7 @@ function renderReplies(index){
   }
 }
 
+// リプライ削除
 function deleteReply(postIndex, replyIndex, element){
   element.style.animation="fadeOutHeight 0.3s forwards";
   setTimeout(()=>{
@@ -198,4 +184,5 @@ function deleteReply(postIndex, replyIndex, element){
   },300);
 }
 
+// 初期表示
 renderPosts();
