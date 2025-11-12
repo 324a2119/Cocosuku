@@ -31,7 +31,9 @@
       </div>
       <textarea id="postText" placeholder="今考えていることをシェアしよう！"></textarea>
       <img id="postImagePreview" style="display:none;" alt="画像プレビュー">
-      <input type="file" id="postImage" accept="image/*" onchange="previewImage(event)">
+      
+      <input type="file" id="postImage" accept="image/*" capture style="display:block; margin-top:10px;" onchange="previewImage(event)">
+
       <button class="post-btn" onclick="addPost()">投稿</button>
     </div>
   </div>
@@ -49,4 +51,5 @@
 <script src="static/js/cocotimeline.js"></script>
 </body>
 </html>
+
 
