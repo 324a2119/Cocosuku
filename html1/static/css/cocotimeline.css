@@ -57,7 +57,19 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);}
 .reply-name{font-weight:bold;margin-right:4px;}
 
 /* リプライ入力モーダル */
-.reply-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,200,220,0.95);display:flex;justify-content:center;align-items:center;z-index:2000;}
-.reply-modal-content{background:#fff0f5;padding:16px;border-radius:16px;width:90%;max-width:350px;display:flex;flex-direction:column;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,0.25);}
+/* 投稿・リプライアニメーション */
+.animate-post{transition:all 0.3s ease; transform:translateY(10px);}
+.animate-reply{transition:all 0.3s ease; transform:translateX(-10px);opacity:0;animation:replyFade 0.3s forwards;}
+
+@keyframes replyFade{0%{opacity:0;transform:translateX(-10px);}100%{opacity:1;transform:translateX(0);}}
+.delete-anim{opacity:0;transform:scale(0.8);transition:all 0.3s ease;}
+
+/* リプライモーダル */
+.reply-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,200,230,0.9);display:flex;justify-content:center;align-items:center;z-index:2000;opacity:0;transition:opacity 0.3s;}
+.reply-modal.show{opacity:1;}
+.reply-modal-content{background:#fff0f5;padding:16px;border-radius:16px;width:90%;max-width:350px;display:flex;flex-direction:column;gap:8px;transform:translateY(-50px);opacity:0;transition:all 0.3s ease;}
+.reply-modal.show .reply-modal-content{transform:translateY(0);opacity:1;}
 #replyInput{width:100%;height:60px;padding:8px;border-radius:12px;border:1px solid #f4c1d1;resize:none;}
-.reply-modal-content button{background:var(--accent);border:none;padding:8px;border-radius:12px;color:#fff;font-weight:bold;cursor:pointer;}
+.reply-modal-content button{background:var(--accent);border:none;padding:8px;border-radius:12px;color:#fff;font-weight:bold;cursor:pointer;margin-top:4px;}
+.reply-buttons{display:flex;gap:8px;justify-content:flex-end;}
+
