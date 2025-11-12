@@ -1,5 +1,5 @@
 // ==========================
-// cocotimeline.js（画像圧縮対応版）
+// cocotimeline.js（iPhone16対応版）
 // ==========================
 
 // 投稿データとプロフィールをローカルストレージから取得
@@ -12,7 +12,7 @@ if(!localStorage.getItem("isLoggedIn")){
 }
 
 // --------------------------
-// ページ遷移系
+// ページ遷移
 // --------------------------
 function goTimeline(){ window.location.href = "cocotimeline.html"; }
 
@@ -25,7 +25,7 @@ function goProfile(userName){
 }
 
 // --------------------------
-// 投稿の描画処理
+// 投稿描画
 // --------------------------
 function renderPosts(){
   const feed = document.getElementById("feed");
@@ -48,7 +48,7 @@ function renderPosts(){
       deleteBtn = `<button class="delete-btn" onclick="deletePost(${originalIndex})">削除</button>`;
     }
 
-    let imageTag = p.image ? `<img src="${p.image}" class="post-image">` : "";
+    let imageTag = p.image ? `<img src="${p.image}" class="post-image" loading="lazy">` : "";
 
     card.innerHTML = `
       <div class="post-header">
@@ -59,7 +59,7 @@ function renderPosts(){
         </div>
         ${deleteBtn}
       </div>
-      <div class="post-content">${p.text.replace(/\n/g, '<br>')}</div>
+      <div class="post-content">${p.text.replace(/\n/g,'<br>')}</div>
       ${imageTag}
       <div class="post-footer">
         <button class="like-btn ${liked}" onclick="toggleLike(${index})">❤️</button>
@@ -94,23 +94,29 @@ function deletePost(originalIndex){
 }
 
 // --------------------------
-// モーダル開閉
+// モーダル制御
 // --------------------------
 const modalBg = document.getElementById("modalBg");
 
-function openModal(){ modalBg.style.display = "flex"; }
+function openModal(){
+  modalBg.style.display = "flex";
+  const imageInput = document.getElementById("postImage");
+  imageInput.setAttribute("accept", "image/*");
+  imageInput.setAttribute("capture", "environment"); // カメラ許可
+}
 
-function closeModal(){ 
-  modalBg.style.display = "none"; 
-  document.getElementById("postText").value = ""; 
-  document.getElementById("postImage").value = ""; 
+function closeModal(){
+  modalBg.style.display = "none";
+  document.getElementById("postText").value = "";
+  const imageInput = document.getElementById("postImage");
+  imageInput.value = "";
   const preview = document.getElementById("postImagePreview");
   preview.style.display = "none";
   preview.src = "";
 }
 
 // --------------------------
-// 画像プレビュー
+// 画像プレビュー（iPhone対応）
 // --------------------------
 function previewImage(event){
   const file = event.target.files[0];
@@ -118,17 +124,17 @@ function previewImage(event){
 
   const reader = new FileReader();
   reader.onload = function(e){
-    const preview = document.getElementById("postImagePreview");
-    preview.src = e.target.result;
-    preview.style.display = "block";
+      const preview = document.getElementById("postImagePreview");
+      preview.src = e.target.result;
+      preview.style.display = "block";
   };
-  reader.readAsDataURL(file);
+  setTimeout(() => reader.readAsDataURL(file), 50); // Safari対策
 }
 
 // --------------------------
-// 新規投稿追加（画像圧縮対応）
+// 新規投稿
 // --------------------------
-function addPost(){
+async function addPost(){
   const text = document.getElementById("postText").value.trim();
   const imageInput = document.getElementById("postImage");
   const file = imageInput.files[0];
@@ -138,54 +144,15 @@ function addPost(){
     return;
   }
 
+  let imageData = "";
   if(file){
-    const reader = new FileReader();
-    reader.onload = function(e){
-      compressImage(e.target.result, 800, 800, function(compressedData){
-        savePost(text, compressedData);
-      });
-    };
-    reader.readAsDataURL(file);
-  } else {
-    savePost(text, "");
+    imageData = await new Promise(resolve=>{
+      const reader = new FileReader();
+      reader.onloadend = e => resolve(e.target.result);
+      reader.readAsDataURL(file);
+    });
   }
-}
 
-// --------------------------
-// 画像圧縮処理
-// --------------------------
-function compressImage(base64, maxWidth, maxHeight, callback){
-  const img = new Image();
-  img.onload = function(){
-    let width = img.width;
-    let height = img.height;
-
-    // アスペクト比を維持してリサイズ
-    if(width > maxWidth || height > maxHeight){
-      if(width / height > maxWidth / maxHeight){
-        height *= maxWidth / width;
-        width = maxWidth;
-      } else {
-        width *= maxHeight / height;
-        height = maxHeight;
-      }
-    }
-
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0, width, height);
-    const compressedData = canvas.toDataURL("image/jpeg", 0.7); // 圧縮率70%
-    callback(compressedData);
-  };
-  img.src = base64;
-}
-
-// --------------------------
-// 投稿保存処理
-// --------------------------
-function savePost(text, imageData){
   const newPost = {
     name: profile.name,
     avatar: profile.avatar,
@@ -195,6 +162,7 @@ function savePost(text, imageData){
     likes: 0,
     liked: false
   };
+
   posts.push(newPost);
   localStorage.setItem("posts", JSON.stringify(posts));
   closeModal();
