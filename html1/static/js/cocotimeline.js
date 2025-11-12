@@ -1,6 +1,6 @@
 // ==========================
 // cocotimeline.js（スマホ対応・リプライ常時表示版）
-// ==========================
+// ==========================　
 
 let posts = JSON.parse(localStorage.getItem("posts") || "[]");
 let profile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲスト","avatar":"ゲ"}');
@@ -208,3 +208,4 @@ function addReply(index, btn){
 function closeReplyModal(btn){
     btn.closest(".reply-modal").remove();
 }
+
