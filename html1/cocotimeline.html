@@ -8,47 +8,43 @@
 </head>
 <body>
 <div class="app">
-  <!-- ブランド -->
-  <div class="brand" onclick="goTimeline()">
-    <div class="logo">
-      <img src="static/image/Cocosku_logo2.png" alt="ココスク ロゴ">
+    <div class="brand" onclick="goTimeline()">
+        <div class="logo">
+            <img src="static/image/Cocosku_logo2.png" alt="ココスク ロゴ">
+        </div>
+        <div class="app-name">タイムライン</div>
     </div>
-    <div class="app-name">タイムライン</div>
-  </div>
 
-  <!-- 投稿フィード -->
-  <div id="feed">
-    <div style="text-align:center; color:var(--muted); margin-top:30px;">
-        投稿がありません。最初の投稿をしてみましょう！
+    <div id="feed">
+        <div style="text-align:center; color:var(--muted); margin-top:30px;">
+            投稿がありません。最初の投稿をしてみましょう！
+        </div>
     </div>
-  </div>
 
-  <!-- フローティングボタン -->
-  <div class="fab" onclick="openModal()">+</div>
+    <div class="fab" onclick="openModal()">+</div>
 
-  <!-- モーダル -->
-  <div class="modal-bg" id="modalBg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 style="margin:0;">新規投稿</h3>
-        <button class="modal-close" onclick="closeModal()">×</button>
-      </div>
-      <textarea id="postText" placeholder="今考えていることをシェアしよう！"></textarea>
-      <img id="postImagePreview" style="display:none;" alt="画像プレビュー">
-      <input type="file" id="postImage" accept="image/*" capture style="display:block; margin-top:10px;" onchange="previewImage(event)">
-      <button class="post-btn" onclick="addPost()">投稿</button>
+    <div class="modal-bg" id="modalBg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="margin:0;">新規投稿</h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <textarea id="postText" placeholder="今考えていることをシェアしよう！"></textarea>
+            <img id="postImagePreview" style="display:none;" alt="画像プレビュー">
+            <input type="file" id="postImage" accept="image/*" onchange="previewImage(event)">
+            <button class="post-btn" onclick="addPost()">投稿</button>
+        </div>
     </div>
-  </div>
 
-  <!-- ナビゲーションバー -->
-  <div class="nav-bar">
-    <a href="cocotimeline.html" class="nav-item active">🏠 TL</a>
-    <a href="cocosearch.html" class="nav-item">🔍 検索</a>
-    <a href="coconotifications.html" class="nav-item">🔔 通知</a>
-    <a href="cocochat.html" class="nav-item">💬 DM</a>
-    <a href="cocoprofile.html" class="nav-item">👤 プロフ</a>
-    <a href="cococalendar.html" class="nav-item">📅 予定</a>
-  </div>
+    <!-- ナビバー -->
+    <div class="nav-bar">
+        <a href="cocotimeline.html" class="nav-item active">🏠 TL</a>
+        <a href="cocosearch.html" class="nav-item">🔍 検索</a>
+        <a href="coconotifications.html" class="nav-item">🔔 通知</a>
+        <a href="cocochat.html" class="nav-item">💬 DM</a>
+        <a href="cocoprofile.html" class="nav-item">👤 プロフ</a>
+        <a href="cococalendar.html" class="nav-item">📅 予定</a>
+    </div>
 </div>
 
 <script src="static/js/cocotimeline.js"></script>
