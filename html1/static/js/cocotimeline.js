@@ -1,11 +1,23 @@
+// ==========================
+// cocotimeline.js（修正版）
+// ==========================
+
+// 投稿データとプロフィールをローカルストレージから取得
 let posts = JSON.parse(localStorage.getItem("posts") || "[]");
 let profile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲスト","avatar":"ゲ"}');
 
+// ログインしていない場合はログインページへリダイレクト
 if(!localStorage.getItem("isLoggedIn")){
     window.location.href = "cocologin.html";
 }
 
-function goTimeline(){ window.location.href="cocotimeline.html"; }
+// --------------------------
+// ページ遷移系
+// --------------------------
+function goTimeline(){ 
+    window.location.href = "cocotimeline.html"; 
+}
+
 function goProfile(userName){
     if(userName === profile.name){
         window.location.href = "cocoprofile.html";
@@ -14,14 +26,19 @@ function goProfile(userName){
     }
 }
 
+// --------------------------
+// 投稿の描画処理
+// --------------------------
 function renderPosts(){
   const feed = document.getElementById("feed");
   feed.innerHTML = "";
+
   if(posts.length === 0) {
     feed.innerHTML = '<div style="text-align:center; color:var(--muted); margin-top:30px;">投稿がありません。最初の投稿をしてみましょう！</div>';
     return;
   }
   
+  // 新しい投稿を上に表示
   posts.slice().reverse().forEach((p,index)=>{
     const card = document.createElement("div");
     card.className = "post-card";
@@ -57,6 +74,9 @@ function renderPosts(){
 }
 renderPosts();
 
+// --------------------------
+// いいね機能
+// --------------------------
 function toggleLike(index){
   const originalIndex = posts.length - 1 - index;
   posts[originalIndex].liked = !posts[originalIndex].liked;
@@ -65,49 +85,69 @@ function toggleLike(index){
   renderPosts();
 }
 
+// --------------------------
+// 投稿削除
+// --------------------------
 function deletePost(originalIndex){
-    if(confirm("本当にこの投稿を削除しますか？")){
-        posts.splice(originalIndex, 1);
-        localStorage.setItem("posts", JSON.stringify(posts));
-        renderPosts();
-    }
+  if(confirm("本当にこの投稿を削除しますか？")){
+      posts.splice(originalIndex, 1);
+      localStorage.setItem("posts", JSON.stringify(posts));
+      renderPosts();
+  }
 }
 
+// --------------------------
+// モーダルの開閉
+// --------------------------
 const modalBg = document.getElementById("modalBg");
-function openModal(){ modalBg.style.display="flex"; }
+
+function openModal(){ 
+  modalBg.style.display = "flex"; 
+}
+
 function closeModal(){ 
-  modalBg.style.display="none"; 
-  document.getElementById("postText").value=""; 
-  document.getElementById("postImage").value=""; 
-  document.getElementById("postImagePreview").style.display = "none";
-  document.getElementById("postImagePreview").src = "";
+  modalBg.style.display = "none"; 
+  document.getElementById("postText").value = ""; 
+  document.getElementById("postImage").value = ""; 
+  const preview = document.getElementById("postImagePreview");
+  preview.style.display = "none";
+  preview.src = "";
 }
 
+// --------------------------
+// 画像プレビュー
+// --------------------------
 function previewImage(event){
-    const preview = document.getElementById("postImagePreview");
-    const file = event.target.files[0];
-    if(file){
-        const reader = new FileReader();
-        reader.onload = function(e){
-            preview.src = e.target.result;
-            preview.style.display = "block";
-        }
-        reader.readAsDataURL(file);
-    } else {
-        preview.style.display = "none";
-        preview.src = "";
-    }
+  const file = event.target.files[0];
+  if(!file) return;  // スマホ対策：キャンセル時のエラー防止
+
+  const reader = new FileReader();
+  reader.onload = function(e){
+      const preview = document.getElementById("postImagePreview");
+      preview.src = e.target.result;
+      preview.style.display = "block";
+  };
+  reader.readAsDataURL(file);
 }
 
+// --------------------------
+// 新規投稿追加
+// --------------------------
 function addPost(){
   const text = document.getElementById("postText").value.trim();
   const imageInput = document.getElementById("postImage");
-  
-  if(!text && !imageInput.files[0]) return alert("投稿内容または画像を入力してください。");
+  const file = imageInput.files[0];
 
-  if(imageInput.files[0]){
+  // テキストも画像も空なら投稿不可
+  if(!text && !file){
+    alert("投稿内容または画像を入力してください。");
+    return;
+  }
+
+  // 画像付き投稿
+  if(file){
     const reader = new FileReader();
-    reader.onload = function(e){
+    reader.onloadend = function(e){
       const newPost = {
         name: profile.name,
         avatar: profile.avatar,
@@ -121,9 +161,11 @@ function addPost(){
       localStorage.setItem("posts", JSON.stringify(posts));
       closeModal();
       renderPosts();
-    }
-    reader.readAsDataURL(imageInput.files[0]);
-  } else {
+    };
+    reader.readAsDataURL(file);
+  } 
+  // テキストのみの投稿
+  else {
     const newPost = {
       name: profile.name,
       avatar: profile.avatar,
