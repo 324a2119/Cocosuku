@@ -60,3 +60,21 @@ body{margin:0;padding:0;background:var(--bg);color:var(--text);}
 /* リプライ */
 .reply-section{ margin-left:16px; border-left:2px solid #ffd1dc; padding-left:10px; margin-top:8px;}
 .reply-item{ background:#fff0f5; border-radius:10px; padding:6px 10px; margin-bottom:6px; font-size:13px; transition: all 0.3s ease; opacity:0; transform:translateY(10px); }
+
+/* リプライ削除ボタン */
+.reply-item .delete-reply-btn{
+  background:#f44;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  font-size:10px;
+  padding:2px 6px;
+  cursor:pointer;
+  margin-left:8px;
+}
+
+/* 削除アニメーション */
+@keyframes fadeOutHeight{
+  from { opacity:1; height:auto; margin-bottom:6px; }
+  to { opacity:0; height:0; margin-bottom:0; padding:0; }
+}
