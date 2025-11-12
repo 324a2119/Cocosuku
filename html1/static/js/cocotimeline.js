@@ -1,5 +1,5 @@
 // ==========================
-// cocotimeline.js（iPhone16対応・いいね＆リプライ対応）
+// cocotimeline.js（スマホ対応・リプライ常時表示版）
 // ==========================
 
 let posts = JSON.parse(localStorage.getItem("posts") || "[]");
@@ -8,6 +8,7 @@ let profile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲスト"
 if(!localStorage.getItem("isLoggedIn")) window.location.href = "cocologin.html";
 
 const modalBg = document.getElementById("modalBg");
+const replyModalBg = document.getElementById("replyModalBg");
 
 // --------------------------
 // ページ遷移
@@ -49,6 +50,16 @@ function renderPosts(){
 
         const imageTag = p.image ? `<img src="${p.image}" class="post-image">` : "";
 
+        // リプライ常時表示
+        let repliesHtml = '';
+        if(p.replies && p.replies.length>0){
+            repliesHtml = '<div class="reply-list">';
+            p.replies.forEach(r=>{
+                repliesHtml += `<div class="reply-card"><span class="reply-name">${r.name}:</span>${r.text}</div>`;
+            });
+            repliesHtml += '</div>';
+        }
+
         card.innerHTML = `
             <div class="post-header">
                 <div class="icon" onclick="goProfile('${p.name}')">${p.avatar}</div>
@@ -67,6 +78,7 @@ function renderPosts(){
                 <span>${p.likesBy?.length || 0}</span>
                 <button class="reply-btn" onclick="openReplyModal(${index})">💬 リプライ</button>
             </div>
+            ${repliesHtml}
         `;
         feed.appendChild(card);
     });
@@ -164,50 +176,33 @@ async function addPost(){
 }
 
 // --------------------------
-// リプライモーダル
-// --------------------------
+// リプライモーダル（入力用）
 function openReplyModal(index){
-    const post = posts[posts.length-1-index];
+    const i = posts.length-1-index;
     const replyModal = document.createElement("div");
     replyModal.className = "reply-modal";
+
     replyModal.innerHTML = `
         <div class="reply-modal-content">
-            <h3>${post.name} の投稿</h3>
-            <div class="reply-list" id="replyList"></div>
+            <h3>リプライ</h3>
             <textarea id="replyInput" placeholder="リプライを入力"></textarea>
             <button onclick="addReply(${index}, this)">送信</button>
             <button onclick="closeReplyModal(this)">閉じる</button>
         </div>
     `;
     document.body.appendChild(replyModal);
-    renderReplies(index);
-}
-
-function renderReplies(index){
-    const i = posts.length-1-index;
-    const replyList = document.getElementById("replyList");
-    replyList.innerHTML = "";
-    const replies = posts[i].replies || [];
-    replies.forEach(r => {
-        const div = document.createElement("div");
-        div.className = "reply-card";
-        div.innerHTML = `<span class="reply-name">${r.name}:</span> ${r.text}`;
-        replyList.appendChild(div);
-    });
 }
 
 function addReply(index, btn){
-    const textarea = document.getElementById("replyInput");
-    const text = textarea.value.trim();
+    const text = document.getElementById("replyInput").value.trim();
     if(!text) return;
 
     const i = posts.length-1-index;
     if(!posts[i].replies) posts[i].replies = [];
     posts[i].replies.push({name: profile.name, text});
     localStorage.setItem("posts", JSON.stringify(posts));
-    textarea.value="";
-    renderReplies(index);
     renderPosts();
+    closeReplyModal(btn);
 }
 
 function closeReplyModal(btn){
