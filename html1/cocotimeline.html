@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>タイムライン — ココスク</title>
   <link rel="stylesheet" href="static/css/cocotimeline.css">
+  <style>
+    /* ×ボタン固定 */
+    .modal-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    /* モーダル画像プレビュー */
+    #postImagePreview {
+      max-width: 100%;
+      max-height: 150px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <div class="app">
