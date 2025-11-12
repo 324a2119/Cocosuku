@@ -1,5 +1,5 @@
 // ==========================
-// cocotimeline.js（修正版）
+// cocotimeline.js（画像圧縮対応版）
 // ==========================
 
 // 投稿データとプロフィールをローカルストレージから取得
@@ -14,9 +14,7 @@ if(!localStorage.getItem("isLoggedIn")){
 // --------------------------
 // ページ遷移系
 // --------------------------
-function goTimeline(){ 
-    window.location.href = "cocotimeline.html"; 
-}
+function goTimeline(){ window.location.href = "cocotimeline.html"; }
 
 function goProfile(userName){
     if(userName === profile.name){
@@ -33,24 +31,23 @@ function renderPosts(){
   const feed = document.getElementById("feed");
   feed.innerHTML = "";
 
-  if(posts.length === 0) {
+  if(posts.length === 0){
     feed.innerHTML = '<div style="text-align:center; color:var(--muted); margin-top:30px;">投稿がありません。最初の投稿をしてみましょう！</div>';
     return;
   }
-  
-  // 新しい投稿を上に表示
+
   posts.slice().reverse().forEach((p,index)=>{
     const card = document.createElement("div");
     card.className = "post-card";
     const time = new Date(p.time).toLocaleString("ja-JP",{hour12:false});
     const liked = p.liked ? "liked" : "";
-    
+
     let deleteBtn = "";
     if(p.name === profile.name){
       const originalIndex = posts.length - 1 - index;
       deleteBtn = `<button class="delete-btn" onclick="deletePost(${originalIndex})">削除</button>`;
     }
-    
+
     let imageTag = p.image ? `<img src="${p.image}" class="post-image">` : "";
 
     card.innerHTML = `
@@ -97,13 +94,11 @@ function deletePost(originalIndex){
 }
 
 // --------------------------
-// モーダルの開閉
+// モーダル開閉
 // --------------------------
 const modalBg = document.getElementById("modalBg");
 
-function openModal(){ 
-  modalBg.style.display = "flex"; 
-}
+function openModal(){ modalBg.style.display = "flex"; }
 
 function closeModal(){ 
   modalBg.style.display = "none"; 
@@ -119,65 +114,89 @@ function closeModal(){
 // --------------------------
 function previewImage(event){
   const file = event.target.files[0];
-  if(!file) return;  // スマホ対策：キャンセル時のエラー防止
+  if(!file) return;
 
   const reader = new FileReader();
   reader.onload = function(e){
-      const preview = document.getElementById("postImagePreview");
-      preview.src = e.target.result;
-      preview.style.display = "block";
+    const preview = document.getElementById("postImagePreview");
+    preview.src = e.target.result;
+    preview.style.display = "block";
   };
   reader.readAsDataURL(file);
 }
 
 // --------------------------
-// 新規投稿追加
+// 新規投稿追加（画像圧縮対応）
 // --------------------------
 function addPost(){
   const text = document.getElementById("postText").value.trim();
   const imageInput = document.getElementById("postImage");
   const file = imageInput.files[0];
 
-  // テキストも画像も空なら投稿不可
   if(!text && !file){
     alert("投稿内容または画像を入力してください。");
     return;
   }
 
-  // 画像付き投稿
   if(file){
     const reader = new FileReader();
-    reader.onloadend = function(e){
-      const newPost = {
-        name: profile.name,
-        avatar: profile.avatar,
-        text: text,
-        image: e.target.result,
-        time: new Date().toISOString(),
-        likes: 0,
-        liked: false
-      };
-      posts.push(newPost);
-      localStorage.setItem("posts", JSON.stringify(posts));
-      closeModal();
-      renderPosts();
+    reader.onload = function(e){
+      compressImage(e.target.result, 800, 800, function(compressedData){
+        savePost(text, compressedData);
+      });
     };
     reader.readAsDataURL(file);
-  } 
-  // テキストのみの投稿
-  else {
-    const newPost = {
-      name: profile.name,
-      avatar: profile.avatar,
-      text: text,
-      image: "",
-      time: new Date().toISOString(),
-      likes: 0,
-      liked: false
-    };
-    posts.push(newPost);
-    localStorage.setItem("posts", JSON.stringify(posts));
-    closeModal();
-    renderPosts();
+  } else {
+    savePost(text, "");
   }
+}
+
+// --------------------------
+// 画像圧縮処理
+// --------------------------
+function compressImage(base64, maxWidth, maxHeight, callback){
+  const img = new Image();
+  img.onload = function(){
+    let width = img.width;
+    let height = img.height;
+
+    // アスペクト比を維持してリサイズ
+    if(width > maxWidth || height > maxHeight){
+      if(width / height > maxWidth / maxHeight){
+        height *= maxWidth / width;
+        width = maxWidth;
+      } else {
+        width *= maxHeight / height;
+        height = maxHeight;
+      }
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, width, height);
+    const compressedData = canvas.toDataURL("image/jpeg", 0.7); // 圧縮率70%
+    callback(compressedData);
+  };
+  img.src = base64;
+}
+
+// --------------------------
+// 投稿保存処理
+// --------------------------
+function savePost(text, imageData){
+  const newPost = {
+    name: profile.name,
+    avatar: profile.avatar,
+    text: text,
+    image: imageData,
+    time: new Date().toISOString(),
+    likes: 0,
+    liked: false
+  };
+  posts.push(newPost);
+  localStorage.setItem("posts", JSON.stringify(posts));
+  closeModal();
+  renderPosts();
 }
