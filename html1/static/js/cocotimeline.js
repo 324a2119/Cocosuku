@@ -3,7 +3,7 @@ let posts = JSON.parse(localStorage.getItem("posts") || "[]");
 let profile = JSON.parse(localStorage.getItem("profile") || '{"name":"ゲスト","avatar":"ゲ"}');
 
 if(!localStorage.getItem("isLoggedIn")){
-    window.location.href = "cocologin.html";
+    window.location.href = "cocologin.html";　
 }
 
 // ナビゲーション
@@ -210,3 +210,4 @@ function renderReplies(index){
 
 // 初回レンダリング
 renderPosts();
+
