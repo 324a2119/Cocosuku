@@ -10,6 +10,7 @@ function goProfile(userName){
   else window.location.href="cocootherprofile.html?user="+encodeURIComponent(userName);
 }
 
+// -------------------- 投稿レンダリング --------------------
 function renderPosts(){
   const feed = document.getElementById("feed");
   feed.innerHTML="";
@@ -49,12 +50,12 @@ function renderPosts(){
       </div>
       <div class="reply-section" id="reply-section-${index}"></div>
     `;
-
     feed.appendChild(card);
     renderReplies(index);
   });
 }
 
+// -------------------- いいね --------------------
 function toggleLike(index){
   const originalIndex=posts.length-1-index;
   posts[originalIndex].liked = !posts[originalIndex].liked;
@@ -71,6 +72,7 @@ function getLikeNames(index){
   return p.likedNames?p.likedNames.join(", "):"";
 }
 
+// -------------------- 投稿削除 --------------------
 function deletePost(originalIndex){
   if(confirm("本当にこの投稿を削除しますか？")){
     posts.splice(originalIndex,1);
@@ -79,6 +81,7 @@ function deletePost(originalIndex){
   }
 }
 
+// -------------------- モーダル --------------------
 const modalBg=document.getElementById("modalBg");
 function openModal(){ modalBg.style.display="flex"; }
 function closeModal(){
@@ -89,6 +92,7 @@ function closeModal(){
   document.getElementById("postImagePreview").src="";
 }
 
+// -------------------- 画像プレビュー --------------------
 function previewImage(event){
   const preview=document.getElementById("postImagePreview");
   const file=event.target.files[0];
@@ -105,6 +109,7 @@ function previewImage(event){
   }
 }
 
+// -------------------- 投稿追加 --------------------
 function addPost(){
   const text=document.getElementById("postText").value.trim();
   const imageInput=document.getElementById("postImage");
@@ -144,7 +149,6 @@ function openReplyModal(index){
   currentReplyIndex=index;
   replyModal.style.display="flex";
 }
-
 function closeReplyModal(){
   replyModal.style.display="none";
   document.getElementById("replyText").value="";
@@ -185,7 +189,6 @@ function renderReplies(index){
 }
 
 function deleteReply(postIndex, replyIndex, element){
-  // アニメーション後に削除
   element.style.animation="fadeOutHeight 0.3s forwards";
   setTimeout(()=>{
     const post=posts[posts.length-1-postIndex];
@@ -195,21 +198,4 @@ function deleteReply(postIndex, replyIndex, element){
   },300);
 }
 
-
-function renderReplies(index){
-  const section=document.getElementById(`reply-section-${index}`);
-  section.innerHTML="";
-  const post=posts[posts.length-1-index];
-  if(post.replies){
-    post.replies.forEach(r=>{
-      const div=document.createElement("div");
-      div.className="reply-item";
-      div.innerHTML=`<strong>${r.name}</strong>: ${r.text.replace(/\n/g,"<br>")}`;
-      section.appendChild(div);
-      setTimeout(()=>{ div.style.opacity="1"; div.style.transform="translateY(0)"; },50);
-    });
-  }
-}
-
 renderPosts();
-
