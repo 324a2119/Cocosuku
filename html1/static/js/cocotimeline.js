@@ -166,6 +166,41 @@ function renderReplies(index){
   section.innerHTML="";
   const post=posts[posts.length-1-index];
   if(post.replies){
+    post.replies.forEach((r,ri)=>{
+      const div=document.createElement("div");
+      div.className="reply-item";
+      div.innerHTML=`<strong>${r.name}</strong>: ${r.text.replace(/\n/g,"<br>")}`;
+      // 自分のリプライなら削除ボタン追加
+      if(r.name===profile.name){
+        const delBtn=document.createElement("button");
+        delBtn.className="delete-reply-btn";
+        delBtn.innerText="削除";
+        delBtn.onclick=()=> deleteReply(index, ri, div);
+        div.appendChild(delBtn);
+      }
+      section.appendChild(div);
+      setTimeout(()=>{ div.style.opacity="1"; div.style.transform="translateY(0)"; },50);
+    });
+  }
+}
+
+function deleteReply(postIndex, replyIndex, element){
+  // アニメーション後に削除
+  element.style.animation="fadeOutHeight 0.3s forwards";
+  setTimeout(()=>{
+    const post=posts[posts.length-1-postIndex];
+    post.replies.splice(replyIndex,1);
+    localStorage.setItem("posts", JSON.stringify(posts));
+    renderPosts();
+  },300);
+}
+
+
+function renderReplies(index){
+  const section=document.getElementById(`reply-section-${index}`);
+  section.innerHTML="";
+  const post=posts[posts.length-1-index];
+  if(post.replies){
     post.replies.forEach(r=>{
       const div=document.createElement("div");
       div.className="reply-item";
@@ -177,3 +212,4 @@ function renderReplies(index){
 }
 
 renderPosts();
+
