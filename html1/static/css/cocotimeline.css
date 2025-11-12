@@ -8,7 +8,7 @@
   --radius: 16px;
   font-family: "Noto Sans JP","Rounded Mplus 1c",sans-serif;
 }
-
+　
 *{box-sizing:border-box;}
 body{margin:0;padding:0;background:var(--bg);color:var(--text);}
 .app{display:flex;flex-direction:column;max-width:600px;margin:0 auto;padding:8px;min-height:100vh;padding-bottom:80px;}
