@@ -1,12 +1,22 @@
 // =============================
-// ロール選択モーダル（毎回表示）
+// グローバル変数
 // =============================
 let userRole = null;
+let today = new Date();
+let currentMonth = today.getMonth();
+let currentYear = today.getFullYear();
+let events = JSON.parse(localStorage.getItem("events") || "[]");
 
+// =============================
+// ページ読み込み時にロールモーダル
+// =============================
 window.addEventListener("load", () => {
   showRoleModal();
 });
 
+// =============================
+// ロール選択モーダル
+// =============================
 function showRoleModal() {
   const modalBg = document.createElement("div");
   modalBg.id = "roleModalBg";
@@ -27,66 +37,67 @@ function showRoleModal() {
   `;
   document.body.appendChild(modalBg);
 
+  const passArea = modalBg.querySelector("#teacherPassArea");
+  const passInput = passArea.querySelector("#teacherPass");
+  const confirmBtn = passArea.querySelector(".confirm");
+  const cancelBtn = passArea.querySelector(".cancel");
+
   // 学生ボタン
   modalBg.querySelector(".student").addEventListener("click", () => {
     userRole = "学生";
     alert("学生モードで開きます。");
-    closeRoleModal();
+    closeRoleModalWithDelay();
   });
 
   // 教師ボタン
   modalBg.querySelector(".teacher").addEventListener("click", () => {
-    const passArea = modalBg.querySelector("#teacherPassArea");
-    passArea.style.display = "block";
-    setTimeout(() => {
-      passArea.style.opacity = 1;
-      passArea.style.transform = "translateY(0)";
-    }, 10);
-
-    const passInput = passArea.querySelector("#teacherPass");
-
-    // Enterキーでの認証
-    passInput.onkeypress = (e) => {
-      if (e.key === "Enter") checkTeacherPass(passInput.value);
-    };
-
-    // 確認ボタン
-    modalBg.querySelector(".confirm").onclick = () => checkTeacherPass(passInput.value);
+    if (passArea.style.display === "none") {
+      passArea.style.display = "block";
+      setTimeout(() => {
+        passArea.style.opacity = 1;
+        passArea.style.transform = "translateY(0)";
+      }, 10);
+      passInput.focus();
+    }
   });
 
-  // キャンセルボタン
-  modalBg.querySelector(".cancel").addEventListener("click", () => {
-    const passArea = modalBg.querySelector("#teacherPassArea");
+  passInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") checkTeacherPassWithDelay(passInput.value);
+  });
+
+  confirmBtn.addEventListener("click", () => checkTeacherPassWithDelay(passInput.value));
+
+  cancelBtn.addEventListener("click", () => {
     passArea.style.opacity = 0;
     passArea.style.transform = "translateY(-20px)";
     setTimeout(() => { passArea.style.display = "none"; }, 300);
   });
 }
 
-function checkTeacherPass(pass) {
+// 遅延してモーダルを閉じ、カレンダーを描画
+function closeRoleModalWithDelay() {
+  const modalBg = document.getElementById("roleModalBg");
+  if (!modalBg) return;
+  modalBg.remove();
+  setTimeout(() => {
+    renderCalendar(currentMonth, currentYear);
+  }, 10);
+}
+
+// 教師パスワード認証
+function checkTeacherPassWithDelay(pass) {
   if (pass === "1234") {
     userRole = "教師";
     alert("認証成功。教師モードで開きます。");
-    closeRoleModal();
+    closeRoleModalWithDelay();
   } else {
     alert("暗証番号が間違っています。");
   }
 }
 
-function closeRoleModal() {
-  const modalBg = document.getElementById("roleModalBg");
-  if (modalBg) modalBg.remove();
-  renderCalendar(currentMonth, currentYear);
-}
-
 // =============================
-// カレンダー機能
+// カレンダー描画
 // =============================
-let today = new Date();
-let currentMonth = today.getMonth();
-let currentYear = today.getFullYear();
-let events = JSON.parse(localStorage.getItem("events") || "[]");
-
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
 const modalBgCalendar = document.getElementById("modalBg");
@@ -173,30 +184,28 @@ function closeModal() {
 }
 
 // =============================
-// イベント処理（凡例付き）
+// イベント処理
 // =============================
 function showEvents(date) {
   eventList.innerHTML = "";
 
+  // 凡例
   const legend = document.createElement("div");
   legend.style.display = "flex";
   legend.style.gap = "8px";
   legend.style.marginBottom = "8px";
-
   const studentLegend = document.createElement("div");
   studentLegend.style.backgroundColor = "#ffd1dc";
   studentLegend.style.width = "16px";
   studentLegend.style.height = "16px";
   studentLegend.style.borderRadius = "4px";
   studentLegend.title = "学生の予定";
-
   const teacherLegend = document.createElement("div");
   teacherLegend.style.backgroundColor = "#ffeeba";
   teacherLegend.style.width = "16px";
   teacherLegend.style.height = "16px";
   teacherLegend.style.borderRadius = "4px";
   teacherLegend.title = "教師の予定";
-
   legend.appendChild(studentLegend);
   legend.appendChild(document.createTextNode(" 学生"));
   legend.appendChild(teacherLegend);
