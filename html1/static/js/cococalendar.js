@@ -1,43 +1,81 @@
 // =============================
-// ロール選択と認証
+// ロール選択モーダル（毎回表示）
 // =============================
-let userRole = localStorage.getItem("userRole");
+let userRole = null;
 
-// ページを開くたびにロールを確認
+// ページ読み込み時に毎回ロール確認
 window.addEventListener("load", () => {
-  askRole();
+  showRoleModal();
 });
 
-function askRole() {
-  const role = prompt("あなたは「学生」または「教師」ですか？（例：学生）");
+function showRoleModal() {
+  const modal = document.createElement("div");
+  modal.id = "roleModal";
+  modal.innerHTML = `
+    <div class="role-modal-bg">
+      <div class="role-modal">
+        <h2>あなたの区分を選んでください</h2>
+        <div class="role-buttons">
+          <button class="role-btn student">学生</button>
+          <button class="role-btn teacher">教師</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
 
-  if (!role) {
-    alert("キャンセルされました。");
-    window.location.href = "cocotimeline.html";
-    return;
-  }
+  document.querySelector(".student").addEventListener("click", () => {
+    userRole = "学生";
+    alert("学生モードで開きます。");
+    closeRoleModal();
+  });
 
-  if (role === "教師") {
-    const pass = prompt("教師用暗証番号を入力してください：");
+  document.querySelector(".teacher").addEventListener("click", () => {
+    showPasswordModal();
+  });
+}
+
+function showPasswordModal() {
+  const passModal = document.createElement("div");
+  passModal.id = "passModal";
+  passModal.innerHTML = `
+    <div class="role-modal-bg">
+      <div class="role-modal">
+        <h2>教師用暗証番号を入力してください</h2>
+        <input type="password" id="teacherPass" placeholder="暗証番号を入力">
+        <div class="role-buttons">
+          <button class="role-btn confirm">確認</button>
+          <button class="role-btn cancel">キャンセル</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(passModal);
+
+  document.querySelector(".confirm").addEventListener("click", () => {
+    const pass = document.getElementById("teacherPass").value;
     if (pass === "1234") {
       alert("認証成功。教師モードで開きます。");
       userRole = "教師";
+      closePassModal();
+      closeRoleModal();
     } else {
-      alert("暗証番号が間違っています。アクセスできません。");
-      window.location.href = "cocotimeline.html";
-      return;
+      alert("暗証番号が間違っています。");
     }
-  } else if (role === "学生") {
-    alert("学生モードで開きます。");
-    userRole = "学生";
-  } else {
-    alert("正しく入力してください。（学生 または 教師）");
-    askRole();
-    return;
-  }
+  });
 
-  localStorage.setItem("userRole", userRole);
+  document.querySelector(".cancel").addEventListener("click", () => {
+    document.getElementById("passModal").remove();
+  });
+}
+
+function closeRoleModal() {
+  document.getElementById("roleModal").remove();
   renderCalendar(currentMonth, currentYear);
+}
+
+function closePassModal() {
+  document.getElementById("passModal").remove();
 }
 
 // =============================
@@ -58,7 +96,7 @@ const eventTitle = document.getElementById("eventTitle");
 const eventMemo = document.getElementById("eventMemo");
 
 function renderCalendar(month, year) {
-  if (!userRole) return; // 認証が終わるまで待つ
+  if (!userRole) return;
 
   calendarGrid.innerHTML = "";
   const firstDay = new Date(year, month, 1).getDay();
@@ -72,9 +110,7 @@ function renderCalendar(month, year) {
   for (let d = 1; d <= daysInMonth; d++) {
     const dayDiv = document.createElement("div");
     dayDiv.className = "day";
-    const formattedMonth = String(month + 1);
-    const formattedDay = String(d);
-    const dateStr = `${year}-${formattedMonth}-${formattedDay}`;
+    const dateStr = `${year}-${month + 1}-${d}`;
     dayDiv.textContent = d;
 
     if (d === today.getDate() && month === today.getMonth() && year === today.getFullYear())
@@ -82,10 +118,10 @@ function renderCalendar(month, year) {
 
     const visibleEvents = events.filter(e => {
       if (userRole === "学生") {
-        // 教師のイベント or 自分のイベントのみ見れる
-        return e.role === "教師" || e.role === "学生";
+        // 学生は自分と教師の予定が見れる
+        return e.role === "学生" || e.role === "教師";
       } else {
-        // 教師は自分のイベントのみ見れる
+        // 教師は自分（教師）の予定のみ見れる
         return e.role === "教師";
       }
     }).filter(e => e.date === dateStr);
@@ -165,10 +201,12 @@ function showEvents(date) {
         <div class="event-time">${e.time || "時間指定なし"}</div>
         <div class="event-title">${e.title}</div>
         ${e.memo ? `<div class="event-memo">${e.memo}</div>` : ""}
-        ${(userRole === "教師" && e.role === "教師") ||
-        (userRole === "学生" && e.role === "学生")
-          ? `<button class="delete-btn" onclick="deleteEvent('${date}',${index})">×</button>`
-          : ""}
+        ${
+          (userRole === "教師" && e.role === "教師") ||
+          (userRole === "学生" && e.role === "学生")
+            ? `<button class="delete-btn" onclick="deleteEvent('${date}',${index})">×</button>`
+            : ""
+        }
       `;
       eventList.appendChild(div);
     });
@@ -183,14 +221,7 @@ function addEvent() {
 
   if (!title) return alert("予定を入力してください！");
 
-  const newEvent = {
-    date,
-    time,
-    title,
-    memo,
-    role: userRole, // 教師か学生かを記録
-  };
-
+  const newEvent = { date, time, title, memo, role: userRole };
   events.push(newEvent);
   localStorage.setItem("events", JSON.stringify(events));
   showEvents(date);
