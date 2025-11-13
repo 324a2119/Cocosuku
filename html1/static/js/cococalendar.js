@@ -3,79 +3,65 @@
 // =============================
 let userRole = null;
 
-// ページ読み込み時に毎回ロール確認
 window.addEventListener("load", () => {
   showRoleModal();
 });
 
 function showRoleModal() {
-  const modal = document.createElement("div");
-  modal.id = "roleModal";
-  modal.innerHTML = `
-    <div class="role-modal-bg">
-      <div class="role-modal">
-        <h2>あなたの区分を選んでください</h2>
-        <div class="role-buttons">
-          <button class="role-btn student">学生</button>
-          <button class="role-btn teacher">教師</button>
-        </div>
+  const modalBg = document.createElement("div");
+  modalBg.id = "roleModalBg";
+  modalBg.className = "role-modal-bg";
+  modalBg.innerHTML = `
+    <div class="role-modal">
+      <h2>あなたの区分を選んでください</h2>
+      <div class="role-buttons">
+        <button class="role-btn student">学生</button>
+        <button class="role-btn teacher">教師</button>
+      </div>
+      <div id="teacherPassArea" style="display:none;margin-top:12px;">
+        <input type="password" id="teacherPass" placeholder="暗証番号">
+        <button class="role-btn confirm" style="margin-top:8px;">確認</button>
+        <button class="role-btn cancel" style="margin-top:4px;">キャンセル</button>
       </div>
     </div>
   `;
-  document.body.appendChild(modal);
+  document.body.appendChild(modalBg);
 
-  document.querySelector(".student").addEventListener("click", () => {
+  // 学生ボタン
+  modalBg.querySelector(".student").addEventListener("click", () => {
     userRole = "学生";
     alert("学生モードで開きます。");
     closeRoleModal();
   });
 
-  document.querySelector(".teacher").addEventListener("click", () => {
-    showPasswordModal();
+  // 教師ボタン
+  modalBg.querySelector(".teacher").addEventListener("click", () => {
+    modalBg.querySelector("#teacherPassArea").style.display = "block";
   });
-}
 
-function showPasswordModal() {
-  const passModal = document.createElement("div");
-  passModal.id = "passModal";
-  passModal.innerHTML = `
-    <div class="role-modal-bg">
-      <div class="role-modal">
-        <h2>教師用暗証番号を入力してください</h2>
-        <input type="password" id="teacherPass" placeholder="暗証番号を入力">
-        <div class="role-buttons">
-          <button class="role-btn confirm">確認</button>
-          <button class="role-btn cancel">キャンセル</button>
-        </div>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(passModal);
-
-  document.querySelector(".confirm").addEventListener("click", () => {
-    const pass = document.getElementById("teacherPass").value;
+  // 教師パス確認
+  modalBg.querySelector(".confirm").addEventListener("click", () => {
+    const pass = modalBg.querySelector("#teacherPass").value;
     if (pass === "1234") {
-      alert("認証成功。教師モードで開きます。");
       userRole = "教師";
-      closePassModal();
+      alert("認証成功。教師モードで開きます。");
       closeRoleModal();
     } else {
       alert("暗証番号が間違っています。");
     }
   });
 
-  document.querySelector(".cancel").addEventListener("click", () => {
-    document.getElementById("passModal").remove();
+  // 教師パスキャンセル
+  modalBg.querySelector(".cancel").addEventListener("click", () => {
+    modalBg.querySelector("#teacherPassArea").style.display = "none";
   });
 }
 
+// モーダル閉じる
 function closeRoleModal() {
-  document.getElementById("roleModal").remove();
+  const modalBg = document.getElementById("roleModalBg");
+  if (modalBg) modalBg.remove();
   renderCalendar(currentMonth, currentYear);
-}
-
-function closePassModal() {
-  document.getElementById("passModal").remove();
 }
 
 // =============================
@@ -88,7 +74,7 @@ let events = JSON.parse(localStorage.getItem("events") || "[]");
 
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
-const modalBg = document.getElementById("modalBg");
+const modalBgElement = document.getElementById("modalBg");
 const modalDate = document.getElementById("modalDate");
 const eventList = document.getElementById("eventList");
 const eventTime = document.getElementById("eventTime");
@@ -103,10 +89,12 @@ function renderCalendar(month, year) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   monthLabel.textContent = `${year}年 ${month + 1}月`;
 
+  // 空セル
   for (let i = 0; i < firstDay; i++) {
     calendarGrid.appendChild(document.createElement("div"));
   }
 
+  // 日付セル
   for (let d = 1; d <= daysInMonth; d++) {
     const dayDiv = document.createElement("div");
     dayDiv.className = "day";
@@ -118,10 +106,8 @@ function renderCalendar(month, year) {
 
     const visibleEvents = events.filter(e => {
       if (userRole === "学生") {
-        // 学生は自分と教師の予定が見れる
         return e.role === "学生" || e.role === "教師";
       } else {
-        // 教師は自分（教師）の予定のみ見れる
         return e.role === "教師";
       }
     }).filter(e => e.date === dateStr);
@@ -170,12 +156,12 @@ function nextMonth() {
 // =============================
 function openModal(date) {
   modalDate.textContent = date;
-  modalBg.style.display = "flex";
+  modalBgElement.style.display = "flex";
   showEvents(date);
 }
 
 function closeModal() {
-  modalBg.style.display = "none";
+  modalBgElement.style.display = "none";
   eventTime.value = "";
   eventTitle.value = "";
   eventMemo.value = "";
