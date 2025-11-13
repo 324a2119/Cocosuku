@@ -39,8 +39,8 @@ window.addEventListener("DOMContentLoaded", () => {
   if (!role) {
     const answer = prompt("あなたは『学生』ですか『教師』ですか？（学生／教師）");
     if (answer === "教師") {
-      const pass = prompt("教師の暗証番号を入力してください（例：1234）");
-      if (pass === "1234") {
+      const pass = prompt("教師の暗証番号を入力してください");
+      if (pass === "BITBITBIT") {
         localStorage.setItem("userRole", "teacher");
         alert("教師モードで利用します。");
       } else {
