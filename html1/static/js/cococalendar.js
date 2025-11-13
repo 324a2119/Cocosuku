@@ -27,12 +27,14 @@ function showRoleModal() {
   `;
   document.body.appendChild(modalBg);
 
+  // 学生ボタン
   modalBg.querySelector(".student").addEventListener("click", () => {
     userRole = "学生";
     alert("学生モードで開きます。");
     closeRoleModal();
   });
 
+  // 教師ボタン
   modalBg.querySelector(".teacher").addEventListener("click", () => {
     const passArea = modalBg.querySelector("#teacherPassArea");
     passArea.style.display = "block";
@@ -40,29 +42,28 @@ function showRoleModal() {
       passArea.style.opacity = 1;
       passArea.style.transform = "translateY(0)";
     }, 10);
+
     const passInput = passArea.querySelector("#teacherPass");
-    passInput.focus();
-    passInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") checkTeacherPass(passInput.value, modalBg);
-    });
+
+    // Enterキーでの認証
+    passInput.onkeypress = (e) => {
+      if (e.key === "Enter") checkTeacherPass(passInput.value);
+    };
+
+    // 確認ボタン
+    modalBg.querySelector(".confirm").onclick = () => checkTeacherPass(passInput.value);
   });
 
-  modalBg.querySelector(".confirm").addEventListener("click", () => {
-    const passInput = modalBg.querySelector("#teacherPass");
-    checkTeacherPass(passInput.value, modalBg);
-  });
-
+  // キャンセルボタン
   modalBg.querySelector(".cancel").addEventListener("click", () => {
     const passArea = modalBg.querySelector("#teacherPassArea");
     passArea.style.opacity = 0;
     passArea.style.transform = "translateY(-20px)";
-    setTimeout(() => {
-      passArea.style.display = "none";
-    }, 300);
+    setTimeout(() => { passArea.style.display = "none"; }, 300);
   });
 }
 
-function checkTeacherPass(pass, modalBg) {
+function checkTeacherPass(pass) {
   if (pass === "1234") {
     userRole = "教師";
     alert("認証成功。教師モードで開きます。");
@@ -177,23 +178,25 @@ function closeModal() {
 function showEvents(date) {
   eventList.innerHTML = "";
 
-  // 凡例
   const legend = document.createElement("div");
   legend.style.display = "flex";
   legend.style.gap = "8px";
   legend.style.marginBottom = "8px";
+
   const studentLegend = document.createElement("div");
   studentLegend.style.backgroundColor = "#ffd1dc";
   studentLegend.style.width = "16px";
   studentLegend.style.height = "16px";
   studentLegend.style.borderRadius = "4px";
   studentLegend.title = "学生の予定";
+
   const teacherLegend = document.createElement("div");
   teacherLegend.style.backgroundColor = "#ffeeba";
   teacherLegend.style.width = "16px";
   teacherLegend.style.height = "16px";
   teacherLegend.style.borderRadius = "4px";
   teacherLegend.title = "教師の予定";
+
   legend.appendChild(studentLegend);
   legend.appendChild(document.createTextNode(" 学生"));
   legend.appendChild(teacherLegend);
