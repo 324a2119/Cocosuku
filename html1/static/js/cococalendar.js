@@ -1,22 +1,12 @@
 // =============================
-// グローバル変数
+// ユーザーロール選択モーダル
 // =============================
 let userRole = null;
-let today = new Date();
-let currentMonth = today.getMonth();
-let currentYear = today.getFullYear();
-let events = JSON.parse(localStorage.getItem("events") || "[]");
 
-// =============================
-// ページ読み込み時にロールモーダル
-// =============================
 window.addEventListener("load", () => {
   showRoleModal();
 });
 
-// =============================
-// ロール選択モーダル
-// =============================
 function showRoleModal() {
   const modalBg = document.createElement("div");
   modalBg.id = "roleModalBg";
@@ -46,7 +36,7 @@ function showRoleModal() {
   modalBg.querySelector(".student").addEventListener("click", () => {
     userRole = "学生";
     closeRoleModal();
-    alert("学生モードで開きます。");
+    setTimeout(() => alert("学生モードで開きます。"), 10);
   });
 
   // 教師ボタン
@@ -74,18 +64,16 @@ function showRoleModal() {
   });
 }
 
-// 教師パスワード認証
 function checkTeacherPass(pass) {
   if (pass === "1234") {
     userRole = "教師";
     closeRoleModal();
-    alert("認証成功。教師モードで開きます。");
+    setTimeout(() => alert("認証成功。教師モードで開きます。"), 10);
   } else {
     alert("暗証番号が間違っています。");
   }
 }
 
-// モーダルを閉じてカレンダー描画
 function closeRoleModal() {
   const modalBg = document.getElementById("roleModalBg");
   if (modalBg) modalBg.remove();
@@ -93,8 +81,13 @@ function closeRoleModal() {
 }
 
 // =============================
-// カレンダー描画
+// カレンダー機能
 // =============================
+let today = new Date();
+let currentMonth = today.getMonth();
+let currentYear = today.getFullYear();
+let events = JSON.parse(localStorage.getItem("events") || "[]");
+
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
 const modalBgCalendar = document.getElementById("modalBg");
@@ -112,8 +105,10 @@ function renderCalendar(month, year) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   monthLabel.textContent = `${year}年 ${month + 1}月`;
 
+  // 空白セル
   for (let i = 0; i < firstDay; i++) calendarGrid.appendChild(document.createElement("div"));
 
+  // 日付セル
   for (let d = 1; d <= daysInMonth; d++) {
     const dayDiv = document.createElement("div");
     dayDiv.className = "day";
@@ -123,6 +118,7 @@ function renderCalendar(month, year) {
     if (d === today.getDate() && month === today.getMonth() && year === today.getFullYear())
       dayDiv.classList.add("today");
 
+    // 表示対象イベント
     const visibleEvents = events.filter(e => {
       if (userRole === "学生") return e.role === "学生" || e.role === "教師";
       else return e.role === "教師";
@@ -165,7 +161,7 @@ function nextMonth() {
 }
 
 // =============================
-// カレンダーモーダル操作
+// モーダル操作
 // =============================
 function openModalCalendar(date) {
   modalDate.textContent = date;
@@ -181,7 +177,7 @@ function closeModal() {
 }
 
 // =============================
-// イベント表示・追加・削除
+// イベント処理（凡例付き）
 // =============================
 function showEvents(date) {
   eventList.innerHTML = "";
