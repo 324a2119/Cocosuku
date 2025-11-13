@@ -47,6 +47,25 @@
   <a href="cocoprofile.html" class="nav-item">👤 プロフ</a>
   <span class="nav-item active">📅 予定</span>
 </div>
+
+<!-- ロール選択モーダル -->
+<div class="role-modal-bg" id="roleModalBg">
+  <div class="role-modal">
+    <h3>あなたはどちらですか？</h3>
+    <div class="role-buttons">
+      <button class="role-btn student" onclick="selectRole('学生')">👩‍🎓 学生</button>
+      <button class="role-btn teacher" onclick="selectRole('教師')">👨‍🏫 教師</button>
+    </div>
+    <div id="teacherPassArea" style="display:none;">
+      <p>教師用暗証番号を入力してください</p>
+      <input type="password" id="teacherPass" placeholder="暗証番号">
+      <button class="role-btn confirm" onclick="checkTeacherPass()">確認</button>
+    </div>
+  </div>
+</div>
+
+  
 </body>
 </html>
+
 
