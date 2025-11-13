@@ -18,7 +18,7 @@ function showRoleModal() {
         <button class="role-btn student">学生</button>
         <button class="role-btn teacher">教師</button>
       </div>
-      <div id="teacherPassArea" style="display:none;margin-top:12px;">
+      <div id="teacherPassArea" style="display:none;margin-top:12px;opacity:0;transform:translateY(-20px);transition:0.3s;">
         <input type="password" id="teacherPass" placeholder="暗証番号">
         <button class="role-btn confirm" style="margin-top:8px;">確認</button>
         <button class="role-btn cancel" style="margin-top:4px;">キャンセル</button>
@@ -27,37 +27,51 @@ function showRoleModal() {
   `;
   document.body.appendChild(modalBg);
 
-  // 学生ボタン
   modalBg.querySelector(".student").addEventListener("click", () => {
     userRole = "学生";
     alert("学生モードで開きます。");
     closeRoleModal();
   });
 
-  // 教師ボタン
   modalBg.querySelector(".teacher").addEventListener("click", () => {
-    modalBg.querySelector("#teacherPassArea").style.display = "block";
+    const passArea = modalBg.querySelector("#teacherPassArea");
+    passArea.style.display = "block";
+    setTimeout(() => {
+      passArea.style.opacity = 1;
+      passArea.style.transform = "translateY(0)";
+    }, 10);
+    const passInput = passArea.querySelector("#teacherPass");
+    passInput.focus();
+    passInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") checkTeacherPass(passInput.value, modalBg);
+    });
   });
 
-  // 教師パス確認
   modalBg.querySelector(".confirm").addEventListener("click", () => {
-    const pass = modalBg.querySelector("#teacherPass").value;
-    if (pass === "1234") {
-      userRole = "教師";
-      alert("認証成功。教師モードで開きます。");
-      closeRoleModal();
-    } else {
-      alert("暗証番号が間違っています。");
-    }
+    const passInput = modalBg.querySelector("#teacherPass");
+    checkTeacherPass(passInput.value, modalBg);
   });
 
-  // 教師パスキャンセル
   modalBg.querySelector(".cancel").addEventListener("click", () => {
-    modalBg.querySelector("#teacherPassArea").style.display = "none";
+    const passArea = modalBg.querySelector("#teacherPassArea");
+    passArea.style.opacity = 0;
+    passArea.style.transform = "translateY(-20px)";
+    setTimeout(() => {
+      passArea.style.display = "none";
+    }, 300);
   });
 }
 
-// モーダル閉じる
+function checkTeacherPass(pass, modalBg) {
+  if (pass === "1234") {
+    userRole = "教師";
+    alert("認証成功。教師モードで開きます。");
+    closeRoleModal();
+  } else {
+    alert("暗証番号が間違っています。");
+  }
+}
+
 function closeRoleModal() {
   const modalBg = document.getElementById("roleModalBg");
   if (modalBg) modalBg.remove();
@@ -74,7 +88,7 @@ let events = JSON.parse(localStorage.getItem("events") || "[]");
 
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
-const modalBgElement = document.getElementById("modalBg");
+const modalBgCalendar = document.getElementById("modalBg");
 const modalDate = document.getElementById("modalDate");
 const eventList = document.getElementById("eventList");
 const eventTime = document.getElementById("eventTime");
@@ -89,12 +103,8 @@ function renderCalendar(month, year) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   monthLabel.textContent = `${year}年 ${month + 1}月`;
 
-  // 空セル
-  for (let i = 0; i < firstDay; i++) {
-    calendarGrid.appendChild(document.createElement("div"));
-  }
+  for (let i = 0; i < firstDay; i++) calendarGrid.appendChild(document.createElement("div"));
 
-  // 日付セル
   for (let d = 1; d <= daysInMonth; d++) {
     const dayDiv = document.createElement("div");
     dayDiv.className = "day";
@@ -105,11 +115,8 @@ function renderCalendar(month, year) {
       dayDiv.classList.add("today");
 
     const visibleEvents = events.filter(e => {
-      if (userRole === "学生") {
-        return e.role === "学生" || e.role === "教師";
-      } else {
-        return e.role === "教師";
-      }
+      if (userRole === "学生") return e.role === "学生" || e.role === "教師";
+      else return e.role === "教師";
     }).filter(e => e.date === dateStr);
 
     if (visibleEvents.length > 0) {
@@ -118,6 +125,9 @@ function renderCalendar(month, year) {
         const preview = document.createElement("div");
         preview.className = "event-preview";
         preview.textContent = (e.time ? e.time + " " : "") + e.title;
+        preview.style.backgroundColor = e.role === "学生" ? "#ffd1dc" : "#ffeeba";
+        preview.style.borderRadius = "8px";
+        preview.style.padding = "2px 4px";
         dayDiv.appendChild(preview);
       });
       if (visibleEvents.length > 2) {
@@ -128,61 +138,79 @@ function renderCalendar(month, year) {
       }
     }
 
-    dayDiv.addEventListener("click", () => openModal(dateStr));
+    dayDiv.addEventListener("click", () => openModalCalendar(dateStr));
     calendarGrid.appendChild(dayDiv);
   }
 }
 
 function prevMonth() {
   currentMonth--;
-  if (currentMonth < 0) {
-    currentMonth = 11;
-    currentYear--;
-  }
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
   renderCalendar(currentMonth, currentYear);
 }
 
 function nextMonth() {
   currentMonth++;
-  if (currentMonth > 11) {
-    currentMonth = 0;
-    currentYear++;
-  }
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
   renderCalendar(currentMonth, currentYear);
 }
 
 // =============================
 // モーダル操作
 // =============================
-function openModal(date) {
+function openModalCalendar(date) {
   modalDate.textContent = date;
-  modalBgElement.style.display = "flex";
+  modalBgCalendar.style.display = "flex";
   showEvents(date);
 }
 
 function closeModal() {
-  modalBgElement.style.display = "none";
+  modalBgCalendar.style.display = "none";
   eventTime.value = "";
   eventTitle.value = "";
   eventMemo.value = "";
 }
 
 // =============================
-// イベント処理
+// イベント処理（凡例付き）
 // =============================
 function showEvents(date) {
   eventList.innerHTML = "";
+
+  // 凡例
+  const legend = document.createElement("div");
+  legend.style.display = "flex";
+  legend.style.gap = "8px";
+  legend.style.marginBottom = "8px";
+  const studentLegend = document.createElement("div");
+  studentLegend.style.backgroundColor = "#ffd1dc";
+  studentLegend.style.width = "16px";
+  studentLegend.style.height = "16px";
+  studentLegend.style.borderRadius = "4px";
+  studentLegend.title = "学生の予定";
+  const teacherLegend = document.createElement("div");
+  teacherLegend.style.backgroundColor = "#ffeeba";
+  teacherLegend.style.width = "16px";
+  teacherLegend.style.height = "16px";
+  teacherLegend.style.borderRadius = "4px";
+  teacherLegend.title = "教師の予定";
+  legend.appendChild(studentLegend);
+  legend.appendChild(document.createTextNode(" 学生"));
+  legend.appendChild(teacherLegend);
+  legend.appendChild(document.createTextNode(" 教師"));
+  eventList.appendChild(legend);
+
   const dayEvents = events.filter(e => e.date === date && (
     (userRole === "教師" && e.role === "教師") ||
     (userRole === "学生" && (e.role === "教師" || e.role === "学生"))
   ));
 
-  if (dayEvents.length === 0) {
-    eventList.innerHTML = "<div>予定なし</div>";
-  } else {
+  if (dayEvents.length === 0) eventList.innerHTML += "<div>予定なし</div>";
+  else {
     dayEvents.forEach((e, index) => {
       const div = document.createElement("div");
       div.className = "event-card";
+      div.style.backgroundColor = e.role === "学生" ? "#ffd1dc" : "#ffeeba";
       div.innerHTML = `
         <div class="event-time">${e.time || "時間指定なし"}</div>
         <div class="event-title">${e.title}</div>
@@ -204,7 +232,6 @@ function addEvent() {
   const time = eventTime.value;
   const title = eventTitle.value.trim();
   const memo = eventMemo.value.trim();
-
   if (!title) return alert("予定を入力してください！");
 
   const newEvent = { date, time, title, memo, role: userRole };
