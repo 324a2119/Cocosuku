@@ -45,8 +45,8 @@ function showRoleModal() {
   // 学生ボタン
   modalBg.querySelector(".student").addEventListener("click", () => {
     userRole = "学生";
+    closeRoleModal();
     alert("学生モードで開きます。");
-    closeRoleModalWithDelay();
   });
 
   // 教師ボタン
@@ -62,10 +62,10 @@ function showRoleModal() {
   });
 
   passInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") checkTeacherPassWithDelay(passInput.value);
+    if (e.key === "Enter") checkTeacherPass(passInput.value);
   });
 
-  confirmBtn.addEventListener("click", () => checkTeacherPassWithDelay(passInput.value));
+  confirmBtn.addEventListener("click", () => checkTeacherPass(passInput.value));
 
   cancelBtn.addEventListener("click", () => {
     passArea.style.opacity = 0;
@@ -74,25 +74,22 @@ function showRoleModal() {
   });
 }
 
-// 遅延してモーダルを閉じ、カレンダーを描画
-function closeRoleModalWithDelay() {
-  const modalBg = document.getElementById("roleModalBg");
-  if (!modalBg) return;
-  modalBg.remove();
-  setTimeout(() => {
-    renderCalendar(currentMonth, currentYear);
-  }, 10);
-}
-
 // 教師パスワード認証
-function checkTeacherPassWithDelay(pass) {
+function checkTeacherPass(pass) {
   if (pass === "1234") {
     userRole = "教師";
+    closeRoleModal();
     alert("認証成功。教師モードで開きます。");
-    closeRoleModalWithDelay();
   } else {
     alert("暗証番号が間違っています。");
   }
+}
+
+// モーダルを閉じてカレンダー描画
+function closeRoleModal() {
+  const modalBg = document.getElementById("roleModalBg");
+  if (modalBg) modalBg.remove();
+  renderCalendar(currentMonth, currentYear);
 }
 
 // =============================
@@ -168,7 +165,7 @@ function nextMonth() {
 }
 
 // =============================
-// モーダル操作
+// カレンダーモーダル操作
 // =============================
 function openModalCalendar(date) {
   modalDate.textContent = date;
@@ -184,7 +181,7 @@ function closeModal() {
 }
 
 // =============================
-// イベント処理
+// イベント表示・追加・削除
 // =============================
 function showEvents(date) {
   eventList.innerHTML = "";
